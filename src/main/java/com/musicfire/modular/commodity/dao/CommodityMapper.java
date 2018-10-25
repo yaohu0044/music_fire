@@ -2,6 +2,7 @@ package com.musicfire.modular.commodity.dao;
 
 import com.musicfire.modular.commodity.entity.Commodity;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Mapper;
 
 /**
  * <p>
@@ -11,6 +12,7 @@ import com.baomidou.mybatisplus.mapper.BaseMapper;
  * @author author
  * @since 2018-10-25
  */
+@Mapper
 public interface CommodityMapper extends BaseMapper<Commodity> {
 
 }
