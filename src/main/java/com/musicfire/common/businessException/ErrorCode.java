@@ -1,4 +1,4 @@
-package com.musicfire.businessException;
+package com.musicfire.common.businessException;
 
 public enum ErrorCode {
 
