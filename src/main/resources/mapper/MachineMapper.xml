@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.musicfire.modular.system.dao.MachineMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.musicfire.modular.system.entity.Machine">
+        <id column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="code" property="code" />
+        <result column="lon_and_lat" property="lonAndLat" />
+        <result column="state" property="state" />
+        <result column="merchant_id" property="merchantId" />
+        <result column="address" property="address" />
+        <result column="qr_code_url" property="qrCodeUrl" />
+        <result column="flag" property="flag" />
+        <result column="create_time" property="createTime" />
+        <result column="create_id" property="createId" />
+        <result column="update_time" property="updateTime" />
+        <result column="update_ie" property="updateIe" />
+    </resultMap>
+
+</mapper>
