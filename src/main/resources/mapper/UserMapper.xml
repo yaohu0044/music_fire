@@ -6,6 +6,21 @@
     <resultMap id="BaseResultMap" type="com.musicfire.modular.system.entity.User">
         <id column="id" property="id" />
         <result column="name" property="name" />
+        <result column="gender" property="gender" />
+        <result column="password" property="password" />
+        <result column="login_name" property="loginName" />
+        <result column="date_birth" property="dateBirth" />
+        <result column="phone" property="phone" />
+        <result column="qq" property="qq" />
+        <result column="head_portrait" property="headPortrait" />
+        <result column="tel" property="tel" />
+        <result column="email" property="email" />
+        <result column="flag" property="flag" />
+        <result column="role_id" property="roleId" />
+        <result column="create_time" property="createTime" />
+        <result column="create_id" property="createId" />
+        <result column="update_time" property="updateTime" />
+        <result column="update_id" property="updateId" />
     </resultMap>
 
 </mapper>
