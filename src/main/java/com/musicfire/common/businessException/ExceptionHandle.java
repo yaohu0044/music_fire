@@ -1,6 +1,5 @@
-package com.musicfire.modular;
+package com.musicfire.common.businessException;
 
-import com.musicfire.common.businessException.BusinessException;
 import com.musicfire.common.utiles.Result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
