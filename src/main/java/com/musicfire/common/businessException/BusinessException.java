@@ -1,7 +1,10 @@
-package com.musicfire.businessException;
+package com.musicfire.common.businessException;
+
+import lombok.Data;
 
 import java.io.Serializable;
 
+@Data
 public class BusinessException extends RuntimeException implements Serializable {
     private static final long serialVersionUID = 2332608236621015980L;
 
@@ -24,17 +27,5 @@ public class BusinessException extends RuntimeException implements Serializable 
         this.data = data;
         this.code = errorCode.getCode();
         this.msg = errorCode.getMsg();
-    }
-
-    public String getMsg() {
-        return msg;
-    }
-
-    public Object getData() {
-        return data;
-    }
-
-    public void setData(Object data) {
-        this.data = data;
     }
 }
