@@ -4,7 +4,7 @@ public class Result {
  
 	private Integer code;//状态码
 	private Boolean isSuccess;//状态
-	private String massege;//消息
+	private String message;//消息
 	private Object result;//数据对象
 
 	/**
@@ -18,13 +18,13 @@ public class Result {
 	 * 只返回状态，状态码，消息
 	 * @param success
 	 * @param code
-	 * @param massege
+	 * @param message
 	 */
-	public Result(Boolean success, Integer code, String massege){
+	public Result(Boolean success, Integer code, String message){
 		super();
 		this.isSuccess=success;
 		this.code=code;
-		this.massege=massege;
+		this.message=message;
 	}
 
 	/**
@@ -44,15 +44,40 @@ public class Result {
 	 * 返回全部信息即状态，状态码，消息，数据对象
 	 * @param success
 	 * @param code
-	 * @param massege
+	 * @param message
 	 * @param result
 	 */
-	public Result(Boolean success, Integer code, String massege, Object result){
+	public Result(Boolean success, Integer code, String message, Object result){
 		super();
 		this.isSuccess=success;
 		this.code=code;
-		this.massege=massege;
+		this.message=message;
 		this.result=result;
+	}
+	public Result ok(Object result){
+		this.isSuccess=true;
+		this.code=0;
+		this.message="成功";
+		this.result=result;
+		return this;
+	}
+	public Result ok(){
+		this.isSuccess=true;
+		this.code=0;
+		this.message="成功";
+		return this;
+	}
+	public Result fail(Integer code,String message){
+		this.isSuccess=false;
+		this.code=code;
+		this.message=message;
+		return this;
+	}
+	public Result fail(String message){
+		this.isSuccess=false;
+		this.code=-1;
+		this.message=message;
+		return this;
 	}
 
 	public Integer getCode() {
@@ -71,12 +96,12 @@ public class Result {
 		this.isSuccess = isSuccess;
 	}
 
-	public String getMassege() {
-		return massege;
+	public String getMessage() {
+		return message;
 	}
 
-	public void setMassege(String massege) {
-		this.massege = massege;
+	public void setMessage(String message) {
+		this.message = message;
 	}
 
 	public Object getResult() {

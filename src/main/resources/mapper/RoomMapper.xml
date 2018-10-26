@@ -15,5 +15,10 @@
         <result column="update_time" property="updateTime" />
         <result column="update_id" property="updateId" />
     </resultMap>
-
+    <select id="queryByRoom" resultMap="BaseResultMap" parameterType="com.musicfire.modular.room.query.RoomPage">
+        select * from room
+    </select>
+    <select id="queryByCount" parameterType="com.musicfire.modular.room.query.RoomPage" resultType="java.lang.Integer">
+        select count(id) from room
+    </select>
 </mapper>
