@@ -2,6 +2,7 @@ package com.musicfire.modular.room.controller;
 
 
 import com.musicfire.common.utiles.Result;
+import com.musicfire.common.validated.Update;
 import com.musicfire.modular.room.dto.RoomDto;
 import com.musicfire.modular.room.entity.Room;
 import com.musicfire.modular.room.query.RoomPage;
@@ -39,7 +40,7 @@ public class RoomController {
     }
 
     @PostMapping("/edit")
-    public Result edit(@Validated RoomDto dto){
+    public Result edit(@Validated(value = Update.class) RoomDto dto){
 //        if(ObjectUtils.isEmpty(dto) || ObjectUtils.isEmpty(dto.getId())){
 //            return new Result().fail(RoomEnum.ROOM_ID_IS_NULL.getMsg());
 //        }
