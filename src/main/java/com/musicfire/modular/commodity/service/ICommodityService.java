@@ -2,6 +2,7 @@ package com.musicfire.modular.commodity.service;
 
 import com.musicfire.modular.commodity.entity.Commodity;
 import com.baomidou.mybatisplus.service.IService;
+import com.musicfire.modular.commodity.entity.Dto.CommodityDto;
 
 /**
  * <p>
@@ -11,6 +12,11 @@ import com.baomidou.mybatisplus.service.IService;
  * @author author
  * @since 2018-10-25
  */
-public interface ICommodityService extends IService<Commodity> {
+public interface ICommodityService {
 
+    String save(CommodityDto commodityDto);
+
+    String edit(CommodityDto commodityDto);
+
+    int commDeleteBatch(String ids);
 }
