@@ -1,10 +1,7 @@
 package com.musicfire.common.utiles;
 
-import lombok.Data;
-
 import java.util.List;
 
-@Data
 public class BasePage {
     private static final long serialVersionUID = -6710532081301192385L;
 
@@ -15,6 +12,7 @@ public class BasePage {
      * 3.数据总条数 totalCount
      * 4.总页数 pageCount
      * 5.数据集合 List<T> list
+     * 6.开始位置
      */
     private int currentPage = 1;
 
@@ -27,4 +25,58 @@ public class BasePage {
 
     private List<?> list;
 
+    private int startPosition;
+
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
+    }
+
+    public int getCurrentPage() {
+        return currentPage;
+    }
+
+    public void setCurrentPage(int currentPage) {
+        this.currentPage = currentPage;
+    }
+
+    public int getPageSize() {
+        return pageSize;
+    }
+
+    public void setPageSize(int pageSize) {
+        this.pageSize = pageSize;
+    }
+
+    public int getTotalCount() {
+        return totalCount;
+    }
+
+    public void setTotalCount(int totalCount) {
+        this.totalCount = totalCount;
+    }
+
+    public int getPageCount() {
+        return pageCount;
+    }
+
+    public void setPageCount(int pageCount) {
+        this.pageCount = pageCount;
+    }
+
+    public List<?> getList() {
+        return list;
+    }
+
+    public void setList(List<?> list) {
+        this.list = list;
+    }
+
+    public int getStartPosition() {
+        return startPosition;
+    }
+
+    public void setStartPosition(int startPosition) {
+        startPosition = (currentPage-1)* pageSize;
+        this.startPosition = startPosition;
+    }
 }
