@@ -1,14 +1,18 @@
 package com.musicfire.modular.commodity.controller;
 
 
+import com.musicfire.common.utiles.Result;
 import com.musicfire.modular.commodity.entity.Dto.CommodityDto;
 import com.musicfire.modular.commodity.service.ICommodityPicService;
 import com.musicfire.modular.commodity.service.ICommodityService;
 import com.musicfire.modular.commodity.service.impl.CommodityPicServiceImpl;
+import com.musicfire.modular.room.query.RoomPage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import org.springframework.stereotype.Controller;
+
+import java.util.List;
 
 /**
  * <p>
@@ -24,19 +28,23 @@ public class CommodityController {
     @Autowired
     ICommodityService commodityService;
     @PostMapping("/commSave")
-    public String commSave(@RequestBody CommodityDto commodityDto){
+    public Result commSave(@RequestBody CommodityDto commodityDto){
         commodityService.save(commodityDto);
-       return "添加成功";
+       return new Result().ok();
     }
-    public String commedit(@RequestBody CommodityDto commodityDto){
+    public Result commedit(@RequestBody CommodityDto commodityDto){
         commodityService.edit(commodityDto);
-        return "修改成功";
+        return new Result().ok();
     }
-
-    public String commDeleteBatch(@PathVariable String ids){
+    @GetMapping("/delete")
+    public Result commDeleteBatch(String ids){
         commodityService.commDeleteBatch(ids);
-        return "删除成功";
+        return new Result().ok();
     }
-
+    @GetMapping("/list")
+    public List<CommodityDto> List(RoomPage page){
+        List<CommodityDto> list = commodityService.queryList(page);
+        return list;
+    }
 }
 

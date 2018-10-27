@@ -13,12 +13,16 @@ import com.musicfire.modular.commodity.entity.CommodityStock;
 import com.musicfire.modular.commodity.entity.Dto.CommodityDto;
 import com.musicfire.modular.commodity.service.ICommodityService;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.musicfire.modular.room.query.RoomPage;
 import jxl.common.BaseUnit;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * <p>
@@ -78,9 +82,37 @@ public class CommodityServiceImpl extends ServiceImpl<CommodityMapper, Commodity
     public int commDeleteBatch(String ids) {
         commodityMapper.deleteBatchIds(C.listLong(ids));
         EntityWrapper entityWrapper=new EntityWrapper();
-        entityWrapper.in("commodityId",C.listLong(ids));
+        entityWrapper.in("commodity_id",C.listLong(ids));
         commodityPicMapper.delete(entityWrapper);
         Integer delete = commodityStockMapper.delete(entityWrapper);
         return delete;
+    }
+
+    @Override
+    public List<CommodityDto> queryList(RoomPage page) {
+        List<CommodityDto> list=new ArrayList<>();
+        CommodityDto commodityDto=new CommodityDto();
+        List<Commodity> commodities =  commodityMapper.queryByCommodity(page);
+        if (commodities.size() !=0)   {
+            for (int i=0;i<commodities.size();i++){
+                Commodity commodity = commodities.get(i);
+                BeanUtils.copyProperties(commodity,commodityDto);
+                 list.add(commodityDto);
+                HashMap map=new HashMap();
+                map.put("commodity_id",commodity.getId());
+                List<CommodityPic> picList = commodityPicMapper.selectByMap(map);
+                for (int j=0;j<picList.size();j++){
+                    CommodityPic commodityPic = picList.get(j);
+                    BeanUtils.copyProperties(commodityPic,commodityDto);
+                }
+                List<CommodityStock> stockList = commodityStockMapper.selectByMap(map);
+                  for (int y=0;y<stockList.size();y++){
+                      CommodityStock commodityStock = stockList.get(y);
+                      BeanUtils.copyProperties(commodityStock,commodityDto);
+                  }
+
+            }
+        }
+        return list;
     }
 }

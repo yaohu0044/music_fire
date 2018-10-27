@@ -2,7 +2,10 @@ package com.musicfire.modular.commodity.dao;
 
 import com.musicfire.modular.commodity.entity.Commodity;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
+import com.musicfire.modular.room.query.RoomPage;
 import org.apache.ibatis.annotations.Mapper;
+
+import java.util.List;
 
 /**
  * <p>
@@ -15,4 +18,5 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface CommodityMapper extends BaseMapper<Commodity> {
 
+    List<Commodity> queryByCommodity(RoomPage page);
 }

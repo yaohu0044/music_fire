@@ -16,5 +16,8 @@
         <result column="update_time" property="updateTime" />
         <result column="update_id" property="updateId" />
     </resultMap>
+    <select id="queryByCommodity" resultMap="BaseResultMap" parameterType="com.musicfire.modular.room.query.RoomPage">
+        select * from commodity
+    </select>
 
 </mapper>
