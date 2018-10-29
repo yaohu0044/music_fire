@@ -46,5 +46,10 @@ public class CommodityController {
         List<CommodityDto> list = commodityService.queryList(page);
         return list;
     }
+    @GetMapping("/queryCommdityByName")
+    public List<CommodityDto> queryCommodity(String name){
+        List<CommodityDto> list = commodityService.queryCommdityByName(name);
+        return list;
+    }
 }
 

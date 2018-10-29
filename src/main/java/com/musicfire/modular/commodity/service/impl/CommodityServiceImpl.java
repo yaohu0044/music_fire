@@ -115,4 +115,33 @@ public class CommodityServiceImpl extends ServiceImpl<CommodityMapper, Commodity
         }
         return list;
     }
+
+    @Override
+    public List<CommodityDto> queryCommdityByName(String name) {
+        List<CommodityDto> list1=new ArrayList<>();
+        CommodityDto commodityDto=new CommodityDto();
+        HashMap map=new HashMap<>();
+        map.put("name",name);
+        List <Commodity>list = commodityMapper.selectByMap(map);
+        if(list.size()!=0) {
+            for (int i = 0; i < list.size(); i++) {
+                Commodity commodity = list.get(i);
+                BeanUtils.copyProperties(commodity, commodityDto);
+                HashMap picMap=new HashMap();
+                picMap.put("commodity_id",commodity.getId());
+                List<CommodityPic> picList = commodityPicMapper.selectByMap(picMap);
+                for (int j=0;j<picList.size();j++){
+                    CommodityPic commodityPic = picList.get(j);
+                    BeanUtils.copyProperties(commodityPic,commodityDto);
+                }
+                List<CommodityStock> stock = commodityStockMapper.selectByMap(picMap);
+                for (int y=0;y<stock.size();y++){
+                    CommodityStock commodityStock = stock.get(y);
+                     BeanUtils.copyProperties(commodityStock,commodityDto);
+                }
+                list1.add(commodityDto);
+            }
+        }
+        return list1;
+    }
 }

@@ -24,4 +24,6 @@ public interface ICommodityService {
     int commDeleteBatch(String ids);
 
     List<CommodityDto> queryList(RoomPage page);
+
+    List<CommodityDto> queryCommdityByName(String name);
 }
