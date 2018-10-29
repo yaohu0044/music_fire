@@ -4,6 +4,7 @@ import com.musicfire.modular.room.entity.Room;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 import com.musicfire.modular.room.query.RoomPage;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -21,4 +22,10 @@ public interface RoomMapper extends BaseMapper<Room> {
     List<Room> queryByRoom(RoomPage page);
 
     int queryByCount(RoomPage page);
+
+    /**
+     * 根据ID 批量删除
+     * @param ids
+     */
+    void updateByIds(@Param("ids") List<Integer> ids);
 }

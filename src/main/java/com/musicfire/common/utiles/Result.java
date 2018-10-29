@@ -111,6 +111,6 @@ public class Result {
 	public void setResult(Object result) {
 		this.result = result;
 	}
-	
-	
+
+
 }

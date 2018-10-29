@@ -2,17 +2,16 @@ package com.musicfire.modular.room.controller;
 
 
 import com.musicfire.common.utiles.Result;
+import com.musicfire.common.validated.Insert;
 import com.musicfire.common.validated.Update;
-import com.musicfire.modular.room.dto.RoomDto;
+import com.musicfire.modular.room.dto.RoomVo;
 import com.musicfire.modular.room.entity.Room;
 import com.musicfire.modular.room.query.RoomPage;
 import com.musicfire.modular.room.service.IRoomService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -32,37 +31,37 @@ public class RoomController {
     private IRoomService service;
 
     @PostMapping("/save")
-    public Result save(RoomDto dto){
+    public Result save(@Validated(value = Insert.class)RoomVo vo){
         Room room = new Room();
-        BeanUtils.copyProperties(room,dto);
+        BeanUtils.copyProperties(vo,room);
         service.insert(room);
        return new Result().ok();
     }
 
     @PostMapping("/edit")
-    public Result edit(@Validated(value = Update.class) RoomDto dto){
-//        if(ObjectUtils.isEmpty(dto) || ObjectUtils.isEmpty(dto.getId())){
-//            return new Result().fail(RoomEnum.ROOM_ID_IS_NULL.getMsg());
-//        }
+    public Result edit(@Validated(value = Update.class) RoomVo vo){
         Room room = new Room();
-        BeanUtils.copyProperties(room,dto);
+        BeanUtils.copyProperties(vo,room);
         service.updateById(room);
         return new Result().ok();
     }
 
-    @PostMapping("/delete")
-    public Result delete(List<Room> rooms){
-        rooms.forEach(room->room.setFlag(true));
-        service.updateBatchById(rooms);
+    @PostMapping("/delete/{ids}")
+    public Result delete(@PathVariable List<Integer> ids){
+        service.updateByIds(ids);
         return new Result().ok();
     }
 
-    @PostMapping("/list")
+    @GetMapping("/list")
     public Result list(RoomPage page){
         RoomPage roomPage = service.queryByRoom(page);
         return new Result().ok(roomPage);
     }
 
-
+    @GetMapping("/queryById/{id}")
+    public Result queryById(@PathVariable Integer id){
+        Room room = service.selectById(id);
+        return new Result().ok(room);
+    }
 }
 

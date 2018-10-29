@@ -3,22 +3,67 @@
 <mapper namespace="com.musicfire.modular.room.dao.RoomMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.musicfire.modular.room.entity.Room">
-        <id column="id" property="id" />
-        <result column="name" property="name" />
-        <result column="machine_id" property="machineId" />
-        <result column="merchant_id" property="merchantId" />
-        <result column="describe" property="describe" />
-        <result column="flag" property="flag" />
-        <result column="create_time" property="createTime" />
-        <result column="create_id" property="createId" />
-        <result column="update_time" property="updateTime" />
-        <result column="update_id" property="updateId" />
+    <resultMap id="BaseResultMap" type="com.musicfire.modular.room.dto.RoomDto">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="machine_id" property="machineId"/>
+        <result column="merchant_id" property="merchantId"/>
+        <result column="describe" property="describe"/>
+        <result column="flag" property="flag"/>
+        <result column="create_time" property="createTime"/>
+        <result column="create_id" property="createId"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="update_id" property="updateId"/>
+
+        <result column="state" property="state"/>
+        <result column="userName" property="userName"/>
+        <result column="code" property="code"/>
+        <result column="machineId" property="machineId"/>
+        <result column="merchantId" property="merchantId"/>
+
     </resultMap>
+    <sql id="baseColumn">
+        r.id, r.`NAME` AS NAME, r.`describe` AS `describe`, r.create_time ,
+	    mac.`code` AS `code`, sysu.`name` AS userName, mac.`state` as machineState,
+	    mer.id as merchantId , mac.id as machineId
+    </sql>
     <select id="queryByRoom" resultMap="BaseResultMap" parameterType="com.musicfire.modular.room.query.RoomPage">
-        select * from room
+        select
+        <include refid="baseColumn"/>
+        from room r
+        left join machine mac on r.machine_id = mac.id
+        left join merchant mer on r.merchant_id = mer.id
+        left join sys_user sysu on sysu.id = mer.user_id
+        <where>
+            r.flag = false
+            <choose>
+                <when test="merchantName != null and merchantName !=''">
+                    and mer.name = #{merchantName}
+                </when>
+                <when test="merchantName != null and merchantName !=''">
+                    and r.name = #{roomName}
+                </when>
+            </choose>
+        </where>
+        limit #{startPosition},#{pageSize}
     </select>
     <select id="queryByCount" parameterType="com.musicfire.modular.room.query.RoomPage" resultType="java.lang.Integer">
-        select count(id) from room
+        select count(r.id) from room r
+        left join machine mac on r.machine_id = mac.id
+        left join merchant mer on r.merchant_id = mer.id
+        left join sys_user sysu on sysu.id = mer.user_id
     </select>
+    <update id="updateByIds" parameterType="java.util.List">
+        update room set flag = true
+        <where>
+            id in
+            <choose>
+                <when test="ids != null and ids.size()>0">
+                    <foreach collection="ids" item="item" close=")" open="(" separator=",">
+                        #{item}
+                    </foreach>
+                </when>
+            </choose>
+        </where>
+    </update>
 </mapper>

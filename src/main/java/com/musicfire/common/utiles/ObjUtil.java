@@ -5,10 +5,8 @@ import org.apache.commons.lang3.StringUtils;
 import java.lang.reflect.Field;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 
 public class ObjUtil {
@@ -197,5 +195,10 @@ public class ObjUtil {
         if(org.springframework.util.StringUtils.isEmpty(params))
             return "";
         return params.toString();
+    }
+    public static List<String> listLong(String  ids){
+        String[] split = ids.split(",");
+        List<String> collect = Arrays.stream(split).collect(Collectors.toList());
+        return collect;
     }
 }

@@ -1,10 +1,11 @@
 package com.musicfire.modular.system.entity;
 
-import java.util.Date;
-import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.activerecord.Model;
+import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableName;
+
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * <p>
@@ -67,11 +68,6 @@ public class User extends Model<User> {
      * false:未删除，true，删除
      */
     private Boolean flag;
-    /**
-     * 角色Id
-     */
-    @TableField("role_id")
-    private Integer roleId;
     /**
      * 创建时间
      */
@@ -190,14 +186,6 @@ public class User extends Model<User> {
         this.flag = flag;
     }
 
-    public Integer getRoleId() {
-        return roleId;
-    }
-
-    public void setRoleId(Integer roleId) {
-        this.roleId = roleId;
-    }
-
     public Date getCreateTime() {
         return createTime;
     }
@@ -250,7 +238,6 @@ public class User extends Model<User> {
         ", tel=" + tel +
         ", email=" + email +
         ", flag=" + flag +
-        ", roleId=" + roleId +
         ", createTime=" + createTime +
         ", createId=" + createId +
         ", updateTime=" + updateTime +

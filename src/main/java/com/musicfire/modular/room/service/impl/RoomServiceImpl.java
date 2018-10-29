@@ -32,4 +32,9 @@ public class RoomServiceImpl extends ServiceImpl<RoomMapper, Room> implements IR
         page.setPageCount(count);
         return page;
     }
+
+    @Override
+    public void updateByIds(List<Integer> ids) {
+        mapper.updateByIds(ids);
+    }
 }

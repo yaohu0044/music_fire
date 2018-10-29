@@ -1,10 +1,11 @@
 package com.musicfire.modular.system.entity;
 
-import java.util.Date;
-import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.activerecord.Model;
+import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableName;
+
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * <p>
@@ -37,6 +38,11 @@ public class Menu extends Model<Menu> {
      * false:未删除，true，删除
      */
     private Boolean flag;
+    /**
+     * 菜单默认资源
+     */
+    private String url;
+
     /**
      * 创建时间
      */
@@ -149,5 +155,13 @@ public class Menu extends Model<Menu> {
         ", updateTime=" + updateTime +
         ", updateId=" + updateId +
         "}";
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 }

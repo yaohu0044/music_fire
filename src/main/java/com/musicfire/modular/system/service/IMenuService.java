@@ -1,7 +1,10 @@
 package com.musicfire.modular.system.service;
 
-import com.musicfire.modular.system.entity.Menu;
 import com.baomidou.mybatisplus.service.IService;
+import com.musicfire.modular.system.dto.MenuDto;
+import com.musicfire.modular.system.entity.Menu;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,4 +16,12 @@ import com.baomidou.mybatisplus.service.IService;
  */
 public interface IMenuService extends IService<Menu> {
 
+    /**
+     * 添加/修改菜单
+     * @param menu
+     */
+    void save(Menu menu);
+
+
+    List<MenuDto> getMenuTree();
 }

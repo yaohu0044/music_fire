@@ -1,7 +1,5 @@
 package com.musicfire.modular.commodity.service;
 
-import com.musicfire.modular.commodity.entity.Commodity;
-import com.baomidou.mybatisplus.service.IService;
 import com.musicfire.modular.commodity.entity.Dto.CommodityDto;
 import com.musicfire.modular.room.query.RoomPage;
 
@@ -17,13 +15,13 @@ import java.util.List;
  */
 public interface ICommodityService {
 
-    String save(CommodityDto commodityDto);
+    void save(CommodityDto commodityDto);
 
-    String edit(CommodityDto commodityDto);
+    void edit(CommodityDto commodityDto);
 
     int commDeleteBatch(String ids);
 
     List<CommodityDto> queryList(RoomPage page);
 
-    List<CommodityDto> queryCommdityByName(String name);
+    List<CommodityDto> queryCommodityByName(String name);
 }

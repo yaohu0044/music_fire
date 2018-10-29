@@ -16,7 +16,6 @@
         <result column="tel" property="tel" />
         <result column="email" property="email" />
         <result column="flag" property="flag" />
-        <result column="role_id" property="roleId" />
         <result column="create_time" property="createTime" />
         <result column="create_id" property="createId" />
         <result column="update_time" property="updateTime" />
