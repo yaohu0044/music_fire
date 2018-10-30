@@ -37,6 +37,7 @@ public class BasePage {
 
     public void setCurrentPage(int currentPage) {
         this.currentPage = currentPage;
+        setStartPosition(currentPage);
     }
 
     public int getPageSize() {

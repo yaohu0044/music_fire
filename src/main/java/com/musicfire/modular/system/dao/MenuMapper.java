@@ -2,7 +2,10 @@ package com.musicfire.modular.system.dao;
 
 import com.musicfire.modular.system.entity.Menu;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
+import com.musicfire.modular.system.query.MenuPage;
 import org.apache.ibatis.annotations.Mapper;
+
+import java.util.List;
 
 /**
  * <p>
@@ -14,5 +17,9 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface MenuMapper extends BaseMapper<Menu> {
+
+    List<Menu> menuByPage(MenuPage menuPage);
+
+    Integer countByPage(MenuPage menuPage);
 
 }

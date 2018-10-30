@@ -39,7 +39,7 @@ public class RoomController {
     }
 
     @PostMapping("/edit")
-    public Result edit(@Validated(value = Update.class) RoomVo vo){
+    public Result edit(@Validated(value = Update.class) @RequestBody RoomVo vo){
         Room room = new Room();
         BeanUtils.copyProperties(vo,room);
         service.updateById(room);

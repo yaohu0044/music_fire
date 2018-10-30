@@ -14,4 +14,10 @@
         <result column="update_time" property="updateTime" />
     </resultMap>
 
+    <select id="queryByPage" resultMap="BaseResultMap" parameterType="com.musicfire.modular.system.query.RolePage">
+        select * from sys_role where flag =false limit #{startPosition},#{pageSize}
+    </select>
+    <select id="countByPage" resultType="java.lang.Integer" parameterType="com.musicfire.modular.system.query.RolePage">
+        select count(id) from sys_role where flag =false
+    </select>
 </mapper>

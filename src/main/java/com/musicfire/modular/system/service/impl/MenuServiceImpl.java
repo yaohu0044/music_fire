@@ -7,6 +7,7 @@ import com.musicfire.common.businessException.ErrorCode;
 import com.musicfire.modular.system.dao.MenuMapper;
 import com.musicfire.modular.system.dto.MenuDto;
 import com.musicfire.modular.system.entity.Menu;
+import com.musicfire.modular.system.query.MenuPage;
 import com.musicfire.modular.system.service.IMenuService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
@@ -33,11 +34,6 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements IM
 
     @Override
     public void save(Menu menu) {
-        if (ObjectUtils.isEmpty(menu.getParentId())) {
-            if (!StringUtils.isEmpty(menu.getUrl())) {
-                throw new BusinessException(ErrorCode.MENU_PARENT_URL_IS_NULL);
-            }
-        }
         String url = menu.getUrl();
         if (StringUtils.isEmpty(url)) {
             throw new BusinessException(ErrorCode.MENU_URL_IS_NULL);
@@ -64,10 +60,37 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements IM
             menuDtos.add(dto);
         });
         List<Menu> menuList = menus.stream().filter(menu -> menu.getParentId() != 0).collect(Collectors.toList());
-        return getMenuDtos(menuDtos, menuList);
+        return getMenuDto(menuDtos, menuList);
     }
 
-    private List<MenuDto> getMenuDtos(List<MenuDto> menuDtos, List<Menu> menus) {
+    @Override
+    public MenuPage list(MenuPage menuPage) {
+        Integer count = menuMapper.countByPage(menuPage);
+        if(count<1){
+            return menuPage;
+        }
+        List<Menu> page = menuMapper.menuByPage(menuPage);
+        menuPage.setList(page);
+        menuPage.setTotalCount(count);
+        return menuPage;
+    }
+
+    @Override
+    public void deleteByIds(Integer id) {
+        EntityWrapper<Menu> entityWrapper = new EntityWrapper<>();
+        entityWrapper.eq("parent_id",id);
+        List<Menu> menuList = menuMapper.selectList(entityWrapper);
+        if(!ObjectUtils.isEmpty(menuList)){
+            //有子节点不能删除
+            throw new BusinessException(ErrorCode.PAREN_MENU);
+        }
+        Menu menu = new Menu();
+        menu.setFlag(true);
+        menu.setId(id);
+        menuMapper.updateById(menu);
+    }
+
+    private List<MenuDto> getMenuDto(List<MenuDto> menuDtos, List<Menu> menus) {
         menuDtos.forEach(menuDto -> getSubs(menuDto, menus));
         return menuDtos;
     }

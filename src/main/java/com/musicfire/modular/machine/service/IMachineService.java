@@ -1,7 +1,7 @@
 package com.musicfire.modular.machine.service;
 
-import com.musicfire.modular.machine.entity.Machine;
 import com.baomidou.mybatisplus.service.IService;
+import com.musicfire.modular.machine.entity.Machine;
 
 /**
  * <p>

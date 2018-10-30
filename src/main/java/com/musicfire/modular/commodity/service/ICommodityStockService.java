@@ -1,8 +1,7 @@
 package com.musicfire.modular.commodity.service;
 
-import com.musicfire.modular.commodity.entity.CommodityStock;
 import com.baomidou.mybatisplus.service.IService;
-
+import com.musicfire.modular.commodity.entity.CommodityStock;
 /**
  * <p>
  *  服务类
