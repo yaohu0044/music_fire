@@ -8,4 +8,10 @@
         <result column="menu_id" property="menuId" />
     </resultMap>
 
+    <insert id="insertAll" parameterType="java.util.ArrayList" >
+        insert into role_menu (role_id,menu_id) values
+        <foreach collection="roleMenus" item="item" separator=",">
+            (#{roleId},#{menuId})
+        </foreach>
+    </insert>
 </mapper>
