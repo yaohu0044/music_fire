@@ -5,6 +5,9 @@ import com.musicfire.modular.system.dao.SettingMapper;
 import com.musicfire.modular.system.service.ISettingService;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
+
+import javax.annotation.Resource;
 
 /**
  * <p>
@@ -17,4 +20,14 @@ import org.springframework.stereotype.Service;
 @Service
 public class SettingServiceImpl extends ServiceImpl<SettingMapper, Setting> implements ISettingService {
 
+    @Resource
+    private SettingMapper mapper;
+    @Override
+    public void save(Setting setting) {
+        if(ObjectUtils.isEmpty(setting.getId())){
+            mapper.insert(setting);
+        }else {
+            mapper.updateById(setting);
+        }
+    }
 }

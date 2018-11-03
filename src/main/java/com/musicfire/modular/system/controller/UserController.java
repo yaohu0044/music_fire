@@ -35,17 +35,16 @@ public class UserController {
     @PostMapping("/save")
     public Result save(@Validated(value = Insert.class) @RequestBody UserVo userVo) {
         User user = new User();
-//        BeanUtils.copyProperties(userVo, user);
-//        List<Integer> menuIds = userVo.getMenuIds();
-//        service.save(user,menuIds);
+        BeanUtils.copyProperties(userVo, user);
+        service.save(user);
         return new Result().ok();
     }
 
     @PostMapping("/edit")
     public Result edit(@RequestBody @Validated(value = Update.class) UserVo userVo) {
         User user = new User();
-//        BeanUtils.copyProperties(userVo, user);
-//        service.save(user,userVo.getMenuIds());
+        BeanUtils.copyProperties(userVo, user);
+        service.save(user);
         return new Result().ok();
     }
 

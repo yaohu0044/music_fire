@@ -13,4 +13,5 @@ import com.baomidou.mybatisplus.service.IService;
  */
 public interface ISettingService extends IService<Setting> {
 
+    void save(Setting setting);
 }

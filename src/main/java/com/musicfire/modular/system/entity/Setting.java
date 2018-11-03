@@ -3,6 +3,9 @@ package com.musicfire.modular.system.entity;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableName;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
 
 /**
@@ -22,28 +25,34 @@ public class Setting extends Model<Setting> {
     /**
      * 系统名称
      */
+    @NotBlank(message = "系统名不能为空")
     private String name;
     /**
      * 系统title
      */
+    @NotBlank(message = "系统title不能为空")
     private String title;
     /**
      * 系统描述
      */
+    @NotBlank(message = "系统描述不能为空")
     private String describe;
     /**
      * 客户电话
      */
+    @NotBlank(message = "客户电话不能为空")
     @TableField("customer_phone")
     private String customerPhone;
     /**
      * 客户QQ
      */
+    @NotBlank(message = "QQ不能为空")
     @TableField("customer_qq")
     private String customerQq;
     /**
      * 版权信息
      */
+    @NotBlank(message = "版权不能为空")
     private String copyright;
 
 
