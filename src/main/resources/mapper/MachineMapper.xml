@@ -17,6 +17,31 @@
         <result column="create_id" property="createId" />
         <result column="update_time" property="updateTime" />
         <result column="update_ie" property="updateIe" />
+        <result column="distribution" property="distribution" />
     </resultMap>
+    <resultMap id="NewResultMap" type="com.musicfire.modular.machine.dto.MachineDto" extends="BaseResultMap">
+        <result column="merchantName" property="merchantName" />
+    </resultMap>
+
+    <select id="queryByMachine" parameterType="com.musicfire.modular.machine.query.MachinePage" resultMap="NewResultMap">
+        select mac.* ,mer.name as merchantName from machine mac
+        left join merchant mer on mac.merchant_id = mer.id
+        where mac.flag =false
+        <if test="null != code and '' != code">
+            and mac.code LIKE CONCAT('%',#{code},'%')
+        </if>
+        <if test="null != merchantName and '' != merchantName">
+            and mer.name LIKE CONCAT('%',#{merchantName},'%')
+        </if>
+        <if test="null != name and '' != name">
+            and mac.name LIKE CONCAT('%',#{name},'%')
+        </if>
+        limit #{startPosition},#{pageSize}
+    </select>
+    <select id="queryByCount" parameterType="com.musicfire.modular.machine.query.MachinePage" resultType="java.lang.Integer">
+        select count(mac.id) from machine mac
+        left join merchant mer on mac.merchant_id = mer.id
+        where mac.flag =false
+    </select>
 
 </mapper>

@@ -32,6 +32,12 @@ public interface IUserService extends IService<User> {
 
     void deleteByIds(List<Integer> id);
 
-    User queryByUserName(String name);
+    List<User> queryByUserName(String name);
 
+    /**
+     * 获取角色为商家的用户
+     * @param name
+     * @return
+     */
+    List<User> queryUserByName(String name);
 }

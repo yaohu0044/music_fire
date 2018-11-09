@@ -16,8 +16,28 @@
         <result column="update_time" property="updateTime" />
         <result column="update_id" property="updateId" />
     </resultMap>
-    <select id="queryByCommodity" resultMap="BaseResultMap" parameterType="com.musicfire.modular.room.query.RoomPage">
-        select * from commodity
+    <resultMap id="NewResultMap" type="com.musicfire.modular.commodity.entity.Dto.CommodityDto" extends="BaseResultMap">
+        <result column="merchantName" property="merchantName" />
+        <result column="merchantId" property="merchantId" />
+    </resultMap>
+    <select id="queryByCommodity" resultMap="NewResultMap" parameterType="com.musicfire.modular.commodity.query.CommodityPage">
+        select c.*,m.name as merchantName from commodity c
+        left join merchant m on c.merchant_id = m.id
+        where c.flag = false
+        <if test="null != name and '' != name">
+           and c.name LIKE CONCAT('%',#{name},'%')
+        </if>
+
+
+        limit #{startPosition},#{pageSize}
+    </select>
+    <select id="queryCount" resultType="java.lang.Integer" parameterType="com.musicfire.modular.commodity.query.CommodityPage">
+        select  count(c.id)  from commodity c
+        left join merchant m on c.merchant_id = m.id
+        where c.flag = false
+        <if test="null != name and '' != name">
+            and c.name LIKE CONCAT('%',#{name},'%')
+        </if>
     </select>
 
 </mapper>

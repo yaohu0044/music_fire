@@ -8,12 +8,56 @@
         <result column="machine_id" property="machineId" />
         <result column="commodity_id" property="commodityId" />
         <result column="merchant_id" property="merchantId" />
-        <result column="machine_position_id" property="machinePositionId" />
+        <result column="machine_position_num" property="machinePositionNum" />
         <result column="price" property="price" />
         <result column="payment_method" property="paymentMethod" />
         <result column="state" property="state" />
         <result column="create_time" property="createTime" />
         <result column="number" property="number" />
+        <result column="account_account" property="accountAccount" />
     </resultMap>
-
+    <resultMap id="NewResultMap" type="com.musicfire.modular.order.dto.OrderDto" extends="BaseResultMap">
+        <result column="merchantName" property="merchantName" />
+        <result column="machineName" property="machineName" />
+    </resultMap>
+    
+    <select id="countByPage" parameterType="com.musicfire.modular.order.page.OrderPage" resultMap="NewResultMap">
+        select o.*,mer.name as merchantName, mac.name as machineName from `order` o
+        left join merchant mer on mer.id = o.merchant_id
+        left join machine mac on mac.id = o.machine_id
+        <where>
+            <if test="null != merchantName and ''!= merchantName">
+                and mer.name LIKE CONCAT('%',#{merchantName},'%')
+            </if>
+            <if test="null != paymentMethod and ''!= paymentMethod">
+                and o.payment_method LIKE CONCAT('%',#{paymentMethod},'%')
+            </if>
+            <if test="null != startTime and ''!= startTime">
+                and o.create_time > #{startTime}
+            </if>
+            <if test="null != endTime and ''!= endTime">
+                and o.create_time &lt; #{endTime}
+            </if>
+        </where>
+        limit #{startPosition},#{pageSize}
+    </select>
+    <select id="countByPage" parameterType="com.musicfire.modular.order.page.OrderPage" resultType="java.lang.Integer">
+        select count(o.id) from `order` o
+        left join merchant mer on mer.id = o.merchant_id
+        left join machine mac on mac.id = o.machine_id
+        <where>
+            <if test="null != merchantName and ''!= merchantName">
+                and mer.name LIKE CONCAT('%',#{merchantName},'%')
+            </if>
+            <if test="null != paymentMethod and ''!= paymentMethod">
+                and o.payment_method LIKE CONCAT('%',#{paymentMethod},'%')
+            </if>
+            <if test="null != startTime and ''!= startTime">
+                and o.create_time > #{startTime}
+            </if>
+            <if test="null != endTime and ''!= endTime">
+                and o.create_time &lt; #{endTime}
+            </if>
+        </where>
+    </select>
 </mapper>

@@ -25,7 +25,7 @@ import java.util.List;
  * @author author
  * @since 2018-10-25
  */
-@Controller
+@RestController
 @RequestMapping("/user")
 public class UserController {
 
@@ -60,11 +60,15 @@ public class UserController {
         return new Result().ok();
     }
 
-    @GetMapping("/queryByUserName/{name}")
-    public Result list(@PathVariable String name) {
-        User user = service.queryByUserName(name);
-        return new Result().ok(user);
+    @GetMapping("/queryByUserName")
+    public Result queryByUserName(String name) {
+        List<User> users = service.queryByUserName(name);
+        return new Result().ok(users);
     }
-
+    @GetMapping("/queryUserByName")
+    public Result queryUserByName(String name) {
+        List<User> users = service.queryUserByName(name);
+        return new Result().ok(users);
+    }
 }
 

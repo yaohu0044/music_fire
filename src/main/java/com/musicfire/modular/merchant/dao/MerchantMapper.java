@@ -1,8 +1,12 @@
 package com.musicfire.modular.merchant.dao;
 
+import com.musicfire.modular.merchant.dto.MerchantDto;
 import com.musicfire.modular.merchant.entity.Merchant;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
+import com.musicfire.modular.merchant.query.MerchantPage;
 import org.apache.ibatis.annotations.Mapper;
+
+import java.util.List;
 
 /**
  * <p>
@@ -15,4 +19,7 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface MerchantMapper extends BaseMapper<Merchant> {
 
+    Integer countByPage(MerchantPage merchantPage);
+
+    List<MerchantDto> merchantByPage(MerchantPage merchantPage);
 }

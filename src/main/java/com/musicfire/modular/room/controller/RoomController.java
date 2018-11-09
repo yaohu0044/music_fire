@@ -31,7 +31,7 @@ public class RoomController {
     private IRoomService service;
 
     @PostMapping("/save")
-    public Result save(@Validated(value = Insert.class)RoomVo vo){
+    public Result save(@Validated(value = Insert.class)@RequestBody RoomVo vo){
         Room room = new Room();
         BeanUtils.copyProperties(vo,room);
         service.insert(room);

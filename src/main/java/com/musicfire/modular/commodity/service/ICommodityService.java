@@ -1,6 +1,8 @@
 package com.musicfire.modular.commodity.service;
 
 import com.musicfire.modular.commodity.entity.Dto.CommodityDto;
+import com.musicfire.modular.commodity.entity.Dto.CommodityVo;
+import com.musicfire.modular.commodity.query.CommodityPage;
 import com.musicfire.modular.room.query.RoomPage;
 
 import java.util.List;
@@ -15,13 +17,13 @@ import java.util.List;
  */
 public interface ICommodityService {
 
-    void save(CommodityDto commodityDto);
+    void save(CommodityVo commodityVo);
 
-    void edit(CommodityDto commodityDto);
+    void edit(CommodityVo commodityVo);
 
-    int commDeleteBatch(String ids);
+    void commDeleteBatch(List<Integer> ids);
 
-    List<CommodityDto> queryList(RoomPage page);
+    CommodityPage queryList(CommodityPage page);
 
     List<CommodityDto> queryCommodityByName(String name);
 }

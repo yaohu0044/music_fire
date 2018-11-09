@@ -21,5 +21,18 @@
         <result column="update_time" property="updateTime" />
         <result column="update_id" property="updateId" />
     </resultMap>
+    <select id="userByPage" parameterType="com.musicfire.modular.system.query.UserPage" resultMap="BaseResultMap">
+        select * from sys_user where flag =false limit #{startPosition},#{pageSize}
+    </select>
+    <select id="countByPage" parameterType="com.musicfire.modular.system.query.UserPage" resultType="java.lang.Integer">
+        select count(id) from sys_user where flag =false
+    </select>
+    <select id="queryUserByName" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select u.* from sys_user_role ur
+        left join sys_user u on ur.user_id = u.id where u.flag = false
+        <if test="null != name and ''!= name">
+            u.name CONCAT('%',#{name},'%')
+        </if>
+    </select>
 
 </mapper>

@@ -5,6 +5,8 @@ import java.util.Date;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableName;
+import lombok.Data;
+
 import java.io.Serializable;
 
 /**
@@ -16,9 +18,8 @@ import java.io.Serializable;
  * @since 2018-10-25
  */
 @TableName("order")
-public class Order extends Model<Order> {
-
-    private static final long serialVersionUID = 1L;
+@Data
+public class Order{
 
     private Integer id;
     /**
@@ -39,8 +40,8 @@ public class Order extends Model<Order> {
     /**
      * 仓位ID
      */
-    @TableField("machine_position_id")
-    private Integer machinePositionId;
+    @TableField("machine_position_Num")
+    private Integer machinePositionNum;
     /**
      * 价格
      */
@@ -64,105 +65,7 @@ public class Order extends Model<Order> {
      */
     private String number;
 
+    @TableField("account_account")
+    private String accountAccount;
 
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Integer getMachineId() {
-        return machineId;
-    }
-
-    public void setMachineId(Integer machineId) {
-        this.machineId = machineId;
-    }
-
-    public Integer getCommodityId() {
-        return commodityId;
-    }
-
-    public void setCommodityId(Integer commodityId) {
-        this.commodityId = commodityId;
-    }
-
-    public Integer getMerchantId() {
-        return merchantId;
-    }
-
-    public void setMerchantId(Integer merchantId) {
-        this.merchantId = merchantId;
-    }
-
-    public Integer getMachinePositionId() {
-        return machinePositionId;
-    }
-
-    public void setMachinePositionId(Integer machinePositionId) {
-        this.machinePositionId = machinePositionId;
-    }
-
-    public BigDecimal getPrice() {
-        return price;
-    }
-
-    public void setPrice(BigDecimal price) {
-        this.price = price;
-    }
-
-    public Integer getPaymentMethod() {
-        return paymentMethod;
-    }
-
-    public void setPaymentMethod(Integer paymentMethod) {
-        this.paymentMethod = paymentMethod;
-    }
-
-    public Integer getState() {
-        return state;
-    }
-
-    public void setState(Integer state) {
-        this.state = state;
-    }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-
-    public String getNumber() {
-        return number;
-    }
-
-    public void setNumber(String number) {
-        this.number = number;
-    }
-
-    @Override
-    protected Serializable pkVal() {
-        return this.id;
-    }
-
-    @Override
-    public String toString() {
-        return "Order{" +
-        ", id=" + id +
-        ", machineId=" + machineId +
-        ", commodityId=" + commodityId +
-        ", merchantId=" + merchantId +
-        ", machinePositionId=" + machinePositionId +
-        ", price=" + price +
-        ", paymentMethod=" + paymentMethod +
-        ", state=" + state +
-        ", createTime=" + createTime +
-        ", number=" + number +
-        "}";
-    }
 }

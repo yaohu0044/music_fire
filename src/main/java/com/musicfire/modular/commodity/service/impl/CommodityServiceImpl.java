@@ -2,6 +2,8 @@ package com.musicfire.modular.commodity.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.musicfire.common.businessException.BusinessException;
+import com.musicfire.common.businessException.ErrorCode;
 import com.musicfire.common.utiles.ObjUtil;
 import com.musicfire.modular.commodity.dao.CommodityMapper;
 import com.musicfire.modular.commodity.dao.CommodityPicMapper;
@@ -10,6 +12,8 @@ import com.musicfire.modular.commodity.entity.Commodity;
 import com.musicfire.modular.commodity.entity.CommodityPic;
 import com.musicfire.modular.commodity.entity.CommodityStock;
 import com.musicfire.modular.commodity.entity.Dto.CommodityDto;
+import com.musicfire.modular.commodity.entity.Dto.CommodityVo;
+import com.musicfire.modular.commodity.query.CommodityPage;
 import com.musicfire.modular.commodity.service.ICommodityService;
 import com.musicfire.modular.room.query.RoomPage;
 import org.springframework.beans.BeanUtils;
@@ -44,75 +48,56 @@ public class CommodityServiceImpl extends ServiceImpl<CommodityMapper, Commodity
 
     @Transactional
     @Override
-    public void save(CommodityDto commodityDto) {
+    public void save(CommodityVo commodityVo) {
         Commodity commodity = new Commodity();
-        BeanUtils.copyProperties(commodityDto, commodity);
+        BeanUtils.copyProperties(commodityVo, commodity);
         commodityMapper.insert(commodity);
-        if (ObjectUtils.isEmpty(commodityDto.getPath())) {
-            CommodityPic commodityPic = new CommodityPic();
-            BeanUtils.copyProperties(commodityDto, commodityPic);
-            commodityPic.setCommodityId(commodity.getId());
-            commodityPicMapper.insert(commodityPic);
-        }
-        if (commodityDto.getPrice() != null) {
+
+        if (commodityVo.getPrice() != null) {
             CommodityStock commodityStock = new CommodityStock();
-            BeanUtils.copyProperties(commodityDto, commodityStock);
+            BeanUtils.copyProperties(commodityVo, commodityStock);
             commodityStock.setCommodityId(commodity.getId());
             commodityStockMapper.insert(commodityStock);
         }
     }
 
     @Override
-    public void edit(CommodityDto commodityDto) {
+    public void edit(CommodityVo commodityVo) {
         Commodity commodity = new Commodity();
-        BeanUtils.copyProperties(commodityDto, commodity);
+        BeanUtils.copyProperties(commodityVo, commodity);
         commodityMapper.updateById(commodity);
-        if (ObjectUtils.isEmpty(commodityDto.getPath())) {
-            CommodityPic commodityPic = new CommodityPic();
-            BeanUtils.copyProperties(commodityDto, commodityPic);
-            commodityPicMapper.updateById(commodityPic);
-        }
-        if (commodityDto.getPrice() != null) {
+        if (commodityVo.getPrice() != null) {
             CommodityStock commodityStock = new CommodityStock();
-            BeanUtils.copyProperties(commodityDto, commodityStock);
+            BeanUtils.copyProperties(commodityVo, commodityStock);
             commodityStockMapper.updateById(commodityStock);
         }
     }
 
     @Transactional
     @Override
-    public int commDeleteBatch(String ids) {
-        commodityMapper.deleteBatchIds(ObjUtil.listLong(ids));
-        EntityWrapper entityWrapper = new EntityWrapper();
-        entityWrapper.in("commodity_id", ObjUtil.listLong(ids));
-        commodityPicMapper.delete(entityWrapper);
-        Integer delete = commodityStockMapper.delete(entityWrapper);
-        return delete;
+    public void commDeleteBatch(List<Integer> ids) {
+        EntityWrapper<Commodity> entityWrapper = new EntityWrapper<>();
+        entityWrapper.in("id",ids);
+        Commodity commodity = new Commodity();
+        commodity.setFlag(true);
+        commodityMapper.update(commodity,entityWrapper);
+        EntityWrapper<CommodityPic> entityWrapperPic = new EntityWrapper<>();
+        entityWrapper.in("commodity_id", ids);
+        commodityPicMapper.delete(entityWrapperPic);
+        EntityWrapper<CommodityStock> entityWrapperStock = new EntityWrapper<>();
+        commodityStockMapper.delete(entityWrapperStock);
     }
 
     @Override
-    public List<CommodityDto> queryList(RoomPage page) {
-        List<CommodityDto> list = new ArrayList<>();
-        CommodityDto commodityDto = new CommodityDto();
-        List<Commodity> commodities = commodityMapper.queryByCommodity(page);
-        if (commodities.size() != 0) {
-            for (Commodity commodity : commodities) {
-                BeanUtils.copyProperties(commodity, commodityDto);
-                list.add(commodityDto);
-                HashMap<String, Object> map = new HashMap<>();
-                map.put("commodity_id", commodity.getId());
-                List<CommodityPic> picList = commodityPicMapper.selectByMap(map);
-                for (CommodityPic commodityPic : picList) {
-                    BeanUtils.copyProperties(commodityPic, commodityDto);
-                }
-                List<CommodityStock> stockList = commodityStockMapper.selectByMap(map);
-                for (CommodityStock commodityStock : stockList) {
-                    BeanUtils.copyProperties(commodityStock, commodityDto);
-                }
-
-            }
+    public CommodityPage queryList(CommodityPage page) {
+        Integer count = commodityMapper.queryCount(page);
+        if(ObjectUtils.isEmpty(count)){
+            throw new BusinessException(ErrorCode.IS_NOT_DATA);
         }
-        return list;
+        List<Commodity> commodities = commodityMapper.queryByCommodity(page);
+        page.setTotalCount(count);
+        page.setList(commodities);
+        return page;
     }
 
     @Override

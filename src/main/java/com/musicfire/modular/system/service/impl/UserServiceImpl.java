@@ -1,11 +1,13 @@
 package com.musicfire.modular.system.service.impl;
 
-import com.musicfire.modular.system.entity.User;
-import com.musicfire.modular.system.dao.UserMapper;
-import com.musicfire.modular.system.query.UserPage;
-import com.musicfire.modular.system.service.IUserService;
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
-import com.sun.org.apache.xml.internal.security.signature.ObjectContainer;
+import com.musicfire.common.utiles.Md5;
+import com.musicfire.modular.system.dao.UserMapper;
+import com.musicfire.modular.system.entity.User;
+import com.musicfire.modular.system.query.UserPage;
+import com.musicfire.modular.system.service.IUserRoleService;
+import com.musicfire.modular.system.service.IUserService;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
@@ -14,7 +16,7 @@ import java.util.List;
 
 /**
  * <p>
- *  服务实现类
+ * 服务实现类
  * </p>
  *
  * @author author
@@ -25,28 +27,50 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
     @Resource
     private UserMapper mapper;
+
+
     @Override
     public void save(User user) {
-        if(ObjectUtils.isEmpty(user.getId())){
+        user.setPassword(Md5.EncoderByMd5(user.getPassword()));
+        if (ObjectUtils.isEmpty(user.getId())) {
             mapper.insert(user);
-        }else {
+        } else {
             mapper.updateById(user);
         }
     }
 
     @Override
     public UserPage list(UserPage userPage) {
-
-        return null;
+        Integer count = mapper.countByPage(userPage);
+        if (count < 1) {
+            return userPage;
+        }
+        List<User> page = mapper.userByPage(userPage);
+        userPage.setList(page);
+        userPage.setTotalCount(count);
+        return userPage;
     }
 
     @Override
     public void deleteByIds(List<Integer> ids) {
-
+        User user = new User();
+        user.setFlag(true);
+        EntityWrapper<User> userEntityWrapper = new EntityWrapper<>();
+        userEntityWrapper.in("id",ids);
+        mapper.update(user,userEntityWrapper);
     }
 
     @Override
-    public User queryByUserName(String name) {
-        return null;
+    public List<User> queryByUserName(String name) {
+        EntityWrapper<User> entityWrapper = new EntityWrapper<>();
+        entityWrapper.eq("flag", false);
+        entityWrapper.like("name", name);
+        return mapper.selectList(entityWrapper);
+    }
+
+    @Override
+    public List<User> queryUserByName(String name) {
+
+        return  mapper.queryUserByName(name);
     }
 }

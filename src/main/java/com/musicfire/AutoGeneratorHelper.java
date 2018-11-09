@@ -17,7 +17,7 @@ public class AutoGeneratorHelper {
         AutoGenerator mpg = new AutoGenerator();
         // 全局配置
         GlobalConfig gc = new GlobalConfig();
-        gc.setOutputDir("E:\\music_fire\\src\\main\\java");
+        gc.setOutputDir("F:\\music_fire\\src\\main\\java");
 
         gc.setFileOverride(true);
         gc.setActiveRecord(true);// 开启 activeRecord 模式
@@ -34,17 +34,17 @@ public class AutoGeneratorHelper {
         dsc.setTypeConvert(new MySqlTypeConvert());
         dsc.setDriverName("com.mysql.jdbc.Driver");
         dsc.setUsername("root");
-        dsc.setPassword("123");
-        dsc.setUrl("jdbc:mysql://111.231.205.128:3306/music_fire?useSSL=false&characterEncoding=utf8");
+        dsc.setPassword("root");
+        dsc.setUrl("jdbc:mysql://localhost:3306/music_fire?useSSL=false&characterEncoding=utf8");
         mpg.setDataSource(dsc);
 
 
         // 策略配置
         StrategyConfig strategy = new StrategyConfig();
-        strategy.setTablePrefix(new String[] { ""});// 此处可以修改为您的表前缀
+        strategy.setTablePrefix(new String[] { "sys"});// 此处可以修改为您的表前缀
         strategy.setNaming(NamingStrategy.underline_to_camel);// 表名生成策略
         strategy.setInclude(new String[]{
-                "order"
+                "sys_user_role"
 
         }); // 需要生成的表
         // 字段名生成策略
@@ -55,7 +55,7 @@ public class AutoGeneratorHelper {
 
         // 包配置
         PackageConfig pc = new PackageConfig();
-        pc.setParent("com.musicfire.modular.order");// 自定义包路径
+        pc.setParent("com.musicfire.modular.system");// 自定义包路径
         pc.setController("controller");// 这里是控制器包名，默认 web
         pc.setEntity("entity");
         pc.setMapper("dao");

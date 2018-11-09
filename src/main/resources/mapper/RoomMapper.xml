@@ -16,16 +16,16 @@
         <result column="update_id" property="updateId"/>
 
         <result column="state" property="state"/>
-        <result column="userName" property="userName"/>
-        <result column="code" property="code"/>
+        <result column="machineCode" property="machineCode"/>
         <result column="machineId" property="machineId"/>
         <result column="merchantId" property="merchantId"/>
+        <result column="merchantName" property="merchantName"/>
 
     </resultMap>
     <sql id="baseColumn">
         r.id, r.`NAME` AS NAME, r.`describe` AS `describe`, r.create_time ,
-	    mac.`code` AS `code`, sysu.`name` AS userName, mac.`state` as machineState,
-	    mer.id as merchantId , mac.id as machineId
+	    mac.`code` AS machineCode, mac.`state` as machineState,
+	    mer.id as merchantId , mac.id as machineId,mer.name as merchantName
     </sql>
     <select id="queryByRoom" resultMap="BaseResultMap" parameterType="com.musicfire.modular.room.query.RoomPage">
         select
@@ -33,7 +33,6 @@
         from room r
         left join machine mac on r.machine_id = mac.id
         left join merchant mer on r.merchant_id = mer.id
-        left join sys_user sysu on sysu.id = mer.user_id
         <where>
             r.flag = false
             <choose>
@@ -51,7 +50,6 @@
         select count(r.id) from room r
         left join machine mac on r.machine_id = mac.id
         left join merchant mer on r.merchant_id = mer.id
-        left join sys_user sysu on sysu.id = mer.user_id
     </select>
     <update id="updateByIds" parameterType="java.util.List">
         update room set flag = true

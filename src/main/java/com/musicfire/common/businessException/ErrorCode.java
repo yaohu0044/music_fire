@@ -7,7 +7,8 @@ public enum ErrorCode {
     NOT_LOGGED_IN(1, "未登录，清登录"),
     PAREN_MENU(2004, "此菜单下存在子级才能，不能删除"),
     ROLE_NAME_REPEAT(2005, "角色名重复"),
-    ARRAY_LENGTH_IS_NULL(2003, "父级菜单为空时，不需要地址");
+    IS_NOT_DATA(2006, "没有更多数据"),
+    PASSWORD_ERR(2007,"加密错误");
 
     private int code;
     private String msg;

@@ -2,6 +2,7 @@ package com.musicfire.modular.order.service;
 
 import com.musicfire.modular.order.entity.Order;
 import com.baomidou.mybatisplus.service.IService;
+import com.musicfire.modular.order.page.OrderPage;
 
 /**
  * <p>
@@ -13,4 +14,5 @@ import com.baomidou.mybatisplus.service.IService;
  */
 public interface IOrderService extends IService<Order> {
 
+    OrderPage list(OrderPage orderPage);
 }

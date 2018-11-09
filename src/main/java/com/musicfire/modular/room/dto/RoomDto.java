@@ -14,11 +14,11 @@ public class RoomDto extends Room {
     /**
      * 客户名
      */
-    private String userName;
+    private String merchantName;
 
     /**
      * 机器code
      */
-    private String code ;
+    private String machineCode ;
 
 }

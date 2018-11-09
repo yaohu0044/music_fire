@@ -2,7 +2,10 @@ package com.musicfire.modular.system.dao;
 
 import com.musicfire.modular.system.entity.User;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
+import com.musicfire.modular.system.query.UserPage;
 import org.apache.ibatis.annotations.Mapper;
+
+import java.util.List;
 
 /**
  * <p>
@@ -15,4 +18,14 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface UserMapper extends BaseMapper<User> {
 
+    Integer countByPage(UserPage userPage);
+
+    List<User> userByPage(UserPage userPage);
+
+    /**
+     * 获取角色为商家的用户
+     * @param name
+     * @return
+     */
+    List<User> queryUserByName(String name);
 }

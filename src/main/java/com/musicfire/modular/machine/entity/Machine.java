@@ -21,6 +21,10 @@ public class Machine extends Model<Machine> {
 
     private Integer id;
     /**
+     * 1:WiFi版 2:GPRS版
+     */
+    private Integer type;
+    /**
      * 机器名
      */
     private String name;
@@ -58,6 +62,27 @@ public class Machine extends Model<Machine> {
     @TableField("update_ie")
     private Date updateIe;
 
+    /**
+     * 是否已分配房间
+     */
+    @TableField("distribution")
+    private Boolean distribution;
+
+    public Boolean getDistribution() {
+        return distribution;
+    }
+
+    public void setIsDistribution(Boolean distribution) {
+        this.distribution = distribution;
+    }
+
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
+    }
 
     public Integer getId() {
         return id;
@@ -166,24 +191,5 @@ public class Machine extends Model<Machine> {
     @Override
     protected Serializable pkVal() {
         return this.id;
-    }
-
-    @Override
-    public String toString() {
-        return "Machine{" +
-        ", id=" + id +
-        ", name=" + name +
-        ", code=" + code +
-        ", lonAndLat=" + lonAndLat +
-        ", state=" + state +
-        ", merchantId=" + merchantId +
-        ", address=" + address +
-        ", qrCodeUrl=" + qrCodeUrl +
-        ", flag=" + flag +
-        ", createTime=" + createTime +
-        ", createId=" + createId +
-        ", updateTime=" + updateTime +
-        ", updateIe=" + updateIe +
-        "}";
     }
 }
