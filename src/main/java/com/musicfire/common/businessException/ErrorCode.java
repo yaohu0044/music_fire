@@ -5,10 +5,14 @@ public enum ErrorCode {
     MENU_URL_IS_NULL(2001, "菜单地址不能为空"),
     MENU_PARENT_URL_IS_NULL(2002, "父级菜单为空时，不需要地址"),
     NOT_LOGGED_IN(1, "未登录，清登录"),
+    LOGIN_NAME_OR_PASSWORD_ERR(1, "账号或者密码错误"),
     PAREN_MENU(2004, "此菜单下存在子级才能，不能删除"),
     ROLE_NAME_REPEAT(2005, "角色名重复"),
     IS_NOT_DATA(2006, "没有更多数据"),
-    PASSWORD_ERR(2007,"加密错误");
+    PASSWORD_ERR(2007,"加密错误"),
+    POSITION_OVERRUN(2008, "机器仓位超限"),
+    NO_AUTHORITY(2009, "该用户没有权限"),
+    ;
 
     private int code;
     private String msg;

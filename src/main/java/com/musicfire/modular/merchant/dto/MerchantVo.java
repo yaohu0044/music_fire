@@ -1,6 +1,5 @@
 package com.musicfire.modular.merchant.dto;
 
-import com.baomidou.mybatisplus.annotations.TableField;
 import com.musicfire.common.validated.Insert;
 import com.musicfire.common.validated.Update;
 import lombok.Data;
@@ -15,7 +14,7 @@ public class MerchantVo {
     private Integer id;
 
     /**
-     * 商家title
+     * 商家姓名
      */
     @NotBlank(groups = {Update.class, Insert.class},message="商家姓名")
     private String name;
@@ -64,4 +63,10 @@ public class MerchantVo {
      */
     @NotBlank(groups = {Update.class, Insert.class},message="地址")
     private String address;
+
+    @NotBlank(groups = {Update.class, Insert.class},message="电话")
+    private String phone;
+
+    private Integer userId;
+
 }

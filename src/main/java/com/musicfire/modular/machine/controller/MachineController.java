@@ -10,12 +10,14 @@ import com.musicfire.modular.machine.query.MachinePage;
 import com.musicfire.modular.machine.service.IMachineService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.integration.mqtt.support.MqttHeaders;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import org.springframework.stereotype.Controller;
-
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -36,7 +38,7 @@ public class MachineController {
     public Result save(@Validated(value = Insert.class) @RequestBody MachineVo vo){
         Machine machine = new Machine();
         BeanUtils.copyProperties(vo,machine);
-        service.insert(machine);
+        service.save(machine);
         return new Result().ok();
     }
 
@@ -44,7 +46,7 @@ public class MachineController {
     public Result edit(@Validated(value = Update.class) @RequestBody MachineVo vo){
         Machine machine = new Machine();
         BeanUtils.copyProperties(vo,machine);
-        service.updateById(machine);
+        service.save(machine);
         return new Result().ok();
     }
 
@@ -71,5 +73,31 @@ public class MachineController {
         List<Machine> machine = service.queryByMerchantId(merchantId);
         return new Result().ok(machine);
     }
+
+
+    /**
+     * 如果机器多的,考虑使用局部加载
+     * @return
+     */
+    @GetMapping("/getLonAndLatAll")
+    public Result getLonAndLatAll(){
+        List<Machine> machine = service.getLonAndLatAll();
+        List<Map<String,Double>> list = new ArrayList<>();
+        machine.forEach(machine1 -> {
+            Map<String,Double> map = new HashMap<>();
+            map.put("lon",Double.valueOf(machine1.getLonAndLat().split(",")[0]));
+            map.put("lat",Double.valueOf(machine1.getLonAndLat().split(",")[1]));
+            list.add(map);
+        });
+
+        return new Result().ok(list);
+    }
+    @RequestMapping(value="/openMachine",method= RequestMethod.POST)
+    @ResponseBody
+    public Result openMachine(Integer id) {
+        service.openMachine(id);
+        return new Result().ok();
+    }
+
 }
 

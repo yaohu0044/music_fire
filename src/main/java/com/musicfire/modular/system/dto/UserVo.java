@@ -2,7 +2,7 @@ package com.musicfire.modular.system.dto;
 
 import lombok.Data;
 
-import java.util.Date;
+import java.util.List;
 
 @Data
 public class UserVo {
@@ -26,7 +26,7 @@ public class UserVo {
     /**
      * 出生日期
      */
-    private Date dateBirth;
+    private String dateBirth;
     /**
      * 手机
      */
@@ -47,4 +47,8 @@ public class UserVo {
      * 邮箱
      */
     private String email;
+    /**
+     * 有用户角色
+     */
+    private List<Integer> role;
 }

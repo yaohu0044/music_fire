@@ -1,15 +1,10 @@
 package com.musicfire.modular.merchant.entity;
 
-import java.util.Date;
 import com.baomidou.mybatisplus.annotations.TableField;
-import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableName;
-import com.musicfire.common.validated.Insert;
-import com.musicfire.common.validated.Update;
 import lombok.Data;
 
-import javax.validation.constraints.NotBlank;
-import java.io.Serializable;
+import java.util.Date;
 
 /**
  * <p>
@@ -33,10 +28,6 @@ public class Merchant {
      */
     private String title;
     /**
-     * 商家名称
-     */
-    private String name;
-    /**
      * 商家类型
      */
     private Integer type;
@@ -47,6 +38,7 @@ public class Merchant {
     private String lonAndLat;
 
     private String describe;
+    private String address;
 
     @TableField("create_time")
     private Date createTime;
@@ -59,20 +51,7 @@ public class Merchant {
 
     @TableField("update_id")
     private Integer updateId;
-    /**
-     * 商家登录名
-     */
-    @TableField("login_name")
-    private String loginName;
-    /**
-     * 商家密码
-     */
-    private String password;
-
-    private String address;
 
     private Boolean flag;
-
-    private String phone;
 
 }

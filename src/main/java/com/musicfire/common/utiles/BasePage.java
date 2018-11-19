@@ -16,6 +16,9 @@ public class BasePage {
      */
     private int currentPage = 1;
 
+    /**
+     * 默认10  , 当为-1  不进行分页...
+     */
     private int pageSize = 10;
 
     private int totalCount;

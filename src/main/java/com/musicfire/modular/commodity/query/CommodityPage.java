@@ -7,4 +7,5 @@ import lombok.Data;
 public class CommodityPage extends BasePage {
 
     private String name;
+    private String machineId;
 }

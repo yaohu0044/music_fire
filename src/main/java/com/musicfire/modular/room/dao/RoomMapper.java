@@ -1,7 +1,8 @@
 package com.musicfire.modular.room.dao;
 
-import com.musicfire.modular.room.entity.Room;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
+import com.musicfire.modular.room.dto.RoomDto;
+import com.musicfire.modular.room.entity.Room;
 import com.musicfire.modular.room.query.RoomPage;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -19,7 +20,7 @@ import java.util.List;
 @Mapper
 public interface RoomMapper extends BaseMapper<Room> {
 
-    List<Room> queryByRoom(RoomPage page);
+    List<RoomDto> queryByRoom(RoomPage page);
 
     int queryByCount(RoomPage page);
 

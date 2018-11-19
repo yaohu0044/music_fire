@@ -1,6 +1,6 @@
 package com.musicfire.common.handler;
 
-import com.musicfire.common.config.CacheComponent;
+import com.musicfire.common.config.redisdao.RedisDao;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -17,20 +17,26 @@ import javax.servlet.http.HttpServletResponse;
 @Slf4j
 public class LoginUserInterceptor extends HandlerInterceptorAdapter {
     @Autowired
-    CacheComponent cacheComponent;
+    private RedisDao redisDao;
 
 
-    //@Value("${Test}")
-    boolean Test;
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        if(Test)return true;
-
-        return true;
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
+        boolean login = request.getServletPath().endsWith("login");
+//        if(login){
+            return true;
+//        }else{
+//            String authorization = request.getHeader("authorization");
+//            if(redisDao.exist(authorization)){
+//                return true;
+//            }else{
+//                return false;
+//            }
+//        }
     }
 
     @Override
-    public void afterConcurrentHandlingStarted(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-
+    public void afterConcurrentHandlingStarted(HttpServletRequest request, HttpServletResponse response, Object handler) {
+        System.err.println(1231231);
     }
 }

@@ -1,13 +1,8 @@
 package com.musicfire.common.utiles;
 
-import jdk.nashorn.internal.runtime.regexp.joni.Regex;
-
-import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 
 /**
@@ -764,7 +759,11 @@ public class DateTool {
 		}
 		return list;
 	}
-
+	public static String transferLongToDate(Long millSec) {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Date date = new Date(millSec);
+		return sdf.format(date);
+	}
 	public static void main(String[] args) throws ParseException {
 		monthOfDayList("2017-12");
 	}

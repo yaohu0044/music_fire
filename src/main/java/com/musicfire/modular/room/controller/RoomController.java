@@ -34,7 +34,7 @@ public class RoomController {
     public Result save(@Validated(value = Insert.class)@RequestBody RoomVo vo){
         Room room = new Room();
         BeanUtils.copyProperties(vo,room);
-        service.insert(room);
+        service.save(room);
        return new Result().ok();
     }
 
@@ -42,7 +42,7 @@ public class RoomController {
     public Result edit(@Validated(value = Update.class) @RequestBody RoomVo vo){
         Room room = new Room();
         BeanUtils.copyProperties(vo,room);
-        service.updateById(room);
+        service.save(room);
         return new Result().ok();
     }
 

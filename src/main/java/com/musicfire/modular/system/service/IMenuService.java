@@ -36,4 +36,11 @@ public interface IMenuService extends IService<Menu> {
     MenuPage list(MenuPage menuPage);
 
     void deleteByIds(Integer id);
+
+    /**
+     * 根据角色Id获取所有的菜单
+     * @param roles 角色Id
+     * @return 树形菜单
+     */
+    List<MenuDto> queryMenDtoByRoles(List<Integer> roles);
 }

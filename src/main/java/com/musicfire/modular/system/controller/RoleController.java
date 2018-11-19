@@ -1,6 +1,7 @@
 package com.musicfire.modular.system.controller;
 
 
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.musicfire.common.utiles.Result;
 import com.musicfire.common.validated.Insert;
 import com.musicfire.common.validated.Update;
@@ -61,6 +62,13 @@ public class RoleController {
     @GetMapping("/queryByRoleName/{name}")
     public Result list(@PathVariable String name) {
         Role role = service.queryByRoleName(name);
+        return new Result().ok(role);
+    }
+    @GetMapping("/getAll")
+    public Result getAll() {
+        EntityWrapper<Role> roleEntityWrapper = new EntityWrapper<>();
+        roleEntityWrapper.eq("flag",false);
+        List<Role> role = service.selectList(roleEntityWrapper);
         return new Result().ok(role);
     }
 }

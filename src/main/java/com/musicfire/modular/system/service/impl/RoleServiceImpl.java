@@ -39,10 +39,10 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IR
     @Transactional
     @Override
     public void save(Role role,List<Integer> menuIds) {
-        if(!StringUtils.isEmpty(queryByRoleName(role.getName()))){
-            throw new BusinessException(ErrorCode.ROLE_NAME_REPEAT);
-        }
         if(ObjectUtils.isEmpty(role.getId())){
+            if(!StringUtils.isEmpty(queryByRoleName(role.getName()))){
+                throw new BusinessException(ErrorCode.ROLE_NAME_REPEAT);
+            }
             mapper.insert(role);
         }else{
             mapper.updateById(role);
@@ -54,8 +54,7 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IR
             roleMenu.setRoleId(role.getId());
             roleMenus.add(roleMenu);
         });
-
-        roleMenuService.insertOrUpdateBatch(roleMenus);
+        roleMenuService.insertList(roleMenus);
     }
 
     @Override

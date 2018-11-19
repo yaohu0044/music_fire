@@ -9,5 +9,7 @@ public class MerchantDto extends Merchant {
     private String merchantName;
 
     private String phone;
+    private String loginName;
+    private String password;
 
 }

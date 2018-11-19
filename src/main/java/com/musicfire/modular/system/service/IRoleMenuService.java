@@ -1,9 +1,8 @@
 package com.musicfire.modular.system.service;
 
+import com.baomidou.mybatisplus.service.IService;
 import com.musicfire.modular.system.dto.RoleMenuDto;
 import com.musicfire.modular.system.entity.RoleMenu;
-import com.baomidou.mybatisplus.service.IService;
-import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
 
@@ -24,8 +23,13 @@ public interface IRoleMenuService extends IService<RoleMenu> {
 
     /**
      * 分配权限
-     * @param dto
+     * @param dto 对象
      */
     void save(RoleMenuDto dto);
 
+    /**
+     * 批量插入角色权限关系
+     * @param roleMenus
+     */
+    void insertList(List<RoleMenu> roleMenus);
 }

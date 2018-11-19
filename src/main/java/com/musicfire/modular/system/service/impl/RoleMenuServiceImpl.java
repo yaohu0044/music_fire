@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -58,6 +57,11 @@ public class RoleMenuServiceImpl extends ServiceImpl<RoleMenuMapper, RoleMenu> i
             roleMenu.setRoleId(dto.getRoleId());
             roleMenus.add(roleMenu);
         });
+        mapper.insertAll(roleMenus);
+    }
+
+    @Override
+    public void insertList(List<RoleMenu> roleMenus) {
         mapper.insertAll(roleMenus);
     }
 }

@@ -20,7 +20,7 @@ public interface IUserService extends IService<User> {
      *
      * @param user
      */
-    void save(User user);
+    void save(User user,List<Integer> roles);
 
     /**
      * 菜单分页信息

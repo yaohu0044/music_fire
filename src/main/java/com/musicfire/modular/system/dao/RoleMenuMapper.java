@@ -3,6 +3,7 @@ package com.musicfire.modular.system.dao;
 import com.musicfire.modular.system.entity.RoleMenu;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -21,5 +22,5 @@ public interface RoleMenuMapper extends BaseMapper<RoleMenu> {
      * 批量插入
      * @param roleMenus
      */
-    void insertAll(List<RoleMenu> roleMenus);
+    void insertAll(@Param("roleMenus") List<RoleMenu> roleMenus);
 }

@@ -26,4 +26,18 @@ public interface IMachineService extends IService<Machine> {
      * @return 机器信息
      */
     List<Machine> queryByMerchantId(Integer merchantId);
+
+    /**
+     *
+     * @return 所有机器信息
+     */
+    List<Machine> getLonAndLatAll();
+
+    void save(Machine machine);
+
+    /**
+     * 打开机器所有舱门
+     * @param id
+     */
+    void openMachine(Integer id);
 }

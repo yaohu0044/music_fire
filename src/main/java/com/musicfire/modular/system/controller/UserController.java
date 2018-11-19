@@ -13,8 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import org.springframework.stereotype.Controller;
-
 import java.util.List;
 
 /**
@@ -34,17 +32,19 @@ public class UserController {
 
     @PostMapping("/save")
     public Result save(@Validated(value = Insert.class) @RequestBody UserVo userVo) {
-        User user = new User();
-        BeanUtils.copyProperties(userVo, user);
-        service.save(user);
-        return new Result().ok();
+        return getResult(userVo);
     }
 
     @PostMapping("/edit")
     public Result edit(@RequestBody @Validated(value = Update.class) UserVo userVo) {
+        return getResult(userVo);
+    }
+
+    private Result getResult(@Validated(Update.class) @RequestBody UserVo userVo) {
         User user = new User();
         BeanUtils.copyProperties(userVo, user);
-        service.save(user);
+        List<Integer> roles = userVo.getRole();
+        service.save(user,roles);
         return new Result().ok();
     }
 

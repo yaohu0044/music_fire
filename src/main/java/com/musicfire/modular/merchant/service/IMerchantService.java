@@ -1,8 +1,9 @@
 package com.musicfire.modular.merchant.service;
 
-import com.musicfire.modular.merchant.dto.MerchantDto;
-import com.musicfire.modular.merchant.entity.Merchant;
 import com.baomidou.mybatisplus.service.IService;
+import com.musicfire.modular.merchant.dto.MerchantDto;
+import com.musicfire.modular.merchant.dto.MerchantVo;
+import com.musicfire.modular.merchant.entity.Merchant;
 import com.musicfire.modular.merchant.query.MerchantPage;
 
 import java.util.List;
@@ -17,7 +18,7 @@ import java.util.List;
  */
 public interface IMerchantService extends IService<Merchant> {
 
-    void save(Merchant merchant);
+    void save(MerchantVo merchant);
 
     MerchantPage list(MerchantPage merchantPage);
 

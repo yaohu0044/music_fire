@@ -2,10 +2,11 @@ package com.musicfire.modular.system.dto;
 
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Data
-public class MenuDto {
+public class MenuDto implements Serializable {
 
     private Integer id;
     /**

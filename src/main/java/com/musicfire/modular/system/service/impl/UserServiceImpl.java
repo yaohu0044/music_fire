@@ -5,10 +5,12 @@ import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.musicfire.common.utiles.Md5;
 import com.musicfire.modular.system.dao.UserMapper;
 import com.musicfire.modular.system.entity.User;
+import com.musicfire.modular.system.entity.UserRole;
 import com.musicfire.modular.system.query.UserPage;
 import com.musicfire.modular.system.service.IUserRoleService;
 import com.musicfire.modular.system.service.IUserService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
 import javax.annotation.Resource;
@@ -28,14 +30,22 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     @Resource
     private UserMapper mapper;
 
+    @Resource
+    private IUserRoleService roleService;
 
+    @Transactional
     @Override
-    public void save(User user) {
-        user.setPassword(Md5.EncoderByMd5(user.getPassword()));
+    public void save(User user,List<Integer> roles) {
+        user.setPassword(Md5.generate(user.getPassword()));
         if (ObjectUtils.isEmpty(user.getId())) {
             mapper.insert(user);
+            roleService.insertAll(user.getId(),roles);
         } else {
             mapper.updateById(user);
+            EntityWrapper<UserRole> entityWrapper = new EntityWrapper<>();
+            entityWrapper.eq("user_id",user.getId());
+            roleService.delete(entityWrapper);
+            roleService.insertAll(user.getId(),roles);
         }
     }
 

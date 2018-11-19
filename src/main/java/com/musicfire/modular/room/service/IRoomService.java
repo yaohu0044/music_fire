@@ -28,4 +28,7 @@ public interface IRoomService extends IService<Room> {
      * @param ids
      */
     void updateByIds(List<Integer> ids);
+
+    void save(Room room);
+
 }
