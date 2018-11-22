@@ -8,6 +8,7 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 /**
  * 登陆拦截
@@ -21,22 +22,27 @@ public class LoginUserInterceptor extends HandlerInterceptorAdapter {
 
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException {
         boolean login = request.getServletPath().endsWith("login");
+        return true;
 //        if(login){
-            return true;
+//            return true;
 //        }else{
-//            String authorization = request.getHeader("authorization");
-//            if(redisDao.exist(authorization)){
+//            String token = request.getHeader("token");
+//            if(redisDao.exist(token)){
+//                JSON parse = (JSON)JSON.parse(redisDao.get(token));
+//                Login l = JSONObject.toJavaObject(parse, Login.class);
+//                RequestHolder.add(l);
+//                RequestHolder.add(request);
 //                return true;
 //            }else{
-//                return false;
+//                return true;
 //            }
 //        }
     }
 
     @Override
     public void afterConcurrentHandlingStarted(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        System.err.println(1231231);
+        RequestHolder.remove();
     }
 }

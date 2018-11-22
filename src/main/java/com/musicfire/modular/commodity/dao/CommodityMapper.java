@@ -1,9 +1,9 @@
 package com.musicfire.modular.commodity.dao;
 
-import com.musicfire.modular.commodity.entity.Commodity;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
+import com.musicfire.modular.commodity.entity.Commodity;
+import com.musicfire.modular.commodity.entity.Dto.CommodityDto;
 import com.musicfire.modular.commodity.query.CommodityPage;
-import com.musicfire.modular.room.query.RoomPage;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -21,4 +21,12 @@ public interface CommodityMapper extends BaseMapper<Commodity> {
 
     List<Commodity> queryByCommodity(CommodityPage page);
     Integer queryCount(CommodityPage page);
+
+    /**
+     * 热门商品前10条
+     * @return 热门商品
+     */
+    List<Commodity> queryHotCommodity();
+
+    List<CommodityDto> queryByIds(List<Integer> commodityId);
 }

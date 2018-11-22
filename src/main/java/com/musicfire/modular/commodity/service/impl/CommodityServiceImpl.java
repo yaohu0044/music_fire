@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.musicfire.common.businessException.BusinessException;
 import com.musicfire.common.businessException.ErrorCode;
-import com.musicfire.common.utiles.ObjUtil;
 import com.musicfire.modular.commodity.dao.CommodityMapper;
 import com.musicfire.modular.commodity.dao.CommodityPicMapper;
 import com.musicfire.modular.commodity.dao.CommodityStockMapper;
@@ -15,7 +14,6 @@ import com.musicfire.modular.commodity.entity.Dto.CommodityDto;
 import com.musicfire.modular.commodity.entity.Dto.CommodityVo;
 import com.musicfire.modular.commodity.query.CommodityPage;
 import com.musicfire.modular.commodity.service.ICommodityService;
-import com.musicfire.modular.room.query.RoomPage;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -124,5 +122,11 @@ public class CommodityServiceImpl extends ServiceImpl<CommodityMapper, Commodity
             }
         }
         return list1;
+    }
+
+    @Override
+    public List<CommodityDto> queryByIds(List<Integer> commodityId) {
+
+        return  commodityMapper.queryByIds(commodityId);
     }
 }

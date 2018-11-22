@@ -12,8 +12,6 @@ import com.musicfire.modular.system.query.MenuPage;
 import com.musicfire.modular.system.service.IMenuService;
 import com.musicfire.modular.system.service.IRoleMenuService;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.cache.annotation.CacheConfig;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
@@ -31,7 +29,7 @@ import java.util.stream.Collectors;
  * @since 2018-10-25
  */
 @Service
-@CacheConfig(cacheNames = "menu")
+//@CacheConfig(cacheNames = "menu")
 public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements IMenuService {
 
     @Resource
@@ -89,7 +87,7 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements IM
         menuMapper.updateById(menu);
     }
 
-    @Cacheable(key ="#p0")
+//    @Cacheable(key ="#p0")
     @Override
     public List<MenuDto> queryMenDtoByRoles(List<Integer> roleIds) {
         EntityWrapper<RoleMenu> roleMenuEntityWrapper = new EntityWrapper<>();
@@ -129,9 +127,9 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements IM
                 dto.setId(menu.getId());
                 dto.setIndex(menu.getUrl());
                 dto.setTitle(menu.getName());
-                if (ObjectUtils.isEmpty(menuDto.getSubs())) {
-                    menuDto.setSubs(new ArrayList<>());
-                }
+//                if (ObjectUtils.isEmpty(menuDto.getSubs())) {
+//                    menuDto.setSubs(new ArrayList<>());
+//                }
                 menuDto.getSubs().add(dto);
                 getSubs(dto, menus);
             }

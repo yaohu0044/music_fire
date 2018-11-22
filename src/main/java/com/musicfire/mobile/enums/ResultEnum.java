@@ -60,6 +60,11 @@ public enum ResultEnum {
     MACHINE_REPEAT(31, "该机器已经分配房间"),
 
     REPLENISHMENT_ERR(33, "该机器已经分配房间"),
+    ORDER_STATE_SUCCESS(1,"成功"),
+    ORDER_STATE_FAIL(2,"失败"),
+    ORDER_STATE_UNPAID(3,"未支付"),
+    ALI_PAY(1,"AiPay"),
+    WE_CHAT_PAY(2,"WeChat"),
     ;
 
     private Integer code;
@@ -69,6 +74,9 @@ public enum ResultEnum {
     ResultEnum(Integer code, String message) {
         this.code = code;
         this.message = message;
+    }
+    ResultEnum(Integer code) {
+        this.code = code;
     }
 
 }

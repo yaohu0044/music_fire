@@ -1,18 +1,14 @@
 package com.musicfire.mobile.controller;
 
 
-import com.musicfire.common.config.WechatAccountConfig;
-import com.musicfire.common.config.redisdao.RedisConstant;
 import com.musicfire.common.config.redisdao.RedisDao;
-import com.musicfire.common.utiles.IpUtil;
-import com.musicfire.mobile.wxpay.HttpUtils;
-import com.musicfire.mobile.wxpay.WXPayConstants;
+import com.musicfire.mobile.service.IWeChatMpUserService;
 import com.musicfire.mobile.wxpay.WXPayUtil;
-import com.musicfire.modular.order.entity.Order;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -20,12 +16,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.InputStream;
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
-
-import static com.musicfire.mobile.wxpay.WXPayConstants.DOMAIN_API;
-import static com.musicfire.mobile.wxpay.WXPayConstants.UNIFIEDORDER_URL_SUFFIX;
 
 
 @Controller
@@ -33,82 +25,27 @@ import static com.musicfire.mobile.wxpay.WXPayConstants.UNIFIEDORDER_URL_SUFFIX;
 @Slf4j
 public class WxPayController {
 
+
     private final RedisDao redisDao;
 
 
-    private final WechatAccountConfig accountConfig;
+
+
+    private final IWeChatMpUserService weChatMpUserService;
+
 
     @Autowired
-    public WxPayController(RedisDao redisDao, WechatAccountConfig accountConfig) {
+    public WxPayController(RedisDao redisDao,IWeChatMpUserService weChatMpUserService) {
         this.redisDao = redisDao;
-        this.accountConfig = accountConfig;
+        this.weChatMpUserService = weChatMpUserService;
     }
 
-    private  String unifiedOrder(Map<String, String> params) throws Exception {
-        String requestUrl = "https://"+ DOMAIN_API+UNIFIEDORDER_URL_SUFFIX;
-        Map<String, String> paraMap = new HashMap<>(params);
-        paraMap.put("appid", accountConfig.getMpAppId());
-        paraMap.put("mch_id", accountConfig.getMchId());
-        paraMap.put("nonce_str", WXPayUtil.create_nonce_str());
-        paraMap.put("trade_type", "JSAPI");
-        paraMap.put("notify_url", accountConfig.getNotifyUrl());
-        log.info("para:{}",paraMap);
-        String sign = WXPayUtil.generateSignature(paraMap,accountConfig.getMchKey(), WXPayConstants.SignType.MD5);
-        paraMap.put("sign", sign);
-        String xml = WXPayUtil.mapToXml(paraMap);
-        return HttpUtils.post(requestUrl, xml);
-    }
+
 
     @ResponseBody
-    @PostMapping("wx_prepay")
-    public Map<String, String> nextSingle(HttpServletRequest request, String orderId) {
-        try {
-            if(StringUtils.isEmpty(orderId)){
-                log.error("orderId is null");
-                return null;
-            }
-            Order order = redisDao.get(RedisConstant.ORDER_PRE+orderId,Order.class);
-            if(order!=null){
-                log.info("order:{}",order);
-            }else {
-                log.error("order is null");
-                return null;
-            }
-            Map<String, String> payMap = new TreeMap<> ();
-            String openId = (String) request.getSession().getAttribute("openId");
-            if (StringUtils.isBlank(openId)) {
-                log.error("openId is null");
-                return null;
-            }
-            Map<String, String> paraMap = new HashMap<>();
-            paraMap.put("body", "微信支付");
-            paraMap.put("out_trade_no", WXPayUtil.createOrderNo());
-            paraMap.put("spbill_create_ip", IpUtil.getIpAddr(request));
-//            paraMap.put("openid", openId);
-            log.info("paramap:{}",paraMap);
-            String xmlStr =  unifiedOrder(paraMap);
-            String prepay_id = "", nonce_str = "";
-            if (xmlStr.contains("SUCCESS")) {
-                Map<String, String> map = WXPayUtil.doXMLParse(xmlStr);
-                log.info(" get doXMLParse:{}", map);
-            } else {
-                log.warn("=== 支付错误 failed! ===");
-            }
-            payMap.put("appId", accountConfig.getMpAppId());
-            payMap.put("timeStamp", WXPayUtil.createTimestamp());
-            payMap.put("nonceStr", nonce_str);
-            payMap.put("signType", "MD5");
-            payMap.put("package", "prepay_id=" + prepay_id);
-            String paySign = WXPayUtil.generateSignature(payMap,accountConfig.getMchKey(), WXPayConstants.SignType.MD5);
-            payMap.put("pg", prepay_id);
-            payMap.put("paySign", paySign);
-            payMap.put("body", "");
-            log.info("===  unifiedOrder :{}  ===", payMap);
-            return payMap;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
+    @PostMapping("wx_prepay/{ids}")
+    public Map<String, String> wxPay(@PathVariable List<Integer> ids, HttpServletRequest request) {
+        return weChatMpUserService.wxPay(ids, request);
     }
 
     @ResponseBody

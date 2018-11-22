@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.musicfire.common.businessException.BusinessException;
 import com.musicfire.common.businessException.ErrorCode;
 import com.musicfire.common.handler.MqttMessageGateway;
+import com.musicfire.modular.commodity.entity.CommodityPic;
+import com.musicfire.modular.commodity.service.ICommodityPicService;
 import com.musicfire.modular.machine.dao.MachinePositionMapper;
 import com.musicfire.modular.machine.dto.MachinePositionDto;
 import com.musicfire.modular.machine.entity.MachinePosition;
@@ -19,7 +21,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -34,6 +38,10 @@ public class MachinePositionServiceImpl extends ServiceImpl<MachinePositionMappe
 
     @Resource
     private MachinePositionMapper machinePositionMapper;
+
+    @Resource
+    private ICommodityPicService commodityPicService;
+
 
     @Resource
     private MqttMessageGateway gateway;
@@ -100,6 +108,24 @@ public class MachinePositionServiceImpl extends ServiceImpl<MachinePositionMappe
                 index.addAndGet(1);
             });
         }
+    }
+
+    @Override
+    public List<MachinePositionDto> queryByMachineCode(String code) {
+        MachinePositionPage page = new MachinePositionPage();
+        page.setMachineCode(code);
+        List<MachinePositionDto> machinePositionDTos = machinePositionMapper.queryByMachine(page);
+        List<Integer> collect = machinePositionDTos.stream().map(MachinePositionDto::getCommodityId).collect(Collectors.toList());
+        EntityWrapper<CommodityPic> commodityPicEntityWrapper = new EntityWrapper<>();
+        commodityPicEntityWrapper.in("commodity_id",collect);
+        commodityPicEntityWrapper.groupBy("commodity_id");
+        List<CommodityPic> commodityPics = commodityPicService.selectList(commodityPicEntityWrapper);
+        Map<Integer, String> map = commodityPics.stream().collect(Collectors.toMap(CommodityPic::getCommodityId, CommodityPic::getPath));
+        machinePositionDTos.forEach(machinePositionDto -> {
+            machinePositionDto.setShrinkageChart(map.get(machinePositionDto.getCommodityId()));
+        });
+
+        return machinePositionDTos;
     }
 }
 

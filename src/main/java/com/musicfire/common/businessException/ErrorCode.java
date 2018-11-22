@@ -12,6 +12,10 @@ public enum ErrorCode {
     PASSWORD_ERR(2007,"加密错误"),
     POSITION_OVERRUN(2008, "机器仓位超限"),
     NO_AUTHORITY(2009, "该用户没有权限"),
+    TOKEN_ERR(20010, "生产token错误"),
+    PAY_ERR(20011, "生产支付信息错误"),
+    PAY_AMOUNT_ERR(20012, "支付信息验证失败"),
+    ORDER_VERIFICATION_ERR(20013,"订单信息错误"),
     ;
 
     private int code;

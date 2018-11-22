@@ -9,4 +9,5 @@ public class OrderPage extends BasePage {
     private String paymentMethod ;
     private String endTime;
     private String startTime;
+    private Integer userId;
 }

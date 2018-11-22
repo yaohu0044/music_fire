@@ -15,4 +15,11 @@ public class RoomPage extends BasePage{
      * 房间名称
      */
     private String roomName;
+
+    /**
+     * 商家Id
+     */
+    private Integer merchantId;
+
+    private Integer userId;
 }

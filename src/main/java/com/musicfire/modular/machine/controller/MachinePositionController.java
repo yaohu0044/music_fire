@@ -4,6 +4,7 @@ package com.musicfire.modular.machine.controller;
 import com.musicfire.common.utiles.Result;
 import com.musicfire.common.validated.Insert;
 import com.musicfire.common.validated.Update;
+import com.musicfire.modular.machine.dto.MachinePositionDto;
 import com.musicfire.modular.machine.dto.MachinePositionVo;
 import com.musicfire.modular.machine.entity.MachinePosition;
 import com.musicfire.modular.machine.query.MachinePositionPage;
@@ -69,6 +70,12 @@ public class MachinePositionController {
 
        service.openPosition(code,num);
        return new Result().ok();
+    }
+
+    @GetMapping("/queryByMachineCode/{code}")
+    public Result queryByMachineCode(@PathVariable String code){
+        List<MachinePositionDto> dto = service.queryByMachineCode(code);
+        return new Result().ok(dto);
     }
 }
 

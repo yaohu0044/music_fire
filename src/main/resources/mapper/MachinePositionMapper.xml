@@ -10,7 +10,8 @@
         <result column="state" property="state" />
         <result column="default" property="default" />
         <result column="num" property="num" />
-        <result column="flag" property="default" />
+        <result column="flag" property="flag" />
+        <result column="available" property="available" />
 
     </resultMap>
     <resultMap id="NewResultMap" type="com.musicfire.modular.machine.dto.MachinePositionDto" extends="BaseResultMap">
@@ -18,15 +19,18 @@
         <result column="machineCode" property="machineCode" />
         <result column="merchantName" property="merchantName" />
         <result column="commodityName" property="commodityName" />
+        <result column="commodityId" property="commodityId" />
+        <result column="price" property="price" />
     </resultMap>
 
     <select id="queryByMachine" parameterType="com.musicfire.modular.machine.query.MachinePage" resultMap="NewResultMap">
-        select mp.state,mp.id,mp.num ,m.name as machineName,m.`code` as machineCode,u.name as merchantName,c.`name` as commodityName
+        select mp.available,mp.state,mp.id,mp.num ,m.name as machineName,m.`code` as machineCode,u.name as merchantName,c.`name` as commodityName,cs.price,mp.commodity_id as commodityId
         from machine_position mp
         left join machine m on mp.machine_id = m.id
         left join merchant me on me.id = m.id
         left join commodity c on c.id = mp.commodity_id
         left join sys_user u on  u.id = me.user_id
+        left join commodity_stock cs on cs.commodity_id = mp.commodity_id
         where mp.flag = false
         <if test="null != machineId and '' != machineId">
             and m.id = #{machineId}
@@ -45,6 +49,8 @@
         left join machine m on mp.machine_id = m.id
         left join merchant me on me.id = m.id
         left join commodity c on c.id = mp.commodity_id
+        left join sys_user u on  u.id = me.user_id
+        left join commodity_stock cs on cs.commodity_id = mp.commodity_id
         where mp.flag = false
         <if test="null != machineId and '' != machineId">
             and m.id = #{machineId}

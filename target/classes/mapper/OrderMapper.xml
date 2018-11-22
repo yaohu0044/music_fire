@@ -19,13 +19,15 @@
     <resultMap id="NewResultMap" type="com.musicfire.modular.order.dto.OrderDto" extends="BaseResultMap">
         <result column="merchantName" property="merchantName" />
         <result column="machineName" property="machineName" />
+        <result column="commodityName" property="commodityName" />
     </resultMap>
     
     <select id="orderByPage" parameterType="com.musicfire.modular.order.page.OrderPage" resultMap="NewResultMap">
-        select o.*,u.name as merchantName, mac.name as machineName from `order` o
+        select o.*,u.name as merchantName, mac.name as machineName,c.name as commodityName  from `order` o
         left join merchant mer on mer.id = o.merchant_id
         left join machine mac on mac.id = o.machine_id
         left join sys_user u on u.id = mer.user_id
+        left join commodity c on c.id = o.commodity_id
         <where>
             <if test="null != merchantName and ''!= merchantName">
                 and u.name LIKE CONCAT('%',#{merchantName},'%')
@@ -38,6 +40,9 @@
             </if>
             <if test="null != endTime and ''!= endTime">
                 and o.create_time &lt; #{endTime}
+            </if>
+            <if test="null != userId and ''!= userId">
+                and u.id = #{userId}
             </if>
         </where>
         limit #{startPosition},#{pageSize}
@@ -61,5 +66,8 @@
                 and o.create_time &lt; #{endTime}
             </if>
         </where>
+    </select>
+    <select id="orderReport" resultType="java.util.Map">
+        select DATE_FORMAT(create_time,'%Y-%m-%d') days,count( commodity_id) commodityCount ,count(id)as `count` from `order` where DATE_SUB(CURDATE(), INTERVAL 7 DAY) &lt;= create_time group by  days
     </select>
 </mapper>

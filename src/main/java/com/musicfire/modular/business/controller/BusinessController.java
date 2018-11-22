@@ -1,7 +1,9 @@
 package com.musicfire.modular.business.controller;
 
+import com.musicfire.common.handler.RequestHolder;
 import com.musicfire.common.utiles.Result;
 import com.musicfire.modular.business.service.BusinessService;
+import com.musicfire.modular.login.Login;
 import com.musicfire.modular.machine.query.MachinePositionPage;
 import com.musicfire.modular.machine.service.IMachinePositionService;
 import com.musicfire.modular.order.page.OrderPage;
@@ -35,7 +37,9 @@ public class BusinessController {
     @RequestMapping("/romeList")
     @ResponseBody
     public Result RomeAndMachineList(RoomPage page) {
+        Login currentUser = RequestHolder.getCurrentUser();
         page.setPageSize(-1);
+        page.setUserId(currentUser.getUserId());
         RoomPage roomPage = service.queryByRoom(page);
         return new Result().ok(roomPage.getList());
     }
@@ -84,6 +88,8 @@ public class BusinessController {
      */
     @GetMapping("/orderList")
     public Result list(OrderPage orderPage) {
+        Login currentUser = RequestHolder.getCurrentUser();
+        orderPage.setUserId(currentUser.getUserId());
         OrderPage page = orderService.list(orderPage);
         return new Result().ok(page);
     }

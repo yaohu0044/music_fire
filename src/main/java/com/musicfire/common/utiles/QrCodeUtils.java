@@ -280,13 +280,13 @@ public class QrCodeUtils {
     }
 
     public static void main(String[] args) throws Exception {
-        String text = "http://1c592r8399.51mypc.cn/mobile?code=1";
+        String text = "http://1c592r8399.51mypc.cn/mobile?code=4301493331324B4D0668FF36";
         //不含Logo  
         //QrCodeUtils.encode(text, null, "/Users/ianly/Documents/picture", true);
         //含Logo，不指定二维码图片名  
         //QrCodeUtils.encode(text, "/Users/ianly/Documents/picture/google-icon.jpg", "/Users/ianly/Documents/picture/", true);
         //含Logo，指定二维码图片名  
-        String qrcode = QrCodeUtils.encode(text, "C:\\Users\\50681\\Desktop\\1.png", "C:\\Users\\50681\\Desktop", "qrcode1", true);
+        String qrcode = QrCodeUtils.encode(text, "C:\\Users\\50681\\Desktop\\1.jpg", "C:\\Users\\50681\\Desktop", "qrcode2", true);
         System.out.println(qrcode);
 //        QrCodeUtils.encode(text, "/Users/ianly/Documents/picture/google-icon.jpg", "/Users/ianly/Documents/picture", "qrcode", true);
     }

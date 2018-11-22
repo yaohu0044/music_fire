@@ -3,7 +3,6 @@ package com.musicfire.modular.commodity.service;
 import com.musicfire.modular.commodity.entity.Dto.CommodityDto;
 import com.musicfire.modular.commodity.entity.Dto.CommodityVo;
 import com.musicfire.modular.commodity.query.CommodityPage;
-import com.musicfire.modular.room.query.RoomPage;
 
 import java.util.List;
 
@@ -26,4 +25,11 @@ public interface ICommodityService {
     CommodityPage queryList(CommodityPage page);
 
     List<CommodityDto> queryCommodityByName(String name);
+
+    /**
+     * 根据商品Ids 获取商品
+     * @param commodityId 商品Id
+     * @return 商品信息
+     */
+    List<CommodityDto> queryByIds(List<Integer> commodityId);
 }

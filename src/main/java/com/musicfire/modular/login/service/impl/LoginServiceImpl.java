@@ -1,5 +1,6 @@
 package com.musicfire.modular.login.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.musicfire.common.businessException.BusinessException;
 import com.musicfire.common.businessException.ErrorCode;
@@ -79,7 +80,10 @@ public class LoginServiceImpl implements LoginService {
                     login.setTitle(merchant.getTitle());
                     login.setMerchantId(merchant.getId());
                 }
-
+                String token = Md5.makeToken();
+                login.setToken(token);
+                login.setUserId(user.getId());
+                redisDao.add(token, JSONObject.toJSONString(login));
                 return login;
             }else{
                 throw new BusinessException(ErrorCode.LOGIN_NAME_OR_PASSWORD_ERR);

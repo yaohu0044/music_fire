@@ -1,17 +1,22 @@
 package com.musicfire.mobile.service;
 
-import com.musicfire.modular.order.entity.Order;
-import com.musicfire.modular.system.entity.AlipayUserInfo;
+import com.baomidou.mybatisplus.service.IService;
+import com.musicfire.mobile.entity.AliPayUserInfo;
+
+import java.util.List;
 
 
-public interface AlipayService {
+public interface AliPayService extends IService<AliPayUserInfo> {
 
-	
-	String tradePay(Order order);
+	int saveAliPayUser(AliPayUserInfo alipayUserInfo);
 
-	int saveAlipayUser(AlipayUserInfo alipayUserInfo);
+	String aliPayStr(List<Integer> ids);
 
-
-	//List<AlipayUserInfo> queryAlipayUserList(QueryCondition qc, PageInfo pageInfo);
-	
+	/**
+	 * 保存 更新订单信息
+	 * @param out_trade_no 统一支付号
+	 * @param trade_no 交易流水号
+	 * @param total_amount 交易金额
+	 */
+    void saveAliPayOrder(String out_trade_no, String trade_no, String total_amount);
 }

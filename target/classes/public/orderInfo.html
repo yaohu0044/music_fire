@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <title>订单信息</title>
+    <link rel="stylesheet" href="../css/public.css"/>
+</head>
+<body>
+<div class="title">订单详情</div>
+<ul class="info-table">
+    <li>
+        <div class="label">设备名</div>
+        <div class="explain">XXW-00089</div>
+    </li>
+    <li>
+        <div class="label">仓号</div>
+        <div class="explain">1</div>
+    </li>
+    <li>
+        <div class="label">价格</div>
+        <div class="explain">0.10</div>
+    </li>
+    <li>
+        <div class="label">商品名</div>
+        <div class="explain">名流至薄3大包</div>
+    </li>
+    <li>
+        <div class="label special">创建时间</div>
+        <div class="explain special">2018-11/19 16:39:54</div>
+    </li>
+    <li>
+        <div class="label">描述</div>
+        <div class="explain">XXW-00089 仓门:1 商品:名流至薄3大包 价格0.10</div>
+    </li>
+</ul>
+<div class="order-btn-list">
+    <div class="goods-btn order-cancel">取消</div>
+    <div class="goods-btn order-payment" onclick="payment()">付款</div>
+</div>
+<script type="text/javascript">
+    function payment(){
+        location.href="./paymentResult.html";
+    }
+</script>
+</body>
+</html>

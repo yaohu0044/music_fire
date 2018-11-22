@@ -34,5 +34,6 @@ public class MachinePosition {
     private Integer num;
     private Integer commodityId;
 
+    private Boolean available;
 
 }

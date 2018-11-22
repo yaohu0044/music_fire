@@ -2,12 +2,16 @@ package com.musicfire.mobile.controller;
 
 
 import com.musicfire.common.config.ProjectUrlConfig;
+import com.musicfire.common.utiles.Constant;
+import com.musicfire.mobile.entity.WeChatMpUser;
+import com.musicfire.mobile.service.IWeChatMpUserService;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.api.WxConsts;
 import me.chanjar.weixin.common.exception.WxErrorException;
 import me.chanjar.weixin.mp.api.WxMpService;
 import me.chanjar.weixin.mp.bean.result.WxMpOAuth2AccessToken;
 import me.chanjar.weixin.mp.bean.result.WxMpUser;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,15 +30,18 @@ import java.net.URLEncoder;
 @Slf4j
 public class WechatController {
 
-    @Autowired
-    private WxMpService wxMpService;
+    private final WxMpService wxMpService;
+
+    private final ProjectUrlConfig projectUrlConfig;
+
+    private final IWeChatMpUserService weChatMpUserService;
 
     @Autowired
-    private WxMpService wxOpenService;
-
-    @Autowired
-    private ProjectUrlConfig projectUrlConfig;
-
+    public WechatController(WxMpService wxMpService, ProjectUrlConfig projectUrlConfig, IWeChatMpUserService weChatMpUserService) {
+        this.wxMpService = wxMpService;
+        this.projectUrlConfig = projectUrlConfig;
+        this.weChatMpUserService = weChatMpUserService;
+    }
 
     @GetMapping("/authorize")
     public String authorize(@RequestParam("returnUrl") String returnUrl) {
@@ -56,30 +63,24 @@ public class WechatController {
             WxMpUser mpUser = wxMpService.oauth2getUserInfo(wxMpOAuth2AccessToken,null);
             log.info("mpuser:{}",mpUser);
             if(mpUser!=null){
-
-//              WechatMpUser wechatMpUser =  getWeiXinUserInfoService.getWechatMpUserByOpenId(mpUser.getOpenId());
-//              if(wechatMpUser==null){
-//                  wechatMpUser = new WechatMpUser();
-//
-////                  wechatMpUser.setOpenId(mpUser.getOpenId());
-////                  wechatMpUser.setCity(mpUser.getCity());
-////                  wechatMpUser.setCountry(mpUser.getCountry());
-////                  wechatMpUser.setHeadImgUrl(mpUser.getHeadImgUrl());
-////                  wechatMpUser.setNickname(mpUser.getNickname());
-//                  BeanCopy.copyBeanObject(wechatMpUser,mpUser);
-//                  wechatMpUser.setId(UuidUtil.getUUID());
-//                  wechatMpUser.setIsAdmin(0);
-//                  getWeiXinUserInfoService.restoreWxMpUser(wechatMpUser);
-//              }
+                WeChatMpUser weChatMpUser =  weChatMpUserService.queryByOpenId(mpUser.getOpenId());
+              if(weChatMpUser==null){
+                  weChatMpUser = new WeChatMpUser();
+                  weChatMpUser.setOpenId(mpUser.getOpenId());
+                  weChatMpUser.setCity(mpUser.getCity());
+                  weChatMpUser.setCountry(mpUser.getCountry());
+                  weChatMpUser.setHeadImgUrl(mpUser.getHeadImgUrl());
+                  weChatMpUser.setNickname(mpUser.getNickname());
+                  BeanUtils.copyProperties(mpUser,weChatMpUser);
+                  weChatMpUserService.insert(weChatMpUser);
+              }
             }
 
         } catch (WxErrorException e) {
             log.error("【微信网页授权】{}", e);
-//            throw new VendingMachineException(ResultEnum.WECHAT_MP_ERROR.getCode(), e.getError().getErrorMsg());
         }
-
         String openId = wxMpOAuth2AccessToken.getOpenId();
-        session.setAttribute("openId",openId);
+        session.setAttribute(Constant.WECHAT_OPEN_ID,openId);
         return "redirect:" + returnUrl;
     }
 }

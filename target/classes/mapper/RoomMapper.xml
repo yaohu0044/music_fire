@@ -43,6 +43,9 @@
                 <when test="roomName != null and roomName !=''">
                     and r.name = #{roomName}
                 </when>
+                <when test="userId != null and userId !=''">
+                    and u.id = #{userId}
+                </when>
             </choose>
         </where>
         <if test="pageSize != -1">

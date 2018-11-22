@@ -44,7 +44,7 @@ public class AutoGeneratorHelper {
         strategy.setTablePrefix(new String[] { ""});// 此处可以修改为您的表前缀
         strategy.setNaming(NamingStrategy.underline_to_camel);// 表名生成策略
         strategy.setInclude(new String[]{
-                "ali_pay_setting"
+                "we_chat_mp_user"
 
         }); // 需要生成的表
         // 字段名生成策略
@@ -55,7 +55,7 @@ public class AutoGeneratorHelper {
 
         // 包配置
         PackageConfig pc = new PackageConfig();
-        pc.setParent("com.musicfire.modular.system");// 自定义包路径
+        pc.setParent("com.musicfire.mobile");// 自定义包路径
         pc.setController("controller");// 这里是控制器包名，默认 web
         pc.setEntity("entity");
         pc.setMapper("dao");

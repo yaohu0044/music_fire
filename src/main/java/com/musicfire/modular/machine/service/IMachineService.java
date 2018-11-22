@@ -40,4 +40,6 @@ public interface IMachineService extends IService<Machine> {
      * @param id
      */
     void openMachine(Integer id);
+
+
 }

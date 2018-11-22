@@ -3,6 +3,7 @@ package com.musicfire.modular.system.dto;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -21,6 +22,6 @@ public class MenuDto implements Serializable {
 
     private String index;
 
-    private List<MenuDto> subs;
+    private List<MenuDto> subs = new ArrayList<>();
 
 }

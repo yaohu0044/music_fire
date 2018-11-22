@@ -1,6 +1,7 @@
 package com.musicfire.modular.machine.service;
 
 import com.baomidou.mybatisplus.service.IService;
+import com.musicfire.modular.machine.dto.MachinePositionDto;
 import com.musicfire.modular.machine.entity.MachinePosition;
 import com.musicfire.modular.machine.query.MachinePositionPage;
 
@@ -28,4 +29,11 @@ public interface IMachinePositionService extends IService<MachinePosition> {
      * @param  num 仓位 如果没有传入仓位则打开全部仓位
      */
     void openPosition(String machineCode,Integer num);
+
+    /**
+     * 根据机器code获取仓位所有商品信息
+     * @param code 机器code
+     * @return 商品信息
+     */
+    List<MachinePositionDto> queryByMachineCode(String code);
 }

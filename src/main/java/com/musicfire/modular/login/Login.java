@@ -3,12 +3,12 @@ package com.musicfire.modular.login;
 import com.musicfire.modular.system.dto.MenuDto;
 import lombok.Data;
 
-import java.io.Serializable;
 import java.util.List;
 
 @Data
-public class Login implements Serializable {
+public class Login  {
 
+    private Integer userId;
     private String userName;
     private String password;
     private List<MenuDto>menuDTos;
@@ -16,4 +16,6 @@ public class Login implements Serializable {
     //如果是是商家则返回商家的title
     private String title;
     private Integer merchantId;
+
+    private String token;
 }

@@ -7,4 +7,5 @@ import lombok.Data;
 public class OrderDto extends Order {
     private String merchantName;
     private String machineName;
+    private String commodityName;
 }

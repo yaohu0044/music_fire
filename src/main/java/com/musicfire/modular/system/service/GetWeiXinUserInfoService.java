@@ -1,7 +1,5 @@
 package com.musicfire.modular.system.service;
 
-import com.musicfire.mobile.entity.WechatMpUser;
-
 import java.util.Map;
 
 public interface GetWeiXinUserInfoService {
@@ -23,5 +21,4 @@ public interface GetWeiXinUserInfoService {
 
 	int update(String openId);
 
-	WechatMpUser getWechatMpUserByOpenId(String openid);
 }

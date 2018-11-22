@@ -2,8 +2,6 @@ package com.musicfire.mobile.controller;
 
 import com.musicfire.common.config.ProjectUrlConfig;
 import com.musicfire.common.utiles.IpUtil;
-import com.musicfire.mobile.entity.WechatMpUser;
-import com.musicfire.modular.system.service.GetWeiXinUserInfoService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,9 +20,6 @@ public class MobileController {
 
     @Autowired
     private ProjectUrlConfig projectUrlConfig;
-
-    @Autowired
-    private GetWeiXinUserInfoService getWeiXinUserInfoService;
 
     @RequestMapping(value = "/mobile")
     private String intoMobile(HttpSession session, HttpServletRequest request, String code, RedirectAttributes attr) {
@@ -48,8 +43,6 @@ public class MobileController {
         } else {
             return "mobile/error";
         }
-
-
     }
 
 
@@ -97,13 +90,8 @@ public class MobileController {
                 modelMap.addAttribute("msg","进入机器模式 OPENID 为空");
                 return "mobile/error";
             }
-            WechatMpUser wechatMpUser =  getWeiXinUserInfoService.getWechatMpUserByOpenId(openid);
-            if(wechatMpUser.getIsAdmin()==1){
-                return "mobile/admin/machine_edit";
-            }
         }
         return "mobile/user/machine_main";
-
     }
 
 
@@ -112,6 +100,4 @@ public class MobileController {
         return "mobile/shop/cabinet_detail_new";
 
     }
-
-
 }

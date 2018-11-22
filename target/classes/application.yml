@@ -18,7 +18,10 @@ spring:
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8
-
+  mvc:
+    view:
+      prefix: /pages/
+      suffix: .html
 
 
 #mybatis
@@ -44,7 +47,7 @@ init:
   appInfo: false #初始化应用资源信息（应用中心）
   adminRole: false #初始化admin账号角色信息（角色中心）
 server:
-  port: 8
+  port: 8080
 
 mqtt:
   broker:
@@ -67,15 +70,15 @@ wechat:
   mchId: 1502968311
   mchKey: 8dd841e0b6d54fa08d7426e0d61b4c8a
   keyPath: /var/weixin_cert/h5.p12
-  notifyUrl:  http://laputa.natapp1.cc/wxpay/notify
+  notifyUrl:  http://1c592r8399.51mypc.cn/wxpay/notify
   templateId:
     orderStatus: e-Cqq67QxD6YNI41iRiqawEYdFavW_7pc7LyEMb-yeQ
 
 projectUrl:
-  wechatMpAuthorize: http://laputa.natapp1.cc
-  wechatOpenAuthorize: http://laputa.natapp1.cc
-  vendingmachine: http://laputa.natapp1.cc
-  mobile: http://laputa.natapp1.cc/mobile
+  wechatMpAuthorize: http://1c592r8399.51mypc.cn
+  wechatOpenAuthorize: http://1c592r8399.51mypc.cn
+  vendingmachine: http://1c592r8399.51mypc.cn
+  mobile: http://1c592r8399.51mypc.cn/mobile
 
 # 支付宝网关名、partnerId和appId
 alipay:
@@ -83,8 +86,8 @@ alipay:
   mcloud_api_domain: http://mcloudmonitor.com/gateway.do
   uid: 2088102175761651
   appid: 2018051960121986
-  return_url:  http://laputa.natapp1.cc/alipay/return
-  notify_url:  http://laputa.natapp1.cc/alipay/notify
+  return_url:  http://1c592r8399.51mypc.cn/alipay/return
+  notify_url:  http://1c592r8399.51mypc.cn/alipay/notify
 
   # RSA私钥、公钥和支付宝公钥
   private_key: MIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQCH6xXA5OT92VFJ

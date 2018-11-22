@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.musicfire.mobile.dao.AliPayUserInfoMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.musicfire.mobile.entity.AliPayUserInfo">
+        <result column="address" property="address" />
+        <result column="area" property="area" />
+        <result column="avatar" property="avatar" />
+        <result column="business_scope" property="businessScope" />
+        <result column="cert_no" property="certNo" />
+        <result column="cert_type" property="certType" />
+        <result column="city" property="city" />
+        <result column="college_name" property="collegeName" />
+        <result column="country_code" property="countryCode" />
+        <result column="degree" property="degree" />
+        <result column="email" property="email" />
+        <result column="enrollment_time" property="enrollmentTime" />
+        <result column="firm_type" property="firmType" />
+        <result column="gender" property="gender" />
+        <result column="graduation_time" property="graduationTime" />
+        <result column="is_balance_frozen" property="isBalanceFrozen" />
+        <result column="is_certified" property="isCertified" />
+        <result column="is_student_certified" property="isStudentCertified" />
+        <result column="license_expiry_date" property="licenseExpiryDate" />
+        <result column="license_no" property="licenseNo" />
+        <result column="member_grade" property="memberGrade" />
+        <result column="organization_code" property="organizationCode" />
+        <result column="person_birthday" property="personBirthday" />
+        <result column="person_cert_expiry_date" property="personCertExpiryDate" />
+        <result column="phone" property="phone" />
+        <result column="profession" property="profession" />
+        <result column="province" property="province" />
+        <result column="user_name" property="userName" />
+        <result column="mobile" property="mobile" />
+        <result column="nick_name" property="nickName" />
+        <result column="taobao_id" property="taobaoId" />
+        <result column="user_id" property="userId" />
+        <result column="user_type" property="userType" />
+        <result column="user_status" property="userStatus" />
+        <result column="zip" property="zip" />
+        <result column="login_times" property="loginTimes" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+    </resultMap>
+
+</mapper>
