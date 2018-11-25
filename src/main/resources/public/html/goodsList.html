@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <title>乐火000售货机</title>
+    <link rel="stylesheet" href="../../static/css/public.css"/>
+</head>
+<body>
+<div class="title">XXW-00089</div>
+<div id="goodsView" class="goods-view"></div>
+<script type="text/x-dot-template" id="goodListTemplate">
+    {{if(it.length>0){}}
+    <ul class="goods-list">
+        {{for(var i = 0;i<it.length;i++){}}
+        <li class="goods-info">
+            <div class="select-many">
+                <div class="unsel" onclick="selectThisGoods(this)"></div>
+            </div>
+            <div class="select-content" onclick="checkThisGoods({{=it[i].id}},{{=it[i].price}})">
+                <div class="passageway">{{=it[i].num}}门</div>
+                <div class="goods-content">
+                    <div class="goods-img" style="background: url({{=it[i].shrinkageChart}}) no-repeat;background-size: 100% 100%;"></div>
+                    <div class="goods-details">
+                        <div class="goods-name">{{=it[i].commodityName}}</div>
+                        <div class="goods-num">{{=it[i].price}}</div>
+                    </div>
+                </div>
+                <div class="goods-handle">
+                    <div class="is-use">{{=it[i].available?'商品可用':'商品不可用'}}</div>
+                    <div class="goods-check">点击查看</div>
+                </div>
+            </div>
+        </li>
+        {{}}}
+    </ul>
+    {{}else{}}
+    <div style="text-align: center;color: #666;font-size: 16px">暂无商品</div>
+    {{}}}
+</script>
+<div class="payment-many">
+    <div class="goods-btn">购买(<span id="manyNum">0</span>)</div>
+</div>
+<script type="text/javascript" src="../../static/js/jquery.min.js"></script>
+<script type="text/javascript" src="../../static/js/dot.min.js"></script>
+<script type="text/javascript">
+    $(function () {
+        //获取商品列表
+        $.ajax({
+            url: '/api/machinePosition/queryByMachineCode/4312255237324D4D0671FF38',
+            type: "get",
+            data: {},
+            success: function (data) {
+                tmpltxt=doT.template(document.getElementById("goodListTemplate").innerHTML);//生成模板方法
+                document.getElementById("goodsView").innerHTML=tmpltxt(data.result);//数据渲染
+
+            }
+        })
+    });
+
+    /**
+     * 打开商品详情
+     * @param machinePositionId 仓位Id
+     */
+    function checkThisGoods(machinePositionId,price,commodityName,shrinkageChart){
+        location.href="./goodsDetails.html?machinePositionId="+machinePositionId+"&price="+price+"&commodityName="+commodityName+"&shrinkageChart="+shrinkageChart;
+    }
+    /**
+     * 选择/取消商品并计数
+     * @param element 选择去取消按钮
+     */
+    function selectThisGoods(element){
+        $(element).toggleClass("unsel").toggleClass("sel");
+        $("#manyNum").text($(".sel").length);
+    }
+</script>
+</body>
+</html>

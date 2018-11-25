@@ -47,7 +47,7 @@ init:
   appInfo: false #初始化应用资源信息（应用中心）
   adminRole: false #初始化admin账号角色信息（角色中心）
 server:
-  port: 8080
+  port: 8081
 
 mqtt:
   broker:
@@ -79,6 +79,7 @@ projectUrl:
   wechatOpenAuthorize: http://1c592r8399.51mypc.cn
   vendingmachine: http://1c592r8399.51mypc.cn
   mobile: http://1c592r8399.51mypc.cn/mobile
+
 
 # 支付宝网关名、partnerId和appId
 alipay:
@@ -125,6 +126,7 @@ alipay:
   AES: bjzht4GO40L0zoZOngGQmA==
 
   CHARSET: utf-8
+
 
 path:
   base:

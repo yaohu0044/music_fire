@@ -35,8 +35,8 @@ public class FileUploadUtil {
             String realPath1= path +"/" + System.currentTimeMillis()+FileNameUtils.getFileName(fileName);
             String smallPicture = zoomImageScale(dest, realPath1, 50);
             map = new HashMap<>();
-            map.put("realPath", realPath);
-            map.put("smallPicture", smallPicture);
+            map.put("realPath", smallPicture);
+            map.put("smallPicture", dest.getName());
             return map;
         } catch (IllegalStateException e) {
 
@@ -89,6 +89,6 @@ public class FileUploadUtil {
                 ImageIO.write(newImage, suffix, imgFile);
             }
         }
-        return imageFile.getPath();
+        return imageFile.getName();
     }
 }

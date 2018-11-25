@@ -9,43 +9,34 @@
         <result column="describe" property="describe" />
         <result column="introduce" property="introduce" />
         <result column="purchase_price" property="purchasePrice" />
-        <result column="merchant_id" property="merchantId" />
         <result column="flag" property="flag" />
         <result column="create_time" property="createTime" />
         <result column="create_id" property="createId" />
         <result column="update_time" property="updateTime" />
         <result column="update_id" property="updateId" />
-    </resultMap>
-    <resultMap id="NewResultMap" type="com.musicfire.modular.commodity.entity.Dto.CommodityDto" extends="BaseResultMap">
-        <result column="merchantName" property="merchantName" />
-        <result column="merchantId" property="merchantId" />
         <result column="price" property="price" />
     </resultMap>
+    <resultMap id="NewResultMap" type="com.musicfire.modular.commodity.entity.Dto.CommodityDto" extends="BaseResultMap">
+        <result column="path" property="path" />
+    </resultMap>
     <select id="queryByCommodity" resultMap="NewResultMap" parameterType="com.musicfire.modular.commodity.query.CommodityPage">
-        select c.*,u.name as merchantName from commodity c
-        left join merchant m on c.merchant_id = m.id
-        left join sys_user u on u.id = m.user_id
+        select c.*,pic.path as path  from commodity c
+        left join commodity_pic as pic on pic.commodity_id = c.id
         where c.flag = false
         <if test="null != name and '' != name">
            and c.name LIKE CONCAT('%',#{name},'%')
         </if>
-         <if test="null != machineId and '' != machineId">
-           and c.merchant_id = #{machineId}
-        </if>
+
 
 
         limit #{startPosition},#{pageSize}
     </select>
     <select id="queryCount" resultType="java.lang.Integer" parameterType="com.musicfire.modular.commodity.query.CommodityPage">
         select  count(c.id)  from commodity c
-        left join merchant m on c.merchant_id = m.id
-        left join sys_user u on u.id = m.user_id
+        left join commodity_pic as pic on pic.commodity_id = c.id
         where c.flag = false
         <if test="null != name and '' != name">
             and c.name LIKE CONCAT('%',#{name},'%')
-        </if>
-        <if test="null != machineId and '' != machineId">
-            and c.merchant_id = #{machineId}
         </if>
     </select>
     <select id="queryHotCommodity"  resultMap="NewResultMap">

@@ -1,6 +1,9 @@
 package com.musicfire.common.handler;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.musicfire.common.config.redisdao.RedisDao;
+import com.musicfire.modular.login.Login;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -24,21 +27,20 @@ public class LoginUserInterceptor extends HandlerInterceptorAdapter {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException {
         boolean login = request.getServletPath().endsWith("login");
-        return true;
-//        if(login){
-//            return true;
-//        }else{
-//            String token = request.getHeader("token");
-//            if(redisDao.exist(token)){
-//                JSON parse = (JSON)JSON.parse(redisDao.get(token));
-//                Login l = JSONObject.toJavaObject(parse, Login.class);
-//                RequestHolder.add(l);
-//                RequestHolder.add(request);
-//                return true;
-//            }else{
-//                return true;
-//            }
-//        }
+        if(login){
+            return true;
+        }else{
+            String token = request.getHeader("token");
+            if(redisDao.exist(token)){
+                JSON parse = (JSON)JSON.parse(redisDao.get(token));
+                Login l = JSONObject.toJavaObject(parse, Login.class);
+                RequestHolder.add(l);
+                RequestHolder.add(request);
+                return true;
+            }else{
+                return true;
+            }
+        }
     }
 
     @Override

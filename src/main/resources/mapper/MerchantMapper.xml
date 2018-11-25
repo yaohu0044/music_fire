@@ -15,6 +15,7 @@
         <result column="update_time" property="updateTime" />
         <result column="update_id" property="updateId" />
         <result column="address" property="address" />
+        <result column="user_id" property="userId" />
     </resultMap>
     <resultMap id="NewResultMap" type="com.musicfire.modular.merchant.dto.MerchantDto" extends="BaseResultMap">
         <result column="merchantName" property="merchantName" />
@@ -38,7 +39,7 @@
         left join sys_user u on u.id = m.user_id
         where m.flag =false
         <if test="null != merchantName and ''!= merchantName">
-            and m.name LIKE CONCAT('%',#{merchantName},'%')  or m.title LIKE CONCAT('%',#{merchantName},'%')
+            and u.name LIKE CONCAT('%',#{merchantName},'%')  or m.title LIKE CONCAT('%',#{merchantName},'%')
         </if>
     </select>
 

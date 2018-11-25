@@ -1,9 +1,9 @@
 package com.musicfire.modular.system.entity;
 
-import com.baomidou.mybatisplus.annotations.TableId;
-import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.activerecord.Model;
+import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableName;
+
 import java.io.Serializable;
 
 /**
@@ -19,7 +19,7 @@ public class UserRole extends Model<UserRole> {
 
     private static final long serialVersionUID = 1L;
 
-    @TableId("user_id")
+    @TableField("user_id")
     private Integer userId;
     @TableField("role_id")
     private Integer roleId;

@@ -20,10 +20,11 @@
         <result column="state" property="state"/>
         <result column="machineCode" property="machineCode"/>
         <result column="merchantName" property="merchantName"/>
+        <result column="machineName" property="machineName"/>
     </resultMap>
 
     <sql id="baseColumn">
-        r.id, r.`NAME` AS NAME, r.`describe` AS `describe`, r.create_time ,r.machine_id,r.merchant_id,
+        r.id, r.`NAME` AS NAME, r.`describe` AS `describe`, r.create_time ,r.machine_id,r.merchant_id,mac.`name` as machineName,
 	    mac.`code` AS machineCode, mac.`state` as machineState,
 	    u.name as merchantName
     </sql>

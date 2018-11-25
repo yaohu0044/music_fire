@@ -14,11 +14,6 @@ public class MerchantVo {
     private Integer id;
 
     /**
-     * 商家姓名
-     */
-    @NotBlank(groups = {Update.class, Insert.class},message="商家姓名")
-    private String name;
-    /**
      * 商家登录名
      */
     @NotBlank(groups = {Update.class, Insert.class},message="登录名")

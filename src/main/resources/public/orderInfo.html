@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
     <title>订单信息</title>
-    <link rel="stylesheet" href="../css/public.css"/>
+    <link rel="stylesheet" href="../static/css/public.css"/>
+    <script type="text/javascript" src="../static/js/jquery.min.js"></script>
+    <script type="text/javascript" src="../static/js/dot.min.js"></script>
 </head>
 <body>
 <div class="title">订单详情</div>
@@ -40,8 +42,31 @@
 </div>
 <script type="text/javascript">
     function payment(){
-        location.href="./paymentResult.html";
+        alert(456);
+        // let unifiedNum = GetQueryString("unifiedNum")
+        $.ajax({
+            url: '/mobilePay/'+1,
+            type: "post",
+            data: {},
+            success: function (data) {
+                // const div = document.createElement('div');
+                // div.innerHTML = data; // html code
+                // document.body.appendChild(div);
+                // let a = document.forms[0].submit()
+                // debugger
+                // window.location.href =data
+                // location.href="./orderInfo.html?unifiedNum="+data.unifiedNum;
+                // location.href="./paymentResult.html";
+            }
+        })
+
     }
+    // function GetQueryString(name)
+    // {
+    //     var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+    //     var r = window.location.search.substr(1).match(reg);
+    //     if(r!=null)return  unescape(r[2]); return null;
+    // }
 </script>
 </body>
 </html>

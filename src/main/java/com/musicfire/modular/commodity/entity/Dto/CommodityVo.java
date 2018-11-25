@@ -33,13 +33,8 @@ public class CommodityVo extends Commodity {
     /**
      * 进价
      */
-    @NotBlank(message = "商品简介不能为空",groups = {Insert.class,Update.class})
+    @NotBlank(message = "商品进价",groups = {Insert.class,Update.class})
     private BigDecimal purchasePrice;
-    /**
-     * j机器Id
-     */
-    @NotBlank(message = "商品简介不能为空",groups = {Insert.class,Update.class})
-    private Integer merchantId;
     /**
      * false:未删除，true，删除
      */
@@ -59,6 +54,6 @@ public class CommodityVo extends Commodity {
     /**
      * 价格
      */
-    @NotBlank(message = "商品价格不能为空",groups = {Insert.class,Update.class})
+    @NotBlank(message = "商品售价",groups = {Insert.class,Update.class})
     private BigDecimal price;
 }

@@ -28,7 +28,7 @@ public class QrCodeUtils {
     // LOGO高度  
     private static final int LOGO_HEIGHT = 60;
 
-    private static BufferedImage createImage(String content, String logoPath, boolean needCompress) throws Exception {
+    private static BufferedImage createImage(String content, String logoPath, boolean needCompress, String code) throws Exception {
         Hashtable<EncodeHintType, Object> hints = new Hashtable<EncodeHintType, Object>();
         hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.H);
         hints.put(EncodeHintType.CHARACTER_SET, CHARSET);
@@ -46,20 +46,17 @@ public class QrCodeUtils {
         if (logoPath == null || "".equals(logoPath)) {
             return image;
         }
-        // 插入图片  
+        // 插入图片
         QrCodeUtils.insertImage(image, logoPath, needCompress);
         return image;
     }
 
     /**
-     * 插入LOGO 
+     * 插入LOGO
      *
-     * @param source
-     *            二维码图片 
-     * @param logoPath
-     *            LOGO图片地址 
-     * @param needCompress
-     *            是否压缩 
+     * @param source       二维码图片
+     * @param logoPath     LOGO图片地址
+     * @param needCompress 是否压缩
      * @throws Exception
      */
     private static void insertImage(BufferedImage source, String logoPath, boolean needCompress) throws Exception {
@@ -96,23 +93,19 @@ public class QrCodeUtils {
     }
 
     /**
-     * 生成二维码(内嵌LOGO) 
-     * 二维码文件名随机，文件名可能会有重复 
+     * 生成二维码(内嵌LOGO)
+     * 二维码文件名随机，文件名可能会有重复
      *
-     * @param content
-     *            内容 
-     * @param logoPath
-     *            LOGO地址 
-     * @param destPath
-     *            存放目录 
-     * @param needCompress
-     *            是否压缩LOGO 
+     * @param content      内容
+     * @param logoPath     LOGO地址
+     * @param destPath     存放目录
+     * @param needCompress 是否压缩LOGO
      * @throws Exception
      */
-    public static String encode(String content, String logoPath, String destPath, boolean needCompress){
+    public static String encode(String content, String logoPath, String destPath, boolean needCompress) {
         BufferedImage image = null;
         try {
-            image = QrCodeUtils.createImage(content, logoPath, needCompress);
+            image = QrCodeUtils.createImage(content, logoPath, needCompress,null);
             mkdirs(destPath);
             String fileName = new Random().nextInt(99999999) + "." + FORMAT.toLowerCase();
             ImageIO.write(image, FORMAT, new File(destPath + "/" + fileName));
@@ -125,30 +118,25 @@ public class QrCodeUtils {
     }
 
     /**
-     * 生成二维码(内嵌LOGO) 
-     * 调用者指定二维码文件名 
+     * 生成二维码(内嵌LOGO)
+     * 调用者指定二维码文件名
      *
-     * @param content
-     *            内容 
-     * @param logoPath
-     *            LOGO地址 
-     * @param destPath
-     *            存放目录 
-     * @param fileName
-     *            二维码文件名 
-     * @param needCompress
-     *            是否压缩LOGO 
+     * @param content      内容
+     * @param logoPath     LOGO地址
+     * @param destPath     存放目录
+     * @param fileName     二维码文件名
+     * @param needCompress 是否压缩LOGO
      * @throws Exception
      */
-    public static String encode(String content, String logoPath, String destPath, String fileName, boolean needCompress){
+    public static String encode(String content, String logoPath, String destPath, String fileName, boolean needCompress) {
         BufferedImage image = null;
         try {
-            image = QrCodeUtils.createImage(content, logoPath, needCompress);
+            image = QrCodeUtils.createImage(content, logoPath, needCompress, fileName);
             mkdirs(destPath);
-            fileName = fileName.substring(0, fileName.indexOf(".")>0?fileName.indexOf("."):fileName.length())
+            fileName = fileName.substring(0, fileName.indexOf(".") > 0 ? fileName.indexOf(".") : fileName.length())
                     + "." + FORMAT.toLowerCase();
             ImageIO.write(image, FORMAT, new File(destPath + "/" + fileName));
-            return destPath+"/"+fileName;
+            return fileName;
         } catch (Exception e) {
             e.printStackTrace();
             throw new BusinessException("生产二维码错误");
@@ -156,10 +144,10 @@ public class QrCodeUtils {
     }
 
     /**
-     * 当文件夹不存在时，mkdirs会自动创建多层目录，区别于mkdir． 
-     * (mkdir如果父目录不存在则会抛出异常) 
-     * @param destPath
-     *            存放目录 
+     * 当文件夹不存在时，mkdirs会自动创建多层目录，区别于mkdir．
+     * (mkdir如果父目录不存在则会抛出异常)
+     *
+     * @param destPath 存放目录
      */
     public static void mkdirs(String destPath) {
         File file = new File(destPath);
@@ -169,14 +157,11 @@ public class QrCodeUtils {
     }
 
     /**
-     * 生成二维码(内嵌LOGO) 
+     * 生成二维码(内嵌LOGO)
      *
-     * @param content
-     *            内容 
-     * @param logoPath
-     *            LOGO地址 
-     * @param destPath
-     *            存储地址 
+     * @param content  内容
+     * @param logoPath LOGO地址
+     * @param destPath 存储地址
      * @throws Exception
      */
     public static String encode(String content, String logoPath, String destPath) throws Exception {
@@ -184,14 +169,11 @@ public class QrCodeUtils {
     }
 
     /**
-     * 生成二维码 
+     * 生成二维码
      *
-     * @param content
-     *            内容 
-     * @param destPath
-     *            存储地址 
-     * @param needCompress
-     *            是否压缩LOGO 
+     * @param content      内容
+     * @param destPath     存储地址
+     * @param needCompress 是否压缩LOGO
      * @throws Exception
      */
     public static String encode(String content, String destPath, boolean needCompress) throws Exception {
@@ -199,12 +181,10 @@ public class QrCodeUtils {
     }
 
     /**
-     * 生成二维码 
+     * 生成二维码
      *
-     * @param content
-     *            内容 
-     * @param destPath
-     *            存储地址 
+     * @param content  内容
+     * @param destPath 存储地址
      * @throws Exception
      */
     public static String encode(String content, String destPath) throws Exception {
@@ -212,31 +192,25 @@ public class QrCodeUtils {
     }
 
     /**
-     * 生成二维码(内嵌LOGO) 
+     * 生成二维码(内嵌LOGO)
      *
-     * @param content
-     *            内容 
-     * @param logoPath
-     *            LOGO地址 
-     * @param output
-     *            输出流 
-     * @param needCompress
-     *            是否压缩LOGO 
+     * @param content      内容
+     * @param logoPath     LOGO地址
+     * @param output       输出流
+     * @param needCompress 是否压缩LOGO
      * @throws Exception
      */
     public static void encode(String content, String logoPath, OutputStream output, boolean needCompress)
             throws Exception {
-        BufferedImage image = QrCodeUtils.createImage(content, logoPath, needCompress);
+        BufferedImage image = QrCodeUtils.createImage(content, logoPath, needCompress,null);
         ImageIO.write(image, FORMAT, output);
     }
 
     /**
-     * 生成二维码 
+     * 生成二维码
      *
-     * @param content
-     *            内容 
-     * @param output
-     *            输出流 
+     * @param content 内容
+     * @param output  输出流
      * @throws Exception
      */
     public static void encode(String content, OutputStream output) throws Exception {
@@ -244,10 +218,9 @@ public class QrCodeUtils {
     }
 
     /**
-     * 解析二维码 
+     * 解析二维码
      *
-     * @param file
-     *            二维码图片 
+     * @param file 二维码图片
      * @return
      * @throws Exception
      */
@@ -268,10 +241,9 @@ public class QrCodeUtils {
     }
 
     /**
-     * 解析二维码 
+     * 解析二维码
      *
-     * @param path
-     *            二维码图片地址 
+     * @param path 二维码图片地址
      * @return
      * @throws Exception
      */
@@ -286,7 +258,7 @@ public class QrCodeUtils {
         //含Logo，不指定二维码图片名  
         //QrCodeUtils.encode(text, "/Users/ianly/Documents/picture/google-icon.jpg", "/Users/ianly/Documents/picture/", true);
         //含Logo，指定二维码图片名  
-        String qrcode = QrCodeUtils.encode(text, "C:\\Users\\50681\\Desktop\\1.jpg", "C:\\Users\\50681\\Desktop", "qrcode2", true);
+        String qrcode = QrCodeUtils.encode(text, "C:\\Users\\50681\\Desktop\\1.png", "C:\\Users\\50681\\Desktop", "qrcode3", true);
         System.out.println(qrcode);
 //        QrCodeUtils.encode(text, "/Users/ianly/Documents/picture/google-icon.jpg", "/Users/ianly/Documents/picture", "qrcode", true);
     }

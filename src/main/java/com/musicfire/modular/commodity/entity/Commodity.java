@@ -1,11 +1,12 @@
 package com.musicfire.modular.commodity.entity;
 
+import com.baomidou.mybatisplus.activerecord.Model;
+import com.baomidou.mybatisplus.annotations.TableField;
+import com.baomidou.mybatisplus.annotations.TableName;
+
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
-import com.baomidou.mybatisplus.annotations.TableField;
-import com.baomidou.mybatisplus.activerecord.Model;
-import com.baomidou.mybatisplus.annotations.TableName;
-import java.io.Serializable;
 
 /**
  * <p>
@@ -38,11 +39,7 @@ public class Commodity extends Model<Commodity> {
      */
     @TableField("purchase_price")
     private BigDecimal purchasePrice;
-    /**
-     * 商家Id
-     */
-    @TableField("merchant_id")
-    private Integer merchantId;
+    private BigDecimal price;
     /**
      * false:未删除，true，删除
      */
@@ -56,6 +53,17 @@ public class Commodity extends Model<Commodity> {
     @TableField("update_id")
     private Integer updateId;
 
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
+    }
 
     public Integer getId() {
         return id;
@@ -95,14 +103,6 @@ public class Commodity extends Model<Commodity> {
 
     public void setPurchasePrice(BigDecimal purchasePrice) {
         this.purchasePrice = purchasePrice;
-    }
-
-    public Integer getMerchantId() {
-        return merchantId;
-    }
-
-    public void setMerchantId(Integer merchantId) {
-        this.merchantId = merchantId;
     }
 
     public Boolean getFlag() {
@@ -150,20 +150,4 @@ public class Commodity extends Model<Commodity> {
         return this.id;
     }
 
-    @Override
-    public String toString() {
-        return "Commodity{" +
-        ", id=" + id +
-        ", name=" + name +
-        ", describe=" + describe +
-        ", introduce=" + introduce +
-        ", purchasePrice=" + purchasePrice +
-        ", merchantId=" + merchantId +
-        ", flag=" + flag +
-        ", createTime=" + createTime +
-        ", createId=" + createId +
-        ", updateTime=" + updateTime +
-        ", updateId=" + updateId +
-        "}";
-    }
 }

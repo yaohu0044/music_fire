@@ -56,6 +56,10 @@ public class CommodityServiceImpl extends ServiceImpl<CommodityMapper, Commodity
             BeanUtils.copyProperties(commodityVo, commodityStock);
             commodityStock.setCommodityId(commodity.getId());
             commodityStockMapper.insert(commodityStock);
+            CommodityPic pic = new CommodityPic();
+            pic.setPath(commodityVo.getPath());
+            pic.setCommodityId(commodity.getId());
+            commodityPicMapper.insert(pic);
         }
     }
 
@@ -68,6 +72,13 @@ public class CommodityServiceImpl extends ServiceImpl<CommodityMapper, Commodity
             CommodityStock commodityStock = new CommodityStock();
             BeanUtils.copyProperties(commodityVo, commodityStock);
             commodityStockMapper.updateById(commodityStock);
+            EntityWrapper<CommodityPic> entityWrapper = new EntityWrapper<>();
+            entityWrapper.eq("commodity_id",commodity.getId());
+            commodityPicMapper.delete(entityWrapper);
+            CommodityPic pic = new CommodityPic();
+            pic.setPath(commodityVo.getPath());
+            pic.setCommodityId(commodity.getId());
+            commodityPicMapper.insert(pic);
         }
     }
 
@@ -92,7 +103,7 @@ public class CommodityServiceImpl extends ServiceImpl<CommodityMapper, Commodity
         if(ObjectUtils.isEmpty(count)){
             throw new BusinessException(ErrorCode.IS_NOT_DATA);
         }
-        List<Commodity> commodities = commodityMapper.queryByCommodity(page);
+        List<CommodityDto> commodities = commodityMapper.queryByCommodity(page);
         page.setTotalCount(count);
         page.setList(commodities);
         return page;

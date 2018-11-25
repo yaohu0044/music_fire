@@ -90,6 +90,9 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements IM
 //    @Cacheable(key ="#p0")
     @Override
     public List<MenuDto> queryMenDtoByRoles(List<Integer> roleIds) {
+        if(null == roleIds || roleIds.size()<1){
+            return new ArrayList<>();
+        }
         EntityWrapper<RoleMenu> roleMenuEntityWrapper = new EntityWrapper<>();
         roleMenuEntityWrapper.in("role_id",roleIds);
         List<RoleMenu> roleMenus = roleMenuService.selectList(roleMenuEntityWrapper);

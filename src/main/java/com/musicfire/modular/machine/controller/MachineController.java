@@ -10,7 +10,6 @@ import com.musicfire.modular.machine.query.MachinePage;
 import com.musicfire.modular.machine.service.IMachineService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.integration.mqtt.support.MqttHeaders;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -92,7 +91,7 @@ public class MachineController {
 
         return new Result().ok(list);
     }
-    @RequestMapping(value="/openMachine",method= RequestMethod.POST)
+    @RequestMapping(value="/openMachine",method= RequestMethod.GET)
     @ResponseBody
     public Result openMachine(Integer id) {
         service.openMachine(id);

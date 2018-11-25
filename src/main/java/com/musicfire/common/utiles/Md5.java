@@ -100,6 +100,6 @@ public class Md5 {
         String password2= generate("123");
         System.out.println("结果：" + password2 + "   长度："+ password2.length());
 //        // 解码
-        System.out.println(Md5.verify("admin", "31a475593c4f12c501f4ec5c48531591cb6945dd69a25e9d"));
+        System.out.println(Md5.verify("123", password2));
     }
 }

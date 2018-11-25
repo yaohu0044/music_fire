@@ -1,5 +1,6 @@
 package com.musicfire.common.utiles;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class BasePage {
@@ -26,7 +27,7 @@ public class BasePage {
     private int pageCount;
 
 
-    private List<?> list;
+    private List<?> list = new ArrayList<>();
 
     private int startPosition;
 

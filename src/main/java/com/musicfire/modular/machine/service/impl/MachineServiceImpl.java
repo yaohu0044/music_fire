@@ -11,7 +11,9 @@ import com.musicfire.modular.machine.entity.Machine;
 import com.musicfire.modular.machine.entity.MachineState;
 import com.musicfire.modular.machine.machine_enum.MachineStatusEnum;
 import com.musicfire.modular.machine.query.MachinePage;
+import com.musicfire.modular.machine.service.IMachinePositionService;
 import com.musicfire.modular.machine.service.IMachineService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -32,6 +34,8 @@ public class MachineServiceImpl extends ServiceImpl<MachineMapper, Machine> impl
 
     @Resource
     private MachineMapper mapper;
+    @Autowired
+    private IMachinePositionService positionService;
 
     @Resource
     private RedisDao redisDao;
@@ -40,7 +44,6 @@ public class MachineServiceImpl extends ServiceImpl<MachineMapper, Machine> impl
     public MachinePage queryByMachine(MachinePage page) {
         int count = mapper.queryByCount(page);
         if(count < 1 ){
-            page.setList(null);
             return page;
         }
         List<MachineDto> machines =  mapper.queryByMachine(page);
@@ -95,8 +98,8 @@ public class MachineServiceImpl extends ServiceImpl<MachineMapper, Machine> impl
 
     @Override
     public void openMachine(Integer id) {
-
-
+        Machine machine = mapper.selectById(id);
+        positionService.openPosition(machine.getCode(),null);
 
 //        String topic = "controller/"+cab.getMachineCode();
 ////		"controller/4301473331324B4D066BFF36"

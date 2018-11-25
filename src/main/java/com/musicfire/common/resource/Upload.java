@@ -6,7 +6,6 @@ import com.musicfire.common.utiles.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.ObjectUtils;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,7 +24,6 @@ public class Upload {
      * 后期做图片的缩率 和上传服务器
      * @return
      */
-    @PostMapping(value = "/upload")
     @RequestMapping("fileUpload")
     public Result upload(HttpServletRequest httpRequest) throws IOException {
         MultipartHttpServletRequest request = (MultipartHttpServletRequest) httpRequest;

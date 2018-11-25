@@ -21,16 +21,31 @@
         <result column="commodityName" property="commodityName" />
         <result column="commodityId" property="commodityId" />
         <result column="price" property="price" />
+        <result column="shrinkageChart" property="shrinkageChart" />
+
     </resultMap>
 
     <select id="queryByMachine" parameterType="com.musicfire.modular.machine.query.MachinePage" resultMap="NewResultMap">
-        select mp.available,mp.state,mp.id,mp.num ,m.name as machineName,m.`code` as machineCode,u.name as merchantName,c.`name` as commodityName,cs.price,mp.commodity_id as commodityId
-        from machine_position mp
-        left join machine m on mp.machine_id = m.id
-        left join merchant me on me.id = m.id
-        left join commodity c on c.id = mp.commodity_id
-        left join sys_user u on  u.id = me.user_id
-        left join commodity_stock cs on cs.commodity_id = mp.commodity_id
+        SELECT
+        mp.available,
+        mp.state,
+        mp.id,
+        mp.num,
+        m.NAME AS machineName,
+        m.`code` AS machineCode,
+        u.NAME AS merchantName,
+        c.`name` AS commodityName,
+        c.price,
+        mp.commodity_id AS commodityId ,
+        mp.machine_id as machineId,
+        cp.path as shrinkageChart
+        FROM
+        machine_position mp
+        LEFT JOIN machine m ON mp.machine_id = m.id
+        LEFT JOIN merchant me ON me.id = m.id
+        LEFT JOIN commodity c ON c.id = mp.commodity_id
+        LEFT JOIN sys_user u ON u.id = me.user_id
+        left join commodity_pic cp on cp.commodity_id = c.id
         where mp.flag = false
         <if test="null != machineId and '' != machineId">
             and m.id = #{machineId}
@@ -50,7 +65,7 @@
         left join merchant me on me.id = m.id
         left join commodity c on c.id = mp.commodity_id
         left join sys_user u on  u.id = me.user_id
-        left join commodity_stock cs on cs.commodity_id = mp.commodity_id
+        left join commodity_pic cp on cp.commodity_id = c.id
         where mp.flag = false
         <if test="null != machineId and '' != machineId">
             and m.id = #{machineId}

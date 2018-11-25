@@ -20,6 +20,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -54,9 +56,16 @@ public class MachinePositionServiceImpl extends ServiceImpl<MachinePositionMappe
         }else {
             EntityWrapper<MachinePosition> entityWrapper = new EntityWrapper<>();
             entityWrapper.eq("machine_id",machinePosition.getMachineId());
-            Integer integer = machinePositionMapper.selectCount(entityWrapper);
-            if(integer>10){
+            List<MachinePosition> machinePositions = machinePositionMapper.selectList(entityWrapper);
+            if(machinePositions.size()>=10){
                 throw new BusinessException(ErrorCode.POSITION_OVERRUN);
+            }
+            List<Integer> collect = machinePositions.stream().map(MachinePosition::getNum).collect(Collectors.toList());
+            if(collect.size() == 0){
+                machinePosition.setNum(1);
+            }else {
+                Integer max1 = Collections.max(collect);
+                machinePosition.setNum(max1 + 1);
             }
             machinePosition.setState(MachinePositionEnum.CLOSED.getCode());
             machinePositionMapper.insert(machinePosition);
@@ -79,6 +88,7 @@ public class MachinePositionServiceImpl extends ServiceImpl<MachinePositionMappe
             return page;
         }
         List<MachinePositionDto> machines =  machinePositionMapper.queryByMachine(page);
+        machines.sort(Comparator.comparingInt(MachinePosition::getNum));
         page.setList(machines);
         page.setPageCount(count);
         return page;
@@ -89,7 +99,7 @@ public class MachinePositionServiceImpl extends ServiceImpl<MachinePositionMappe
 
         String topic = "controller/" + machineCode;
         //发送的消息
-        if (null == num) {
+        if (null != num) {
             String positionIndex = String.valueOf(num-1);
             Message message = MessageBuilder.withPayload(positionIndex)
                     //发送的主题
@@ -101,11 +111,17 @@ public class MachinePositionServiceImpl extends ServiceImpl<MachinePositionMappe
             List<MachinePositionDto> machinePositionDTos = machinePositionMapper.queryByMachine(page);
             AtomicInteger index = new AtomicInteger(0);
             machinePositionDTos.forEach(machinePositionDto -> {
-                Message message = MessageBuilder.withPayload(String.valueOf(index.get()))
-                        //发送的主题
-                        .setHeader(MqttHeaders.TOPIC, topic).setHeader(MqttHeaders.QOS, 2).build();
-                gateway.sendMessage(message);
-                index.addAndGet(1);
+                try {
+                    Thread.sleep(500L);
+                    Message message = MessageBuilder.withPayload(String.valueOf(index.get()))
+                            //发送的主题
+                            .setHeader(MqttHeaders.TOPIC, topic).setHeader(MqttHeaders.QOS, 2).build();
+                    gateway.sendMessage(message);
+                    index.addAndGet(1);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
             });
         }
     }

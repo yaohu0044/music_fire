@@ -46,7 +46,7 @@ public class RoomController {
         return new Result().ok();
     }
 
-    @PostMapping("/delete/{ids}")
+    @GetMapping("/delete/{ids}")
     public Result delete(@PathVariable List<Integer> ids){
         service.updateByIds(ids);
         return new Result().ok();

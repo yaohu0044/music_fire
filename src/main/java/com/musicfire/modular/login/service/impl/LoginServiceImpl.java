@@ -60,8 +60,10 @@ public class LoginServiceImpl implements LoginService {
                 userRoleEntityWrapper.eq("user_id", user.getId());
                 List<UserRole> userRoles = userRoleService.selectList(userRoleEntityWrapper);
                 List<Integer> roleIds = userRoles.stream().map(UserRole::getRoleId).collect(Collectors.toList());
-
-                List<MenuDto> menuDtos = menuService.queryMenDtoByRoles(roleIds);
+                if(roleIds.size() < 1){
+                   throw new BusinessException(ErrorCode.NO_AUTHORITY);
+                }
+                List<MenuDto> menuDTos = menuService.queryMenDtoByRoles(roleIds);
                 //获取角色名称,
                 EntityWrapper<Role> roleEntityWrapper = new EntityWrapper<>();
                 roleEntityWrapper.in("id",roleIds);
@@ -70,7 +72,7 @@ public class LoginServiceImpl implements LoginService {
 
                 Login login = new Login();
                 login.setUserName(loginName);
-                login.setMenuDTos(menuDtos);
+                login.setMenuDTos(menuDTos);
                 login.setRoles(roleNames);
                 //如果是商家,则角色只能是一个.返回商家的title
                 if(roles.get(0).getId()==3){

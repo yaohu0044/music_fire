@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 @Data
 public class CommodityDto extends Commodity {
 
-    private String merchantName;
-    private Integer merchantId;
+    private String path;
     private BigDecimal price;
+
 }

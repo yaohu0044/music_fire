@@ -5,28 +5,32 @@ import com.alipay.api.AlipayClient;
 import com.alipay.api.DefaultAlipayClient;
 import com.alipay.api.internal.util.AlipaySignature;
 import com.alipay.api.request.AlipaySystemOauthTokenRequest;
+import com.alipay.api.request.AlipayTradePagePayRequest;
 import com.alipay.api.request.AlipayUserInfoShareRequest;
 import com.alipay.api.response.AlipaySystemOauthTokenResponse;
 import com.alipay.api.response.AlipayUserInfoShareResponse;
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.musicfire.common.businessException.BusinessException;
+import com.musicfire.common.businessException.ErrorCode;
 import com.musicfire.common.config.AliPayConfig;
 import com.musicfire.common.config.ProjectUrlConfig;
 import com.musicfire.common.config.redisdao.RedisDao;
 import com.musicfire.common.utiles.Constant;
 import com.musicfire.mobile.entity.AliPayUserInfo;
 import com.musicfire.mobile.service.AliPayService;
+import com.musicfire.modular.order.entity.Order;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
@@ -44,11 +48,14 @@ public class AliPayController {
 
     private final ProjectUrlConfig projectUrlConfig;
 
+    private final RedisDao redisDao;
+
     @Autowired
     public AliPayController(AliPayConfig aliPayConfig, RedisDao redisDao, AliPayService aliPayService, ProjectUrlConfig projectUrlConfig) {
         this.aliPayConfig = aliPayConfig;
         this.aliPayService = aliPayService;
         this.projectUrlConfig = projectUrlConfig;
+        this.redisDao = redisDao;
     }
 
 
@@ -99,32 +106,38 @@ public class AliPayController {
             String userId = oauthTokenResponse.getUserId();
             log.info("====================userId:" + userId);
             log.info("====================accessToken:" + accessToken);
-
             //调用接口获取用户信息
             AlipayUserInfoShareRequest requestUser = new AlipayUserInfoShareRequest();
             try {
                 AlipayUserInfoShareResponse userInfoShareResponse = alipayClient.execute(requestUser, oauthTokenResponse.getAccessToken());
                 if (userInfoShareResponse.isSuccess()) {
+                    //判断用户是否已经存在
+                    EntityWrapper<AliPayUserInfo> entityWrapper = new EntityWrapper<>();
+                    entityWrapper.eq("user_id",userInfoShareResponse.getUserId());
+                    List<AliPayUserInfo> aliPayUserInfo = aliPayService.selectList(entityWrapper);
+                    AliPayUserInfo userInfo =null;
+                    if(null == aliPayUserInfo || aliPayUserInfo.size()==0){
+                        userInfo = new AliPayUserInfo();
+                        BeanUtils.copyProperties(userInfoShareResponse, userInfo);
+                        aliPayService.saveAliPayUser(userInfo);
+                    }
                     log.info("调用成功");
-                    AliPayUserInfo userInfo = new AliPayUserInfo();
-                    BeanUtils.copyProperties(userInfoShareResponse, userInfo);
-                    aliPayService.saveAliPayUser(userInfo);
                     session.setAttribute(Constant.AI_PAY_USER, userInfo);
                 } else {
                     log.info("调用失败");
-                    return "mobile/error";
+                    return "redirect:/error.html";
                 }
             } catch (AlipayApiException e) {
                 //处理异常
                 e.printStackTrace();
-                return "mobile/error";
+                return "redirect:/error.html";
             }
         } catch (AlipayApiException e) {
             //处理异常
             e.printStackTrace();
-            return "mobile/error";
+            return "redirect:/error.html";
         }
-        return "redirect:/mobile/machine";
+        return "redirect:/goodsList.html";
     }
 
     @RequestMapping(value = "/notify")
@@ -165,12 +178,53 @@ public class AliPayController {
         return null;
     }
 
-    @RequestMapping(value = "/pay/{ids}")
-    @ResponseBody
-    public void aliPay(@PathVariable List<Integer> ids, PrintWriter out) {
-        String payStr = aliPayService.aliPayStr(ids);
-        out.print(payStr);
-        out.flush();
-        out.close();
+
+    public String aliPay(String unifiedNum) {
+
+        List<Order> orders = redisDao.getList(unifiedNum, Order.class);
+        BigDecimal reduce = orders.stream().map(Order::getPrice).reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        //获得初始化的AlipayClient,请勿更改参数顺序
+        AlipayClient alipayClient = new DefaultAlipayClient(aliPayConfig.getOpen_api_domain(),
+                aliPayConfig.getAppid(),
+                aliPayConfig.getPrivate_key(),
+                "json",
+                "utf-8",
+                aliPayConfig.getAlipay_public_key(),
+                aliPayConfig.getSign_type());
+        //设置请求参数
+        AlipayTradePagePayRequest alipayRequest = new AlipayTradePagePayRequest();
+        //设置支付宝同步通知地址
+//        alipayRequest.setReturnUrl(aliPayConfig.getReturn_url());
+        //设置支付宝异步通知地址
+        alipayRequest.setNotifyUrl(aliPayConfig.getNotify_url());
+
+        //商户订单号，商户网站订单系统中唯一订单号，必填
+//		String out_trade_no = unifiedNum;
+        //付款金额，必填
+        String total_amount = reduce.toString();
+        //交易标题，必填
+        String subject = "好东西";
+        //交易描述，可空
+        String body = "";
+
+        //业务请求参数的集合，最大长度不限，除公共参数外所有请求参数都必须放在这个参数中传递
+        alipayRequest.setBizContent("{\"out_trade_no\":\"" + unifiedNum + "\","
+                + "\"total_amount\":\"" + total_amount + "\","
+                + "\"subject\":\"" + subject + "\","
+                + "\"body\":\"" + body + "\","
+                + "\"timeout_express\":\"30m\","//该笔订单允许的最晚付款时间，逾期将关闭交易。
+                + "\"product_code\":\"FAST_INSTANT_TRADE_PAY\"}");//销售产品码，与支付宝签约的产品码名称。 注：目前仅支持FAST_INSTANT_TRADE_PAY
+
+        //发送请求，支付宝将返回一个支付请求的表单数据串
+        String result;
+        try {
+            result = alipayClient.pageExecute(alipayRequest).getBody();
+        } catch (AlipayApiException e) {
+            e.printStackTrace();
+            throw new BusinessException(ErrorCode.PAY_ERR);
+        }
+        return  result;
     }
+
 }

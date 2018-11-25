@@ -22,5 +22,6 @@ public class RoomDto extends Room {
     private String machineCode ;
 
     private String stateStr;
+    private String machineName;
 
 }

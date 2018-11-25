@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
     <title>商品详情</title>
-    <link rel="stylesheet" href="../css/public.css"/>
+    <link rel="stylesheet" href="../static/css/public.css"/>
+    <script type="text/javascript" src="../static/js/jquery.min.js"></script>
+    <script type="text/javascript" src="../static/js/dot.min.js"></script>
 </head>
 <body>
 <div class="title">这个是商品名</div>
@@ -18,7 +20,14 @@
 </div>
 <script type="text/javascript">
     function purchase(){
-        location.href="./orderInfo.html";
+        $.ajax({
+            url: '/order/saveOrder/'+1,
+            type: "get",
+            data: {},
+            success: function (data) {
+                location.href="./orderInfo.html?unifiedNum="+data.unifiedNum;
+            }
+        })
     }
 </script>
 </body>

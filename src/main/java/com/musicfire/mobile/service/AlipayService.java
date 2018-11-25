@@ -3,14 +3,10 @@ package com.musicfire.mobile.service;
 import com.baomidou.mybatisplus.service.IService;
 import com.musicfire.mobile.entity.AliPayUserInfo;
 
-import java.util.List;
-
 
 public interface AliPayService extends IService<AliPayUserInfo> {
 
 	int saveAliPayUser(AliPayUserInfo alipayUserInfo);
-
-	String aliPayStr(List<Integer> ids);
 
 	/**
 	 * 保存 更新订单信息

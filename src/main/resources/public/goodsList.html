@@ -3,8 +3,8 @@
 <head lang="en">
     <meta charset="UTF-8">
     <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
-    <title>乐火售货机</title>
-    <link rel="stylesheet" href="../css/public.css"/>
+    <title>乐火售000货机</title>
+    <link rel="stylesheet" href="/static/css/public.css"/>
 </head>
 <body>
 <div class="title">XXW-00089</div>
@@ -17,7 +17,7 @@
             <div class="select-many">
                 <div class="unsel" onclick="selectThisGoods(this)"></div>
             </div>
-            <div class="select-content" onclick="checkThisGoods({{=it[i].id}})">
+            <div class="select-content" onclick="checkThisGoods({{=it[i].id}},{{=it[i].price}})">
                 <div class="passageway">{{=it[i].num}}门</div>
                 <div class="goods-content">
                     <div class="goods-img" style="background: url({{=it[i].shrinkageChart}}) no-repeat;background-size: 100% 100%;"></div>
@@ -41,8 +41,8 @@
 <div class="payment-many">
     <div class="goods-btn">购买(<span id="manyNum">0</span>)</div>
 </div>
-<script type="text/javascript" src="../js/jquery.min.js"></script>
-<script type="text/javascript" src="../js/dot.min.js"></script>
+<script type="text/javascript" src="../static/js/jquery.min.js"></script>
+<script type="text/javascript" src="../static/js/dot.min.js"></script>
 <script type="text/javascript">
     $(function () {
         //获取商品列表
@@ -56,21 +56,14 @@
 
             }
         })
-    })
-
-    /**
-     * 购买商品
-     */
-    function purchase(){
-        alert("购买")
-    }
+    });
 
     /**
      * 打开商品详情
      * @param machinePositionId 仓位Id
      */
-    function checkThisGoods(machinePositionId){
-        location.href="./goodsDetails.html?machinePositionId="+machinePositionId;
+    function checkThisGoods(machinePositionId,price,commodityName,shrinkageChart){
+        location.href="./goodsDetails.html?machinePositionId="+machinePositionId+"&price="+price+"&commodityName="+commodityName+"&shrinkageChart="+shrinkageChart;
     }
     /**
      * 选择/取消商品并计数

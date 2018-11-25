@@ -5,6 +5,7 @@ import com.musicfire.modular.commodity.entity.Commodity;
 import com.musicfire.modular.commodity.entity.Dto.CommodityDto;
 import com.musicfire.modular.commodity.query.CommodityPage;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -19,7 +20,7 @@ import java.util.List;
 @Mapper
 public interface CommodityMapper extends BaseMapper<Commodity> {
 
-    List<Commodity> queryByCommodity(CommodityPage page);
+    List<CommodityDto> queryByCommodity(CommodityPage page);
     Integer queryCount(CommodityPage page);
 
     /**
@@ -28,5 +29,5 @@ public interface CommodityMapper extends BaseMapper<Commodity> {
      */
     List<Commodity> queryHotCommodity();
 
-    List<CommodityDto> queryByIds(List<Integer> commodityId);
+    List<CommodityDto> queryByIds(@Param("ids") List<Integer> commodityId);
 }
