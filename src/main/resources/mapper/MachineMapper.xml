@@ -16,6 +16,7 @@
         <result column="create_time" property="createTime" />
         <result column="create_id" property="createId" />
         <result column="update_time" property="updateTime" />
+        <result column="type" property="type" />
         <result column="update_ie" property="updateIe" />
         <result column="distribution" property="distribution" />
     </resultMap>

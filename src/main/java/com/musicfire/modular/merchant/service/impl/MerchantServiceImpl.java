@@ -51,6 +51,7 @@ public class MerchantServiceImpl extends ServiceImpl<MerchantMapper, Merchant> i
         User user = new User();
         BeanUtils.copyProperties(merchantVo,user);
         user.setPassword(Md5.generate(merchantVo.getPassword()));
+        user.setName(merchantVo.getMerchantName());
         if (ObjectUtils.isEmpty(merchant.getId())) {
             userService.insert(user);
             merchant.setUserId(user.getId());
@@ -69,7 +70,7 @@ public class MerchantServiceImpl extends ServiceImpl<MerchantMapper, Merchant> i
         UserRole userRole = new UserRole();
         //3表示商户禁止改动（后续考虑做成数据字典）
         userRole.setRoleId(3);
-        userRole.setUserId(merchantVo.getUserId());
+        userRole.setUserId(user.getId());
         userRoleService.insert(userRole);
     }
 

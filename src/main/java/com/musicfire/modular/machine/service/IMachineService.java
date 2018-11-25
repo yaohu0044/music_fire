@@ -23,7 +23,7 @@ public interface IMachineService extends IService<Machine> {
     /**
      * 根据商家Id获取机器信息
      * @param merchantId 商家Id
-     * @return 机器信息
+     * @return 机器信息(没有被分配)
      */
     List<Machine> queryByMerchantId(Integer merchantId);
 

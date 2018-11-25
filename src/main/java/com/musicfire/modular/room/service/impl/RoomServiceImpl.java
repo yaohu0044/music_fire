@@ -1,18 +1,23 @@
 package com.musicfire.modular.room.service.impl;
 
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.musicfire.common.config.redisdao.RedisDao;
+import com.musicfire.modular.machine.entity.Machine;
 import com.musicfire.modular.machine.entity.MachineState;
 import com.musicfire.modular.machine.machine_enum.MachineStatusEnum;
+import com.musicfire.modular.machine.service.IMachineService;
 import com.musicfire.modular.room.dao.RoomMapper;
 import com.musicfire.modular.room.dto.RoomDto;
 import com.musicfire.modular.room.entity.Room;
 import com.musicfire.modular.room.query.RoomPage;
 import com.musicfire.modular.room.service.IRoomService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.musicfire.common.config.redisdao.RedisConstant.MACHINE_STATE_PRE;
 
@@ -32,6 +37,9 @@ public class RoomServiceImpl extends ServiceImpl<RoomMapper, Room> implements IR
 
     @Resource
     private RedisDao redisDao;
+
+    @Resource
+    private IMachineService machineService;
 
     @Override
     public RoomPage queryByRoom(RoomPage page) {
@@ -56,17 +64,48 @@ public class RoomServiceImpl extends ServiceImpl<RoomMapper, Room> implements IR
         return page;
     }
 
+    @Transactional
     @Override
     public void updateByIds(List<Integer> ids) {
+        EntityWrapper<Room> roomEntityWrapper = new EntityWrapper<>();
+        roomEntityWrapper.in("id",ids);
+        List<Room> rooms = mapper.selectList(roomEntityWrapper);
+        List<Integer> machineIds = rooms.stream().map(Room::getMachineId).collect(Collectors.toList());
+        EntityWrapper<Machine> machineEntityWrapper = new EntityWrapper<>();
+        machineEntityWrapper.in("id",machineIds);
+        Machine machine = new Machine();
+        machine.setIsDistribution(false);
+        machineService.update(machine,machineEntityWrapper);
         mapper.updateByIds(ids);
     }
 
+    @Transactional
     @Override
     public void save(Room room) {
         if (null != room.getId()) {
+            Room room1 = mapper.selectById(room.getId());
+            if(room1.getMachineId().intValue()!=room.getMachineId()){
+                //还原原来机器被分配状态
+                EntityWrapper<Machine> entityWrapper = new EntityWrapper<>();
+                entityWrapper.eq("id",room1.getMachineId());
+                Machine machine = new Machine();
+                machine.setIsDistribution(false);
+                machineService.update(machine,entityWrapper);
+                // 修改被分配状态
+                EntityWrapper<Machine> entityWrapper1 = new EntityWrapper<>();
+                entityWrapper1.eq("id",room.getMachineId());
+                Machine machine1 = new Machine();
+                machine1.setIsDistribution(true);
+                machineService.update(machine1,entityWrapper1);
+            };
             mapper.updateById(room);
         }else{
             mapper.insert(room);
+            EntityWrapper<Machine> entityWrapper = new EntityWrapper<>();
+            entityWrapper.eq("id",room.getMachineId());
+            Machine machine = new Machine();
+            machine.setIsDistribution(true);
+            machineService.update(machine,entityWrapper);
         }
     }
 }

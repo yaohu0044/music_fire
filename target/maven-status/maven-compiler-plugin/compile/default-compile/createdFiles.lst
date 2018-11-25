@@ -3,6 +3,7 @@ com\musicfire\modular\machine\service\impl\MachineServiceImpl.class
 com\musicfire\common\handler\LoginUserInterceptor.class
 com\musicfire\modular\system\service\IUserService.class
 com\musicfire\common\config\WechatMpConfig.class
+com\musicfire\common\utiles\ExcelVOAttribute.class
 com\musicfire\modular\commodity\entity\Dto\CommodityDto.class
 com\musicfire\mobile\entity\AliPayUserInfo.class
 com\musicfire\modular\machine\dto\MachinePositionVo.class
@@ -29,7 +30,6 @@ com\musicfire\common\utiles\FileNameUtils.class
 com\musicfire\mobile\wxpay\WXPayConfig.class
 com\musicfire\modular\order\dao\OrderMapper.class
 com\musicfire\common\config\redisdao\RedisDao.class
-com\musicfire\common\utiles\ExcelEntity.class
 com\musicfire\modular\room\dao\RoomMapper.class
 com\musicfire\common\config\redisdao\impl\RedisDaoImpl$1.class
 com\musicfire\modular\commodity\dao\CommodityMapper.class
@@ -74,6 +74,7 @@ com\musicfire\modular\system\entity\Setting.class
 com\musicfire\modular\system\service\impl\RoleServiceImpl.class
 com\musicfire\modular\machine\service\IMachineService.class
 com\musicfire\common\handler\MqttMessageGateway.class
+com\musicfire\common\utiles\ExcelUtil$1.class
 com\musicfire\modular\system\service\impl\UserRoleServiceImpl.class
 com\musicfire\common\config\MQTTConfig.class
 com\musicfire\mobile\wxpay\WXPayDomainSimpleImpl$1.class
@@ -104,7 +105,6 @@ com\musicfire\modular\system\service\impl\WxPaySettingServiceImpl.class
 com\musicfire\modular\commodity\controller\CommodityController.class
 com\musicfire\modular\system\dao\UserMapper.class
 com\musicfire\common\config\redisdao\impl\RedisDaoImpl$3.class
-com\musicfire\common\utiles\ExcelGrid.class
 com\musicfire\modular\login\service\impl\LoginServiceImpl.class
 com\musicfire\common\utiles\Constant.class
 com\musicfire\mobile\wxpay\WXPayReport$2.class
@@ -115,6 +115,7 @@ com\musicfire\modular\system\entity\WxPaySetting.class
 com\musicfire\mobile\service\AliPayService.class
 com\musicfire\common\utiles\UUIDTool.class
 com\musicfire\modular\commodity\entity\Commodity.class
+com\musicfire\common\utiles\ExcelUtil.class
 com\musicfire\modular\system\service\impl\RoleMenuServiceImpl.class
 com\musicfire\common\config\redisdao\impl\RedisDaoImpl$9.class
 com\musicfire\common\config\redisdao\impl\RedisDaoImpl$10.class
@@ -126,6 +127,7 @@ com\musicfire\modular\login\Login.class
 com\musicfire\modular\business\service\impl\BusinessServiceImpl.class
 com\musicfire\modular\system\controller\RoleMenuController.class
 com\musicfire\modular\system\service\impl\MenuServiceImpl.class
+com\musicfire\common\utiles\ZXingCode.class
 com\musicfire\mobile\wxpay\WXPayConfigImpl.class
 com\musicfire\common\config\SessionListener.class
 com\musicfire\mobile\dto\UserAccessToken.class
@@ -166,7 +168,6 @@ com\musicfire\common\config\ProjectUrlConfig.class
 com\musicfire\modular\report\HomePageReport.class
 com\musicfire\modular\system\service\impl\SettingServiceImpl.class
 com\musicfire\mobile\controller\WxPayController.class
-com\musicfire\common\utiles\ExcelTool.class
 com\musicfire\mobile\wxpay\WXPayReport$1.class
 com\musicfire\common\config\redisdao\impl\RedisDaoImpl$12.class
 com\musicfire\modular\system\service\IWxPaySettingService.class
@@ -176,6 +177,7 @@ com\musicfire\modular\system\dao\RoleMenuMapper.class
 com\musicfire\common\config\redisdao\impl\RedisDaoImpl$2.class
 com\musicfire\common\utiles\Common$Format.class
 com\musicfire\mobile\enums\WechatAuthStateEnum.class
+com\musicfire\common\utiles\ZXingCode$1.class
 com\musicfire\modular\machine\machine_enum\MachineStatusEnum.class
 com\musicfire\modular\system\dto\MenuVo.class
 com\musicfire\common\utiles\Md5.class

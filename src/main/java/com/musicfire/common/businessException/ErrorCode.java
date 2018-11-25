@@ -16,6 +16,7 @@ public enum ErrorCode {
     PAY_ERR(20011, "生产支付信息错误"),
     PAY_AMOUNT_ERR(20012, "支付信息验证失败"),
     ORDER_VERIFICATION_ERR(20013,"订单信息错误"),
+    MACHINE_EXIST(20014,"机器存在"),
     ;
 
     private int code;

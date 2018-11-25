@@ -39,10 +39,11 @@
             r.flag = false
             <choose>
                 <when test="merchantName != null and merchantName !=''">
-                    and u.name = #{merchantName}
+
+                    and u.name = CONCAT('%',#{merchantName},'%')
                 </when>
                 <when test="roomName != null and roomName !=''">
-                    and r.name = #{roomName}
+                    and r.name =  CONCAT('%',#{roomName},'%')
                 </when>
                 <when test="userId != null and userId !=''">
                     and u.id = #{userId}

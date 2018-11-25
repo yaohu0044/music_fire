@@ -31,15 +31,20 @@ public class LoginUserInterceptor extends HandlerInterceptorAdapter {
             return true;
         }else{
             String token = request.getHeader("token");
-            if(redisDao.exist(token)){
-                JSON parse = (JSON)JSON.parse(redisDao.get(token));
-                Login l = JSONObject.toJavaObject(parse, Login.class);
-                RequestHolder.add(l);
-                RequestHolder.add(request);
-                return true;
+            if(token!=null ){
+                if(redisDao.exist(token)){
+                    JSON parse = (JSON)JSON.parse(redisDao.get(token));
+                    Login l = JSONObject.toJavaObject(parse, Login.class);
+                    RequestHolder.add(l);
+                    RequestHolder.add(request);
+                    return true;
+                }else{
+                    return true;
+                }
             }else{
                 return true;
             }
+
         }
     }
 

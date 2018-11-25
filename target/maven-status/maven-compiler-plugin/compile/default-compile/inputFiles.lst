@@ -5,6 +5,7 @@ E:\I`m\music_fire\src\main\java\com\musicfire\mobile\service\impl\AliPayServiceI
 E:\I`m\music_fire\src\main\java\com\musicfire\AutoGeneratorHelper.java
 E:\I`m\music_fire\src\main\java\com\musicfire\mobile\wxpay\WXPayRequest.java
 E:\I`m\music_fire\src\main\java\com\musicfire\modular\commodity\controller\CommodityStockController.java
+E:\I`m\music_fire\src\main\java\com\musicfire\common\utiles\ZXingCode.java
 E:\I`m\music_fire\src\main\java\com\musicfire\modular\system\dto\MenuVo.java
 E:\I`m\music_fire\src\main\java\com\musicfire\modular\system\controller\MenuController.java
 E:\I`m\music_fire\src\main\java\com\musicfire\mobile\controller\AliPayController.java
@@ -33,6 +34,7 @@ E:\I`m\music_fire\src\main\java\com\musicfire\modular\system\entity\Menu.java
 E:\I`m\music_fire\src\main\java\com\musicfire\modular\room\query\RoomPage.java
 E:\I`m\music_fire\src\main\java\com\musicfire\modular\order\service\IOrderService.java
 E:\I`m\music_fire\src\main\java\com\musicfire\modular\room\dao\RoomMapper.java
+E:\I`m\music_fire\src\main\java\com\musicfire\common\utiles\ExcelVOAttribute.java
 E:\I`m\music_fire\src\main\java\com\musicfire\modular\system\dao\AliPaySettingMapper.java
 E:\I`m\music_fire\src\main\java\com\musicfire\modular\system\entity\UserRole.java
 E:\I`m\music_fire\src\main\java\com\musicfire\common\utiles\IsEmpty.java
@@ -70,6 +72,7 @@ E:\I`m\music_fire\src\main\java\com\musicfire\mobile\controller\WxPayController.
 E:\I`m\music_fire\src\main\java\com\musicfire\modular\commodity\entity\Commodity.java
 E:\I`m\music_fire\src\main\java\com\musicfire\common\config\CacheConfig.java
 E:\I`m\music_fire\src\main\java\com\musicfire\modular\system\service\IMenuService.java
+E:\I`m\music_fire\src\main\java\com\musicfire\common\utiles\ExcelUtil.java
 E:\I`m\music_fire\src\main\java\com\musicfire\common\config\CacheComponent.java
 E:\I`m\music_fire\src\main\java\com\musicfire\common\init\InitUser.java
 E:\I`m\music_fire\src\main\java\com\musicfire\common\init\InitAppInfo.java
@@ -81,7 +84,6 @@ E:\I`m\music_fire\src\main\java\com\musicfire\MusicFireApplication.java
 E:\I`m\music_fire\src\main\java\com\musicfire\mobile\wxpay\IWXPayDomain.java
 E:\I`m\music_fire\src\main\java\com\musicfire\modular\commodity\service\ICommodityStockService.java
 E:\I`m\music_fire\src\main\java\com\musicfire\modular\machine\entity\MachineState.java
-E:\I`m\music_fire\src\main\java\com\musicfire\common\utiles\ExcelEntity.java
 E:\I`m\music_fire\src\main\java\com\musicfire\modular\login\Login.java
 E:\I`m\music_fire\src\main\java\com\musicfire\common\utiles\BasePage.java
 E:\I`m\music_fire\src\main\java\com\musicfire\modular\commodity\dao\CommodityPicMapper.java
@@ -168,9 +170,7 @@ E:\I`m\music_fire\src\main\java\com\musicfire\modular\system\query\MenuPage.java
 E:\I`m\music_fire\src\main\java\com\musicfire\modular\system\query\UserPage.java
 E:\I`m\music_fire\src\main\java\com\musicfire\modular\room\service\impl\RoomServiceImpl.java
 E:\I`m\music_fire\src\main\java\com\musicfire\common\config\websocket\ServerEncode.java
-E:\I`m\music_fire\src\main\java\com\musicfire\common\utiles\ExcelTool.java
 E:\I`m\music_fire\src\main\java\com\musicfire\common\validated\Update.java
-E:\I`m\music_fire\src\main\java\com\musicfire\common\utiles\ExcelGrid.java
 E:\I`m\music_fire\src\main\java\com\musicfire\modular\machine\query\MachinePage.java
 E:\I`m\music_fire\src\main\java\com\musicfire\modular\system\dto\RoleVo.java
 E:\I`m\music_fire\src\main\java\com\musicfire\mobile\dto\WechatUser.java

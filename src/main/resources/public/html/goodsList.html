@@ -17,7 +17,7 @@
             <div class="select-many">
                 <div class="unsel" onclick="selectThisGoods(this)"></div>
             </div>
-            <div class="select-content" onclick="checkThisGoods({{=it[i].id}},{{=it[i].price}})">
+            <div class="select-content" onclick="checkThisGoods({{=it[i].id}})">
                 <div class="passageway">{{=it[i].num}}门</div>
                 <div class="goods-content">
                     <div class="goods-img" style="background: url({{=it[i].shrinkageChart}}) no-repeat;background-size: 100% 100%;"></div>
@@ -47,7 +47,7 @@
     $(function () {
         //获取商品列表
         $.ajax({
-            url: '/api/machinePosition/queryByMachineCode/4312255237324D4D0671FF38',
+            url: '/api/machinePosition/queryByMachineCode/431832463834534D066DFF33',
             type: "get",
             data: {},
             success: function (data) {

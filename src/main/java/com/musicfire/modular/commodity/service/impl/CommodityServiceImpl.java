@@ -91,7 +91,7 @@ public class CommodityServiceImpl extends ServiceImpl<CommodityMapper, Commodity
         commodity.setFlag(true);
         commodityMapper.update(commodity,entityWrapper);
         EntityWrapper<CommodityPic> entityWrapperPic = new EntityWrapper<>();
-        entityWrapper.in("commodity_id", ids);
+        entityWrapperPic.in("commodity_id", ids);
         commodityPicMapper.delete(entityWrapperPic);
         EntityWrapper<CommodityStock> entityWrapperStock = new EntityWrapper<>();
         commodityStockMapper.delete(entityWrapperStock);

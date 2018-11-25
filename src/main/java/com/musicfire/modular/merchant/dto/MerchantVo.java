@@ -13,6 +13,8 @@ public class MerchantVo {
     @NotNull(groups = {Update.class},message = "Id不能为空")
     private Integer id;
 
+    private String merchantName;
+
     /**
      * 商家登录名
      */

@@ -26,9 +26,7 @@
         <if test="null != name and '' != name">
            and c.name LIKE CONCAT('%',#{name},'%')
         </if>
-
-
-
+        order by c.id desc
         limit #{startPosition},#{pageSize}
     </select>
     <select id="queryCount" resultType="java.lang.Integer" parameterType="com.musicfire.modular.commodity.query.CommodityPage">
