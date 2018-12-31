@@ -5,4 +5,5 @@ import lombok.Data;
 
 @Data
 public class UserPage extends BasePage {
+    private String name;
 }

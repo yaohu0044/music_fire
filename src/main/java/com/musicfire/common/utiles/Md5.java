@@ -83,7 +83,9 @@ public class Md5 {
             MessageDigest md = MessageDigest.getInstance("md5");
             byte md5[] =  md.digest(token.getBytes());
             BASE64Encoder encoder = new BASE64Encoder();
-            return encoder.encode(md5);
+            String encode = encoder.encode(md5);
+            encode =encode.replaceAll("/","");
+            return encode;
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
             throw new BusinessException(ErrorCode.TOKEN_ERR);

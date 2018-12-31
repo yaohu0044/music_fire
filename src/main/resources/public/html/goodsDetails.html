@@ -9,25 +9,60 @@
     <script type="text/javascript" src="../../static/js/dot.min.js"></script>
 </head>
 <body>
-<div class="title">这个是商品名</div>
+<div class="title" id="commodityName">这个是商品名</div>
 <div class="goods-list">
     <div class="details-info">
         <div class="details-img"></div>
-        <div class="details-time-and-money">2018-11-19</div>
-        <div class="details-time-and-money">￥0.1</div>
+        <div class="details-time-and-money" id="nowDate"></div>
+        <div class="details-time-and-money" id="priceId"></div>
     </div>
     <div class="goods-btn details-btn" onclick="purchase()">购买</div>
 </div>
 <script type="text/javascript">
+
+    $('#priceId').html("￥"+getQueryStringByName("price"));
+    $('#commodityName').html(decodeURI(getQueryStringByName("commodityName")))
+   // $(".details-img").css("background","url("+getQueryStringByName('shrinkageChart')+")");
+    $(".details-img").css({
+        "background":"url("+getQueryStringByName('shrinkageChart')+")",
+        "backgroundSize":"100% 100%"
+    })
+     $('#nowDate').html(timeStamp2String(new Date().getTime()))
     function purchase(){
         $.ajax({
-            url: '/api/order/saveOrder/'+1,
+            url: '/api/order/saveOrder/'+getQueryStringByName("machinePositionId"),
             type: "get",
             data: {},
             success: function (data) {
-                location.href="./orderInfo.html?unifiedNum="+data.unifiedNum;
+                debugger
+                location.href="./orderInfo.html?unifiedNum="
+                    +data.result.unifiedNum+"&price="+data.result.price
+                    +"&machineName="+data.result.machineName+"&positionNum="+data.result.positionNum
+                    +"&commodityName="+data.result.commodityName+"&createTime="+timeStamp2String(new Date())+"&des="+data.result.commodityDes;
             }
         })
+    }
+
+    /*
+     * 截取地址栏参数值并返回
+     */
+    function getQueryStringByName(name) {
+        var result = location.search.match(new RegExp("[\?\&]" + name + "=([^\&]+)", "i"));
+        if (result == null || result.length < 1) {
+            return "";
+        }
+        return result[1];
+    }
+    function timeStamp2String(time){
+        var datetime = new Date();
+        datetime.setTime(time);
+        var year = datetime.getFullYear();
+        var month = datetime.getMonth() + 1 < 10 ? "0" + (datetime.getMonth() + 1) : datetime.getMonth() + 1;
+        var date = datetime.getDate() < 10 ? "0" + datetime.getDate() : datetime.getDate();
+        var hour = datetime.getHours()< 10 ? "0" + datetime.getHours() : datetime.getHours();
+        var minute = datetime.getMinutes()< 10 ? "0" + datetime.getMinutes() : datetime.getMinutes();
+        var second = datetime.getSeconds()< 10 ? "0" + datetime.getSeconds() : datetime.getSeconds();
+        return year + "-" + month + "-" + date+" "+hour+":"+minute+":"+second;
     }
 </script>
 </body>

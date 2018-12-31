@@ -19,10 +19,6 @@ public interface IWeChatMpUserService extends IService<WeChatMpUser> {
 
     WeChatMpUser queryByOpenId(String openId);
 
-    /**
-     * 微信支付
-     * @param ids 仓门Id
-     * @param request 请求信息
-     */
-    Map<String,String> wxPay(List<Integer> ids, HttpServletRequest request);
+
+    Map<String,String> wxPay(String unifiedNum, HttpServletRequest request);
 }

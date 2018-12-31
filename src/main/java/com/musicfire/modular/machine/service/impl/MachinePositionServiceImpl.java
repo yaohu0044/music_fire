@@ -52,10 +52,14 @@ public class MachinePositionServiceImpl extends ServiceImpl<MachinePositionMappe
     @Override
     public void save(MachinePosition machinePosition) {
         if(null != machinePosition.getId()){
-            machinePositionMapper.updateById(machinePosition);
+            Integer id = machinePosition.getId();
+            MachinePosition mp = machinePositionMapper.selectById(id);
+            mp.setCommodityId(machinePosition.getCommodityId());
+            machinePositionMapper.updateById(mp);
         }else {
             EntityWrapper<MachinePosition> entityWrapper = new EntityWrapper<>();
             entityWrapper.eq("machine_id",machinePosition.getMachineId());
+            entityWrapper.eq("flag",false);
             List<MachinePosition> machinePositions = machinePositionMapper.selectList(entityWrapper);
             if(machinePositions.size()>=10){
                 throw new BusinessException(ErrorCode.POSITION_OVERRUN);
@@ -90,7 +94,7 @@ public class MachinePositionServiceImpl extends ServiceImpl<MachinePositionMappe
         List<MachinePositionDto> machines =  machinePositionMapper.queryByMachine(page);
         machines.sort(Comparator.comparingInt(MachinePosition::getNum));
         page.setList(machines);
-        page.setPageCount(count);
+        page.setTotalCount(count);
         return page;
     }
 
@@ -142,6 +146,12 @@ public class MachinePositionServiceImpl extends ServiceImpl<MachinePositionMappe
         });
 
         return machinePositionDTos;
+    }
+
+    @Override
+    public List<MachinePositionDto> queryByIds(List<Integer> ids) {
+        List<MachinePositionDto> dTos = machinePositionMapper.queryByIds(ids);
+        return dTos;
     }
 }
 

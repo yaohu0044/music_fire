@@ -4,7 +4,10 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.musicfire.common.businessException.BusinessException;
 import com.musicfire.common.businessException.ErrorCode;
+import com.musicfire.modular.system.dao.MenuMapper;
 import com.musicfire.modular.system.dao.RoleMapper;
+import com.musicfire.modular.system.dto.RoleDTo;
+import com.musicfire.modular.system.entity.Menu;
 import com.musicfire.modular.system.entity.Role;
 import com.musicfire.modular.system.entity.RoleMenu;
 import com.musicfire.modular.system.query.RolePage;
@@ -18,6 +21,7 @@ import org.springframework.util.StringUtils;
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -34,6 +38,9 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IR
     private RoleMapper mapper;
 
     @Resource
+    private MenuMapper menuMapper;
+
+    @Resource
     private IRoleMenuService roleMenuService;
 
     @Transactional
@@ -44,17 +51,30 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IR
                 throw new BusinessException(ErrorCode.ROLE_NAME_REPEAT);
             }
             mapper.insert(role);
+            List<RoleMenu> roleMenus = new ArrayList<>();
+            addRoleMenu(role, menuIds, roleMenus);
+            roleMenuService.insertList(roleMenus);
         }else{
             mapper.updateById(role);
+            //清空原来角色和菜单
+            EntityWrapper<RoleMenu> roleMenuEntityWrapper = new EntityWrapper<>();
+            roleMenuEntityWrapper.eq("role_id",role.getId());
+            roleMenuService.delete(roleMenuEntityWrapper);
+            //重新添加角色
+            List<RoleMenu> roleMenus = new ArrayList<>();
+            addRoleMenu(role, menuIds, roleMenus);
+            roleMenuService.insertList(roleMenus);
         }
-        List<RoleMenu> roleMenus = new ArrayList<>();
+
+    }
+
+    private void addRoleMenu(Role role, List<Integer> menuIds, List<RoleMenu> roleMenus) {
         menuIds.forEach(menuId->{
             RoleMenu roleMenu = new RoleMenu();
             roleMenu.setMenuId(menuId);
             roleMenu.setRoleId(role.getId());
             roleMenus.add(roleMenu);
         });
-        roleMenuService.insertList(roleMenus);
     }
 
     @Override
@@ -63,7 +83,15 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IR
         if(count<1){
             return rolePage;
         }
-        List<Role> roles = mapper.queryByPage(rolePage);
+        List<RoleDTo> roles = mapper.queryByPage(rolePage);
+        roles.forEach(r->{
+            EntityWrapper<RoleMenu> roleMenuEntityWrapper = new EntityWrapper<>();
+            roleMenuEntityWrapper.eq("role_id",r.getId());
+            r.setMenuIds(roleMenuService.selectList(roleMenuEntityWrapper).stream().map(RoleMenu::getMenuId).collect(Collectors.toList()));
+            EntityWrapper<Menu> menuEntityWrapper = new EntityWrapper<>();
+            menuEntityWrapper.in("id",r.getMenuIds());
+            r.setMenuNames(menuMapper.selectList(menuEntityWrapper).stream().map(Menu::getName).collect(Collectors.toList()));
+        });
         rolePage.setList(roles);
         rolePage.setTotalCount(count);
         return rolePage;

@@ -1,5 +1,6 @@
 package com.musicfire.mobile.service.impl;
 
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.musicfire.common.businessException.BusinessException;
 import com.musicfire.common.businessException.ErrorCode;
@@ -12,8 +13,10 @@ import com.musicfire.mobile.service.IWeChatMpUserService;
 import com.musicfire.mobile.wxpay.HttpUtils;
 import com.musicfire.mobile.wxpay.WXPayConstants;
 import com.musicfire.mobile.wxpay.WXPayUtil;
+import com.musicfire.modular.order.entity.Order;
 import com.musicfire.modular.order.service.IOrderService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.MapUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -51,24 +54,30 @@ public class WeChatMpUserServiceImpl extends ServiceImpl<WeChatMpUserMapper, WeC
     }
 
     @Override
-    public Map<String,String> wxPay(List<Integer> ids, HttpServletRequest request) {
-        String unifiedNum = UUIDTool.getOrderIdByUUId();
-        BigDecimal amount = orderService.inserAll(ids, unifiedNum);
+    public Map<String,String> wxPay(String unifiedNum, HttpServletRequest request) {
+        EntityWrapper<Order> orderEntityWrapper = new EntityWrapper<>();
+        orderEntityWrapper.eq("unified_num",unifiedNum);
+        List<Order> orders = orderService.selectList(orderEntityWrapper);
+        BigDecimal amount = orders.stream().map(Order::getPrice).reduce(BigDecimal.ZERO, BigDecimal::add);
         try {
             Map<String, String> payMap = new TreeMap<>();
-            String openId = (String) request.getSession().getAttribute("openId");
             Map<String, String> paraMap = new HashMap<>();
             paraMap.put("body", "微信支付");
             paraMap.put("out_trade_no", unifiedNum);
             paraMap.put("spbill_create_ip", IpUtil.getIpAddr(request));
-            paraMap.put("openid", openId);
+            paraMap.put("openid", accountConfig.getOpenAppId());
             paraMap.put("total_fee", WXPayUtil.getMoney(amount));
             log.info("paramap:{}",paraMap);
             String xmlStr =  unifiedOrder(paraMap);
             String prepay_id = "";
             String nonce_str = "";
+            String sign = "";
             if (xmlStr.contains("SUCCESS")) {
                 Map<String, String> map = WXPayUtil.doXMLParse(xmlStr);
+                log.info(" get doXMLParse:{}", map);
+                prepay_id = MapUtils.getString(map, "prepay_id");
+                nonce_str = MapUtils.getString(map, "nonce_str");
+                sign = MapUtils.getString(map, "sign");
                 log.info(" get doXMLParse:{}", map);
             } else {
                 log.warn("=== 支付错误 failed! ===");
@@ -83,7 +92,7 @@ public class WeChatMpUserServiceImpl extends ServiceImpl<WeChatMpUserMapper, WeC
             payMap.put("paySign", paySign);
             payMap.put("body", "");
             log.info("===  unifiedOrder :{}  ===", payMap);
-            return paraMap;
+            return payMap;
         } catch (Exception e) {
             e.printStackTrace();
             throw new BusinessException(ErrorCode.ORDER_VERIFICATION_ERR);

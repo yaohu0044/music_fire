@@ -10,4 +10,8 @@ public class MachineDto extends Machine {
 
     private String stateStr;
 
+    /**
+     * 机器仓位状态
+     */
+    private String machinePositionStr;
 }

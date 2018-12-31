@@ -31,6 +31,10 @@ public class CommodityVo extends Commodity {
      */
     private String introduce;
     /**
+     * 简介
+     */
+    private String introduceContent;
+    /**
      * 进价
      */
     @NotBlank(message = "商品进价",groups = {Insert.class,Update.class})

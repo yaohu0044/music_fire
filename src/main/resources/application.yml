@@ -10,11 +10,31 @@ spring:
     driver-class-name: com.mysql.jdbc.Driver
     type: com.zaxxer.hikari.HikariDataSource
     hikari:
-      maximum-pool-size: 20
+      maximum-pool-size: 200
+      minimum-idle: 5
+      auto-commit: true
+      idle-timeout: 30000
+      pool-name: DatebookHikariCP
+      max-lifetime: 1800000
+      connection-timeout: 30000
+      connection-test-query: SELECT 1
   redis:
     host: 127.0.0.1
     port: 6379
+    #password: xinxi@123
     keyPrefix: jeeplus
+    maxIdle: 300
+    maxActive: 600
+    maxTotal: 1000
+    maxWaitMillis: 60000
+    minEvictableIdleTimeMillis: 300000
+    numTestsPerEvictionRun: 1024
+    timeBetweenEvictionRunsMillis: 30000
+    testOnBorrow: true
+    testWhileIdle: true
+
+
+
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8
@@ -70,15 +90,15 @@ wechat:
   mchId: 1502968311
   mchKey: 8dd841e0b6d54fa08d7426e0d61b4c8a
   keyPath: /var/weixin_cert/h5.p12
-  notifyUrl:  http://1c592r8399.51mypc.cn/wxpay/notify
+  notifyUrl:  http://vendor.xinxiconnect.com/wxpay/notify
   templateId:
     orderStatus: e-Cqq67QxD6YNI41iRiqawEYdFavW_7pc7LyEMb-yeQ
 
 projectUrl:
-  wechatMpAuthorize: http://1c592r8399.51mypc.cn
-  wechatOpenAuthorize: http://1c592r8399.51mypc.cn
-  vendingmachine: http://1c592r8399.51mypc.cn
-  mobile: http://1c592r8399.51mypc.cn/mobile
+  wechatMpAuthorize: http://vendor.xinxiconnect.com
+  wechatOpenAuthorize: http://vendor.xinxiconnect.com
+  vendingmachine: http://vendor.xinxiconnect.com
+  mobile: http://vendor.xinxiconnect.com/mobile
 
 
 # 支付宝网关名、partnerId和appId
@@ -87,8 +107,8 @@ alipay:
   mcloud_api_domain: http://mcloudmonitor.com/gateway.do
   uid: 2088102175761651
   appid: 2018051960121986
-  return_url:  http://1c592r8399.51mypc.cn/alipay/return
-  notify_url:  http://1c592r8399.51mypc.cn/alipay/notify
+  return_url:  http://vendor.xinxiconnect.com/alipay/return
+  notify_url:  http://vendor.xinxiconnect.com/alipay/notify
 
   # RSA私钥、公钥和支付宝公钥
   private_key: MIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQCH6xXA5OT92VFJ
@@ -128,10 +148,12 @@ alipay:
   CHARSET: utf-8
 
 
+
+
 path:
   base:
     win:  E:/server_file/vmc
-    linux:  /opt/server_file/vmc
+    linux:  /usr/musicfire/vmc
 
   relevant:
     shop: /upload/vmc/item/shop/

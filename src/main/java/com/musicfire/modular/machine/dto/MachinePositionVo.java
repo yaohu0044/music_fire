@@ -12,4 +12,6 @@ public class MachinePositionVo {
     private Integer machineId;
 
     private Integer commodityId;
+
+    private Integer id;
 }

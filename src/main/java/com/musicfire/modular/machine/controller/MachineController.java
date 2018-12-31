@@ -1,9 +1,13 @@
 package com.musicfire.modular.machine.controller;
 
 
+import com.musicfire.common.businessException.BusinessException;
+import com.musicfire.common.businessException.ErrorCode;
+import com.musicfire.common.handler.RequestHolder;
 import com.musicfire.common.utiles.Result;
 import com.musicfire.common.validated.Insert;
 import com.musicfire.common.validated.Update;
+import com.musicfire.modular.login.Login;
 import com.musicfire.modular.machine.dto.MachineVo;
 import com.musicfire.modular.machine.entity.Machine;
 import com.musicfire.modular.machine.query.MachinePage;
@@ -70,6 +74,21 @@ public class MachineController {
     @GetMapping("/queryByMerchantId")
     public Result queryByMerchantId(Integer merchantId){
         List<Machine> machine = service.queryByMerchantId(merchantId);
+        return new Result().ok(machine);
+    }
+
+    /**
+     *
+     * 针对商家
+     * @return
+     */
+    @GetMapping("/queryMerchantId")
+    public Result queryMerchantId(){
+        Login currentUser = RequestHolder.getCurrentUser();
+        if(null == currentUser){
+            throw new BusinessException(ErrorCode.NOT_LOGGED_IN);
+        }
+        List<Machine> machine = service.queryByMerchantId(currentUser.getMerchantId());
         return new Result().ok(machine);
     }
 

@@ -4,7 +4,7 @@ public enum MachineStatusEnum {
 
     REGISTER(0, "新注册"),
     ONLINE(1,"在线"),
-    STATE(2, "上报中"),
+    STATE(2, "在线"),
     OFFLINE(3, "断线"),
     ERROR(4, "错误"),
     UNBIND(5, "未绑定") ,

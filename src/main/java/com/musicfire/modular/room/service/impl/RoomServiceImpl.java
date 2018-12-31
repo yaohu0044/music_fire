@@ -2,6 +2,8 @@ package com.musicfire.modular.room.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.musicfire.common.businessException.BusinessException;
+import com.musicfire.common.businessException.ErrorCode;
 import com.musicfire.common.config.redisdao.RedisDao;
 import com.musicfire.modular.machine.entity.Machine;
 import com.musicfire.modular.machine.entity.MachineState;
@@ -60,7 +62,7 @@ public class RoomServiceImpl extends ServiceImpl<RoomMapper, Room> implements IR
             }
         });
         page.setList(rooms);
-        page.setPageCount(count);
+        page.setTotalCount(count);
         return page;
     }
 
@@ -82,6 +84,18 @@ public class RoomServiceImpl extends ServiceImpl<RoomMapper, Room> implements IR
     @Transactional
     @Override
     public void save(Room room) {
+        Integer merchantId = room.getMerchantId();
+        String name = room.getName();
+        Room r = new Room();
+        r.setMerchantId(merchantId);
+        r.setName(name);
+        r.setFlag(false);
+        Room room2 = mapper.selectOne(r);
+        if(null != room2){
+            throw new BusinessException(ErrorCode.ROOM_EXIST);
+        }
+
+
         if (null != room.getId()) {
             Room room1 = mapper.selectById(room.getId());
             if(room1.getMachineId().intValue()!=room.getMachineId()){

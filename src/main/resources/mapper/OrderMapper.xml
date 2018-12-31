@@ -15,6 +15,7 @@
         <result column="create_time" property="createTime" />
         <result column="number" property="number" />
         <result column="account_account" property="accountAccount" />
+        <result column="trade_no" property="tradeNo" />
     </resultMap>
     <resultMap id="NewResultMap" type="com.musicfire.modular.order.dto.OrderDto" extends="BaseResultMap">
         <result column="merchantName" property="merchantName" />

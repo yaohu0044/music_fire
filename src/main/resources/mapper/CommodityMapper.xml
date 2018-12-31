@@ -15,6 +15,7 @@
         <result column="update_time" property="updateTime" />
         <result column="update_id" property="updateId" />
         <result column="price" property="price" />
+        <result column="introduce_content" property="introduceContent" />
     </resultMap>
     <resultMap id="NewResultMap" type="com.musicfire.modular.commodity.entity.Dto.CommodityDto" extends="BaseResultMap">
         <result column="path" property="path" />

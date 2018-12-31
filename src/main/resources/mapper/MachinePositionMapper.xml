@@ -22,6 +22,7 @@
         <result column="commodityId" property="commodityId" />
         <result column="price" property="price" />
         <result column="shrinkageChart" property="shrinkageChart" />
+        <result column="commodityDes" property="commodityDes" />
 
     </resultMap>
 
@@ -77,5 +78,32 @@
             and m.name = #{machineName}
         </if>
     </select>
+    <select id="queryByIds" parameterType="com.musicfire.modular.machine.query.MachinePage" resultMap="NewResultMap">
+        SELECT
+        mp.available,
+        mp.state,
+        mp.id,
+        mp.num,
+        m.NAME AS machineName,
+        m.`code` AS machineCode,
+        u.NAME AS merchantName,
+        c.`name` AS commodityName,
+        c.price,
+        mp.commodity_id AS commodityId ,
+        mp.machine_id as machineId,
+        cp.path as shrinkageChart,
+        c.describe as commodityDes
+        FROM
+        machine_position mp
+        LEFT JOIN machine m ON mp.machine_id = m.id
+        LEFT JOIN merchant me ON me.id = m.id
+        LEFT JOIN commodity c ON c.id = mp.commodity_id
+        LEFT JOIN sys_user u ON u.id = me.user_id
+        left join commodity_pic cp on cp.commodity_id = c.id
+        where mp.flag = false and mp.id in
+        <foreach collection="ids" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
 
+    </select>
 </mapper>

@@ -8,4 +8,6 @@ public class OrderDto extends Order {
     private String merchantName;
     private String machineName;
     private String commodityName;
+    private String positionNum;
+    private String commodityDes;
 }

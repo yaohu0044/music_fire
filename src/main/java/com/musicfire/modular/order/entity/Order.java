@@ -69,4 +69,8 @@ public class Order{
     @TableField("unified_num")
     private String unifiedNum;
 
+    @TableField("trade_no")
+    private String tradeNo;
+
+
 }

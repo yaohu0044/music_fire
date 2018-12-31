@@ -1,5 +1,6 @@
 package com.musicfire.modular.system.dao;
 
+import com.musicfire.modular.system.dto.RoleDTo;
 import com.musicfire.modular.system.entity.Role;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 import com.musicfire.modular.system.query.RolePage;
@@ -20,5 +21,5 @@ public interface RoleMapper extends BaseMapper<Role> {
 
     Integer countByPage(RolePage rolePage);
 
-    List<Role> queryByPage(RolePage rolePage);
+    List<RoleDTo> queryByPage(RolePage rolePage);
 }

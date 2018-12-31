@@ -22,4 +22,6 @@ public class MachinePositionDto extends MachinePosition {
     private BigDecimal price;
 
     private Integer commodityId;
+
+    private String commodityDes;
 }

@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.service.IService;
 import com.musicfire.modular.machine.dto.MachinePositionDto;
 import com.musicfire.modular.machine.entity.MachinePosition;
 import com.musicfire.modular.machine.query.MachinePositionPage;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -36,4 +37,11 @@ public interface IMachinePositionService extends IService<MachinePosition> {
      * @return 商品信息
      */
     List<MachinePositionDto> queryByMachineCode(String code);
+
+    /**
+     * 根据仓位Id 获取仓位详情
+     * @param ids
+     * @return
+     */
+    List<MachinePositionDto> queryByIds(List<Integer> ids);
 }

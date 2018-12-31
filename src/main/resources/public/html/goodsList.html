@@ -3,7 +3,7 @@
 <head lang="en">
     <meta charset="UTF-8">
     <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
-    <title>乐火000售货机</title>
+    <title>乐火售货机</title>
     <link rel="stylesheet" href="../../static/css/public.css"/>
 </head>
 <body>
@@ -17,10 +17,10 @@
             <div class="select-many">
                 <div class="unsel" onclick="selectThisGoods(this)"></div>
             </div>
-            <div class="select-content" onclick="checkThisGoods({{=it[i].id}})">
+            <div class="select-content" onclick=checkThisGoods('{{=it[i].id}}','{{=it[i].price}}','{{=it[i].commodityName}}','{{=it[i].shrinkageChart}}')>
                 <div class="passageway">{{=it[i].num}}门</div>
                 <div class="goods-content">
-                    <div class="goods-img" style="background: url({{=it[i].shrinkageChart}}) no-repeat;background-size: 100% 100%;"></div>
+                    <div class="goods-img" style="background: url(../{{=it[i].shrinkageChart}}) no-repeat;background-size: 100% 100%;"></div>
                     <div class="goods-details">
                         <div class="goods-name">{{=it[i].commodityName}}</div>
                         <div class="goods-num">{{=it[i].price}}</div>
@@ -59,10 +59,18 @@
     });
 
     /**
+     * 多个商品购买
+     * */
+    function purchase() {
+
+    }
+
+    /**
      * 打开商品详情
      * @param machinePositionId 仓位Id
      */
     function checkThisGoods(machinePositionId,price,commodityName,shrinkageChart){
+        // var name = encodeURI(encodeURI(commodityName))
         location.href="./goodsDetails.html?machinePositionId="+machinePositionId+"&price="+price+"&commodityName="+commodityName+"&shrinkageChart="+shrinkageChart;
     }
     /**

@@ -2,6 +2,8 @@ package com.musicfire.modular.merchant.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.musicfire.common.businessException.BusinessException;
+import com.musicfire.common.businessException.ErrorCode;
 import com.musicfire.common.utiles.Md5;
 import com.musicfire.modular.merchant.dao.MerchantMapper;
 import com.musicfire.modular.merchant.dto.MerchantDto;
@@ -46,17 +48,52 @@ public class MerchantServiceImpl extends ServiceImpl<MerchantMapper, Merchant> i
     @Transactional
     @Override
     public void save(MerchantVo merchantVo) {
+
         Merchant merchant = new Merchant();
         BeanUtils.copyProperties(merchantVo,merchant);
         User user = new User();
         BeanUtils.copyProperties(merchantVo,user);
-        user.setPassword(Md5.generate(merchantVo.getPassword()));
+
         user.setName(merchantVo.getMerchantName());
-        if (ObjectUtils.isEmpty(merchant.getId())) {
+        if (null == merchant.getId()) {
+            //验证登录名是否重复
+            User user1 = new User();
+            user1.setFlag(false);
+            user1.setLoginName(merchantVo.getLoginName());
+            EntityWrapper<User> userEntityWrapper = new EntityWrapper<>();
+            userEntityWrapper.setEntity(user1);
+            List<User> users = userService.selectList(userEntityWrapper);
+            if(users.size()>0){
+                throw new BusinessException(ErrorCode.LOGO_NAME_EXIST);
+            }
+            user.setPassword(Md5.generate(merchantVo.getPassword()));
             userService.insert(user);
             merchant.setUserId(user.getId());
             mapper.insert(merchant);
         } else {
+            User u = userService.selectById(merchantVo.getUserId());
+            if(null != u){
+                if(u.getPassword().equals(merchantVo.getPassword())){
+                    user.setPassword(u.getPassword());
+                }else{
+                    user.setPassword(Md5.generate(merchantVo.getPassword()));
+                }
+                if(!u.getLoginName().equals(merchantVo.getLoginName())){
+                    //验证登录名是否重复
+                    User user1 = new User();
+                    user1.setFlag(false);
+                    user1.setLoginName(merchantVo.getLoginName());
+                    EntityWrapper<User> userEntityWrapper = new EntityWrapper<>();
+                    userEntityWrapper.setEntity(user1);
+                    List<User> users = userService.selectList(userEntityWrapper);
+                    if(users.size()>0){
+                        throw new BusinessException(ErrorCode.LOGO_NAME_EXIST);
+                    }
+                }
+            }else{
+                throw new BusinessException(ErrorCode.NOT_EXIST);
+            }
+
             user.setId(merchantVo.getUserId());
             userService.updateById(user);
             merchant.setUserId(user.getId());

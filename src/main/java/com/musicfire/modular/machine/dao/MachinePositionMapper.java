@@ -5,6 +5,7 @@ import com.musicfire.modular.machine.entity.MachinePosition;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 import com.musicfire.modular.machine.query.MachinePositionPage;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -22,4 +23,6 @@ public interface MachinePositionMapper extends BaseMapper<MachinePosition> {
     int queryByCount(MachinePositionPage page);
 
     List<MachinePositionDto> queryByMachine(MachinePositionPage page);
+
+    List<MachinePositionDto> queryByIds(@Param("ids") List<Integer> ids);
 }

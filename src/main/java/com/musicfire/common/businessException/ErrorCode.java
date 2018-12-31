@@ -17,6 +17,9 @@ public enum ErrorCode {
     PAY_AMOUNT_ERR(20012, "支付信息验证失败"),
     ORDER_VERIFICATION_ERR(20013,"订单信息错误"),
     MACHINE_EXIST(20014,"机器存在"),
+    ROOM_EXIST(20015,"房间名重复"),
+    LOGO_NAME_EXIST(20016,"登录明重复"),
+    NOT_EXIST(20017,"信息不存在"),
     ;
 
     private int code;

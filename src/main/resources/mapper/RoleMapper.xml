@@ -13,8 +13,9 @@
         <result column="update_id" property="updateId" />
         <result column="update_time" property="updateTime" />
     </resultMap>
+    <resultMap id="NewResultMap" type="com.musicfire.modular.system.dto.RoleDTo" extends="BaseResultMap"></resultMap>
 
-    <select id="queryByPage" resultMap="BaseResultMap" parameterType="com.musicfire.modular.system.query.RolePage">
+    <select id="queryByPage" resultMap="NewResultMap" parameterType="com.musicfire.modular.system.query.RolePage">
         select * from sys_role where flag =false limit #{startPosition},#{pageSize}
     </select>
     <select id="countByPage" resultType="java.lang.Integer" parameterType="com.musicfire.modular.system.query.RolePage">

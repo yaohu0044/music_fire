@@ -5,6 +5,7 @@ import com.musicfire.common.utiles.Result;
 import com.musicfire.modular.login.Login;
 import com.musicfire.modular.login.service.LoginService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,5 +27,11 @@ public class LoginController {
     private Result login(@RequestBody Login login){
         Login verifyLogin = loginService.verifyLogin(login.getUserName(),login.getPassword());
         return new Result().ok(verifyLogin);
+    }
+
+    @PostMapping("/loginOut/{token}")
+    private Result loginOut(@PathVariable String token){
+        redisDao.delete(token);
+        return new Result().ok();
     }
 }

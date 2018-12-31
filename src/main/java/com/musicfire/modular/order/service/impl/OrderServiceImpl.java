@@ -22,6 +22,8 @@ import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 /**
@@ -70,10 +72,13 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         List<MachinePosition> machinePositions = machinePositionService.selectList(machinePositionEntityWrapper);
         List<Integer> commodityId = machinePositions.stream().map(MachinePosition::getCommodityId).collect(Collectors.toList());
         List<CommodityDto> commodityDto = commodityService.queryByIds(commodityId);
-        //BigDecimal reduce = commodityDto.stream().map(CommodityDto::getPrice).reduce(BigDecimal.ZERO, BigDecimal::add);
+        BigDecimal reduce = commodityDto.stream().map(CommodityDto::getPrice).reduce(BigDecimal.ZERO, BigDecimal::add);
         List<Order> orders = new ArrayList<>();
         Integer machineId = machinePositions.get(0).getMachineId();
         Machine machine = machineService.selectById(machineId);
+
+        Map<Integer, Integer> collect = machinePositions.stream().collect(Collectors.toMap(MachinePosition::getCommodityId, MachinePosition::getId));
+
         //生成预订单
         commodityDto.forEach(commodity -> {
             Order order = new Order();
@@ -84,10 +89,12 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             order.setNumber(UUIDTool.getOrderIdByUUId());
             order.setState(ResultEnum.ORDER_STATE_UNPAID.getCode());
             order.setUnifiedNum(unifiedNum);
+            order.setMachinePositionNum(collect.get(commodity.getId()));
+
             mapper.insert(order);
             orders.add(order);
         });
         redisDao.add(unifiedNum,orders);
-        return null;
+        return reduce;
     }
 }

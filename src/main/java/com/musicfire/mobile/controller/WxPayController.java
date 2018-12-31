@@ -1,6 +1,7 @@
 package com.musicfire.mobile.controller;
 
 
+import com.alibaba.fastjson.JSON;
 import com.musicfire.common.config.redisdao.RedisDao;
 import com.musicfire.mobile.service.IWeChatMpUserService;
 import com.musicfire.mobile.wxpay.WXPayUtil;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import springfox.documentation.spring.web.json.Json;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -42,10 +44,9 @@ public class WxPayController {
 
 
 
-    @ResponseBody
-    @PostMapping("wx_prepay/{ids}")
-    public Map<String, String> wxPay(@PathVariable List<Integer> ids, HttpServletRequest request) {
-        return weChatMpUserService.wxPay(ids, request);
+    public String wxPay(String unifiedNum, HttpServletRequest request) {
+        Map<String, String> stringStringMap = weChatMpUserService.wxPay(unifiedNum, request);
+        return JSON.toJSONString(stringStringMap);
     }
 
     @ResponseBody

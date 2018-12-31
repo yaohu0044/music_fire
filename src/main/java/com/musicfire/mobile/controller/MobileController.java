@@ -14,7 +14,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 @Controller
 @Slf4j
@@ -22,20 +26,37 @@ public class MobileController {
 
     @Autowired
     private ProjectUrlConfig projectUrlConfig;
+
     @Autowired
     private AliPayController aliPayController;
 
+    @Autowired
+    private WxPayController wxPayController;
+
     @RequestMapping(value = "/mobilePay/{unifiedNum}")
     @ResponseBody
-    private String mobilePay(@PathVariable String unifiedNum, HttpServletRequest request){
+    private Map<String,String> mobilePay(@PathVariable String unifiedNum, HttpServletResponse response, HttpServletRequest request){
         String netAgent = IpUtil.getAgent(request);
-        log.info(netAgent);
         if (netAgent.contains("wechat")) {
-            return "redirect:wechat/authorize/"+unifiedNum;
-        } else if (netAgent.contains("alipay")){
-            return aliPayController.aliPay(unifiedNum);
+            String weiXinPay = wxPayController.wxPay(unifiedNum, request);
+            Map<String,String> map = new HashMap<>();
+            map.put("data",weiXinPay);
+            map.put("type",String.valueOf(2));
+            return map;
+        } else if(netAgent.contains("alipay")) {
+            String aliPayStr = aliPayController.aliPay(unifiedNum);
+            Map<String,String> map = new HashMap<>();
+            map.put("data",aliPayStr);
+            map.put("type",String.valueOf(1));
+            return map;
         }
-        return "aredirect:/error.html";
+        String weiXinPay = wxPayController.wxPay(unifiedNum, request);
+        Map<String,String> map = new HashMap<>();
+        map.put("data",weiXinPay);
+        map.put("type",String.valueOf(2));
+        return map;
+//        return null;
+
     }
 
     @RequestMapping(value = "/mobile")

@@ -1,6 +1,7 @@
 package com.musicfire.common.resource;
 
 import com.baomidou.mybatisplus.toolkit.MapUtils;
+import com.musicfire.common.utiles.Conf;
 import com.musicfire.common.utiles.FileUploadUtil;
 import com.musicfire.common.utiles.Result;
 import lombok.extern.slf4j.Slf4j;
@@ -41,7 +42,7 @@ public class Upload {
         MultipartFile file = multipartFiles.get(0);
 
         // 要上传的目标文件存放路径 测试阶段写死。。。。
-        String localPath = "E:/I`m/upload";
+        String localPath = Conf.getValue("picture");
 
         Map<String, String> upload = FileUploadUtil.upload(file, localPath, file.getOriginalFilename());
 

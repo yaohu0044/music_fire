@@ -2,8 +2,11 @@ package com.musicfire.modular.system.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.musicfire.common.businessException.BusinessException;
+import com.musicfire.common.businessException.ErrorCode;
 import com.musicfire.common.utiles.Md5;
 import com.musicfire.modular.system.dao.UserMapper;
+import com.musicfire.modular.system.dto.UserDto;
 import com.musicfire.modular.system.entity.User;
 import com.musicfire.modular.system.entity.UserRole;
 import com.musicfire.modular.system.query.UserPage;
@@ -15,6 +18,7 @@ import org.springframework.util.ObjectUtils;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -36,11 +40,38 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     @Transactional
     @Override
     public void save(User user,List<Integer> roles) {
-        user.setPassword(Md5.generate(user.getPassword()));
+
+
+
         if (ObjectUtils.isEmpty(user.getId())) {
+            User user1 = new User();
+            user1.setLoginName(user.getLoginName());
+            user1.setFlag(false);
+            EntityWrapper<User> userEntityWrapper = new EntityWrapper<>();
+            userEntityWrapper.setEntity(user1);
+            List<User> users = mapper.selectList(userEntityWrapper);
+            if(users.size()>0){
+                throw new BusinessException(ErrorCode.LOGO_NAME_EXIST);
+            }
+            user.setPassword(Md5.generate(user.getPassword()));
             mapper.insert(user);
             roleService.insertAll(user.getId(),roles);
         } else {
+            User u = mapper.selectById(user.getId());
+            if(!u.getPassword().equals(user.getPassword())){
+                user.setPassword(Md5.generate(user.getPassword()));
+            }
+            if(!u.getLoginName().equals(user.getLoginName())){
+                User user1 = new User();
+                user1.setLoginName(user.getLoginName());
+                user1.setFlag(false);
+                EntityWrapper<User> userEntityWrapper = new EntityWrapper<>();
+                userEntityWrapper.setEntity(user1);
+                List<User> users = mapper.selectList(userEntityWrapper);
+                if(users.size()>0){
+                    throw new BusinessException(ErrorCode.LOGO_NAME_EXIST);
+                }
+            }
             mapper.updateById(user);
             EntityWrapper<UserRole> entityWrapper = new EntityWrapper<>();
             entityWrapper.eq("user_id",user.getId());
@@ -55,7 +86,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         if (count < 1) {
             return userPage;
         }
-        List<User> page = mapper.userByPage(userPage);
+        List<UserDto> page = mapper.userByPage(userPage);
+        page.forEach(p->{
+            EntityWrapper<UserRole> roleEntityWrapper = new EntityWrapper<>();
+            roleEntityWrapper.eq("user_id",p.getId());
+            p.setRole(roleService.selectList(roleEntityWrapper).stream().map(UserRole::getRoleId).collect(Collectors.toList()));
+        });
         userPage.setList(page);
         userPage.setTotalCount(count);
         return userPage;

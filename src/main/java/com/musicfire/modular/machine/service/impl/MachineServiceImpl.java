@@ -7,6 +7,7 @@ import com.musicfire.common.businessException.ErrorCode;
 import com.musicfire.common.config.redisdao.RedisDao;
 import com.musicfire.common.utiles.Conf;
 import com.musicfire.common.utiles.QrCodeUtils;
+import com.musicfire.common.utiles.QrCodeUtils1;
 import com.musicfire.modular.machine.dao.MachineMapper;
 import com.musicfire.modular.machine.dto.MachineDto;
 import com.musicfire.modular.machine.entity.Machine;
@@ -17,6 +18,7 @@ import com.musicfire.modular.machine.service.IMachinePositionService;
 import com.musicfire.modular.machine.service.IMachineService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -57,10 +59,11 @@ public class MachineServiceImpl extends ServiceImpl<MachineMapper, Machine> impl
             }else {
                 machineDto.setStateStr(machineState.getMachineState().getMessage());
                 machineDto.setState(machineState.getMachineState().getCode());
+                machineDto.setMachinePositionStr(machineState.getCabinetState());
             }
         });
         page.setList(machines);
-        page.setPageCount(count);
+        page.setTotalCount(count);
         return page;
     }
 
@@ -78,6 +81,7 @@ public class MachineServiceImpl extends ServiceImpl<MachineMapper, Machine> impl
         EntityWrapper<Machine> entityWrapper = new EntityWrapper<>();
         entityWrapper.eq("merchant_id",merchantId);
         entityWrapper.eq("distribution",false);
+        entityWrapper.eq("flag",false);
         return mapper.selectList(entityWrapper);
     }
 
@@ -88,19 +92,31 @@ public class MachineServiceImpl extends ServiceImpl<MachineMapper, Machine> impl
         return mapper.selectList(entityWrapper);
     }
 
+    @Transactional
     @Override
     public void save(Machine machine) {
+
         Machine machine1 = new Machine();
         machine1.setCode(machine.getCode());
+        machine1.setFlag(false);
         Machine mach = mapper.selectOne(machine1);
-        if(null != mach){
-            throw new BusinessException(ErrorCode.MACHINE_EXIST);
-        }
-        machine.setQrCodeUrl(QrCodeUtils.encode(Conf.getValue("text"),Conf.getValue("logoPic"),Conf.getValue("picture"),machine.getCode(),true));
+        machine.setQrCodeUrl(QrCodeUtils.encode(machine.getCode(),Conf.getValue("logoPic"),Conf.getValue("picture"),Conf.getValue("text")));
         if (null != machine.getId()) {
-           mapper.updateById(machine);
+            if(null != mach){
+                if(mach.getId().intValue()==machine.getId().intValue()){
+                    mapper.updateById(machine);
+                }else{
+                    throw new BusinessException(ErrorCode.MACHINE_EXIST);
+                }
+            }else{
+                mapper.updateById(machine);
+            }
         }else{
-            mapper.insert(machine);
+            if(null != mach){
+                mapper.insert(machine);
+            }else{
+                throw new BusinessException(ErrorCode.MACHINE_EXIST);
+            }
         }
     }
 

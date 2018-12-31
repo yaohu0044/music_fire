@@ -13,60 +13,142 @@
 <ul class="info-table">
     <li>
         <div class="label">设备名</div>
-        <div class="explain">XXW-00089</div>
+        <div class="explain" id="machineName">XXW-00089</div>
     </li>
     <li>
         <div class="label">仓号</div>
-        <div class="explain">1</div>
+        <div class="explain" id="positionNum">1</div>
     </li>
     <li>
         <div class="label">价格</div>
-        <div class="explain">0.10</div>
+        <div class="explain" id="price">0.10</div>
     </li>
     <li>
         <div class="label">商品名</div>
-        <div class="explain">名流至薄3大包</div>
+        <div class="explain" id="commodityName">名流至薄3大包</div>
     </li>
     <li>
         <div class="label special">创建时间</div>
-        <div class="explain special">2018-11/19 16:39:54</div>
+        <div class="explain special" id="createTime">2018-11/19 16:39:54</div>
     </li>
     <li>
         <div class="label">描述</div>
-        <div class="explain">XXW-00089 仓门:1 商品:名流至薄3大包 价格0.10</div>
+        <div class="explain" id="des">XXW-00089 仓门:1 商品:名流至薄3大包 价格0.10</div>
     </li>
 </ul>
 <div class="order-btn-list">
     <div class="goods-btn order-cancel">取消</div>
-    <div class="goods-btn order-payment" onclick="payment()">付款</div>
+    <div class="goods-btn order-payment" id="aliPayment" onclick="payment()">付款</div>
+    <!--<div class="goods-btn order-payment" id="aliPayment">付款</div>-->
 </div>
 <script type="text/javascript">
+    function ready(callback) {
+        if (window.AlipayJSBridge) {
+            callback && callback();
+        } else {
+            document.addEventListener('AlipayJSBridgeReady', callback, false);
+        }
+    }
+    $('#price').html(getQueryStringByName("price"));
+    $('#machineName').html(decodeURI(getQueryStringByName("machineName")));
+    $('#positionNum').html(getQueryStringByName("positionNum"));
+    $('#commodityName').html(decodeURI(getQueryStringByName("commodityName")));
+    $('#createTime').html(decodeURI(getQueryStringByName("createTime")));
+    $('#des').html(decodeURI(getQueryStringByName("des")));
+    var unifiedNum = getQueryStringByName("unifiedNum")
+    // ready(function(){
+    //     document.querySelector("#aliPayment").addEventListener("click",function () {
+    //         // alert(123)
+    //         // $.ajax({
+    //         //     url: '/api/mobilePay/'+unifiedNum,
+    //         //     type: "post",
+    //         //     data: {},
+    //         //     success: function (data) {
+    //                 AlipayJSBridge.call("tradePay", {
+    //                     tradeStr:unifiedNum         // 必传，此使用方式下该字段必传
+    //                 }, function(result) {
+    //                     alert(JSON.stringify(result))
+    //                 });
+    //             // }
+    //         // })
+    //
+    //     })
+    // });
     function payment(){
-        alert(456);
-        // let unifiedNum = GetQueryString("unifiedNum")
+        var unifiedNum = getQueryStringByName("unifiedNum");
         $.ajax({
-            url: '/api/mobilePay/'+1,
+            url: '/api/mobilePay/'+unifiedNum,
             type: "post",
             data: {},
-            success: function (data) {
-                // const div = document.createElement('div');
-                // div.innerHTML = data; // html code
-                // document.body.appendChild(div);
-                // let a = document.forms[0].submit()
-                // debugger
-                // window.location.href =data
-                // location.href="./orderInfo.html?unifiedNum="+data.unifiedNum;
-                // location.href="./paymentResult.html";
+            success: function (rest) {
+                if(rest.type==1){
+                    var div = document.createElement('div');
+                    div.innerHTML = rest.data; // html code
+                    document.body.appendChild(div);
+                    document.forms[0].submit();
+                }else{
+                    var data = JSON.parse(rest.data)
+                    var appId = data.appId;
+                    var timeStamp = data.timeStamp;
+                    var nonceStr = data.nonceStr;
+                    var pg = data.pg;
+                    var signType = data.signType;
+                    var paySign = data.paySign;
+
+                    alert(appId);
+                    alert(timeStamp);
+                    alert(nonceStr);
+                    alert(pg);
+                    alert(signType);
+                    alert(paySign);
+
+
+
+                    if (typeof WeixinJSBridge == "undefined") {
+                        alert(456)
+                        if (document.addEventListener) {
+                            document.addEventListener(
+                                'WeixinJSBridgeReady',
+                                onBridgeReady, false);
+                        } else if (document.attachEvent) {
+                            document.attachEvent(
+                                'WeixinJSBridgeReady',
+                                onBridgeReady);
+                            document.attachEvent(
+                                'onWeixinJSBridgeReady',
+                                onBridgeReady);
+                        }
+                    } else {
+                        WeixinJSBridge.invoke(
+                            'getBrandWCPayRequest',
+                            {
+                                "appId": appId, //公众号名称，由商户传入
+                                "timeStamp": timeStamp, //时间戳，自1970年以来的秒数
+                                "nonceStr": nonceStr, //随机串
+                                "package": "prepay_id=" + pg,
+                                "signType": signType, //微信签名方式:
+                                "paySign": paySign //微信签名
+                            },
+
+                            function (res) {
+
+                            });
+                    }
+                }
+
             }
         })
-
     }
-    // function GetQueryString(name)
-    // {
-    //     var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
-    //     var r = window.location.search.substr(1).match(reg);
-    //     if(r!=null)return  unescape(r[2]); return null;
-    // }
+    /*
+     * 截取地址栏参数值并返回
+     */
+    function getQueryStringByName(name) {
+        var result = location.search.match(new RegExp("[\?\&]" + name + "=([^\&]+)", "i"));
+        if (result == null || result.length < 1) {
+            return "";
+        }
+        return result[1];
+    }
 </script>
 </body>
 </html>
