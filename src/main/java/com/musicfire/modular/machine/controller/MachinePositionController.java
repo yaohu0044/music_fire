@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -72,9 +73,23 @@ public class MachinePositionController {
        return new Result().ok();
     }
 
+    /**
+     * 购买失败打开仓门
+     * @param code
+     * @param num
+     * @return
+     */
+    @GetMapping("/purchaseErrOpenPosition")
+    public Result purchaseErrOpenPosition(String code,Integer num,String unifiedNum){
+
+        service.purchaseErrOpenPosition(code,num,unifiedNum);
+        return new Result().ok();
+    }
+
     @GetMapping("/queryByMachineCode/{code}")
     public Result queryByMachineCode(@PathVariable String code){
         List<MachinePositionDto> dto = service.queryByMachineCode(code);
+        dto.sort(Comparator.comparingInt(MachinePositionDto::getNum));
         return new Result().ok(dto);
     }
 }

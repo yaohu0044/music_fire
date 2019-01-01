@@ -28,7 +28,6 @@ public class MerchantVo {
     /**
      * 商家title
      */
-    @NotBlank(groups = {Update.class, Insert.class},message="商家title")
     private String title;
 
     /**

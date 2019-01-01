@@ -14,4 +14,6 @@ public class MachineDto extends Machine {
      * 机器仓位状态
      */
     private String machinePositionStr;
+
+    private String roomName;
 }

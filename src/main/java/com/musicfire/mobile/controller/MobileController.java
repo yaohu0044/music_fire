@@ -50,19 +50,15 @@ public class MobileController {
             map.put("type",String.valueOf(1));
             return map;
         }
-        String weiXinPay = wxPayController.wxPay(unifiedNum, request);
-        Map<String,String> map = new HashMap<>();
-        map.put("data",weiXinPay);
-        map.put("type",String.valueOf(2));
-        return map;
-//        return null;
+
+        return null;
 
     }
 
     @RequestMapping(value = "/mobile")
     private String intoMobile(HttpSession session, HttpServletRequest request, String code, RedirectAttributes attr) {
         String netAgent = IpUtil.getAgent(request);
-
+        System.out.println("开始授权：");
         log.info(netAgent);
 
         if (!netAgent.equalsIgnoreCase("wechat") && !netAgent.equalsIgnoreCase("alipay"))
@@ -71,13 +67,15 @@ public class MobileController {
         if (netAgent.contains("wechat")) {
             session.setAttribute("type", "wechat");
             session.setAttribute("code", code);
-            attr.addAttribute("returnUrl", projectUrlConfig.mobile + "/machine?code=" + code);
-            return "redirect:wechat/authorize";
+            attr.addAttribute("returnUrl", projectUrlConfig.mobile + "/goodsList.html?code=" + code);
+
+            return "redirect:"+projectUrlConfig.mobile+"/api/wechat/authorize";
         } else if (netAgent.contains("alipay")) {
             session.setAttribute("type", "alipay");
             session.setAttribute("code", code);
             attr.addAttribute("code", code);
-            return "redirect:alipay/authorize";
+            log.info("跳转地址："+projectUrlConfig.mobile+"/api/alipay/authorize?code="+code);
+            return "redirect:"+projectUrlConfig.mobile+"/api/alipay/authorize";
         } else {
             return "mobile/error";
         }

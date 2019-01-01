@@ -51,17 +51,7 @@ public class MachineServiceImpl extends ServiceImpl<MachineMapper, Machine> impl
             return page;
         }
         List<MachineDto> machines =  mapper.queryByMachine(page);
-        machines.forEach(machineDto -> {
-            MachineState machineState = redisDao.get(MACHINE_STATE_PRE + machineDto.getCode(),MachineState.class);
-            if(null == machineState){
-                machineDto.setStateStr(MachineStatusEnum.OFFLINE.getMessage());
-                machineDto.setState(MachineStatusEnum.OFFLINE.getCode());
-            }else {
-                machineDto.setStateStr(machineState.getMachineState().getMessage());
-                machineDto.setState(machineState.getMachineState().getCode());
-                machineDto.setMachinePositionStr(machineState.getCabinetState());
-            }
-        });
+        getMachineState(machines);
         page.setList(machines);
         page.setTotalCount(count);
         return page;
@@ -104,6 +94,9 @@ public class MachineServiceImpl extends ServiceImpl<MachineMapper, Machine> impl
         if (null != machine.getId()) {
             if(null != mach){
                 if(mach.getId().intValue()==machine.getId().intValue()){
+                    if(null == machine.getMerchantId()){
+                        machine.setMerchantId(0);
+                    }
                     mapper.updateById(machine);
                 }else{
                     throw new BusinessException(ErrorCode.MACHINE_EXIST);
@@ -112,7 +105,7 @@ public class MachineServiceImpl extends ServiceImpl<MachineMapper, Machine> impl
                 mapper.updateById(machine);
             }
         }else{
-            if(null != mach){
+            if(null == mach){
                 mapper.insert(machine);
             }else{
                 throw new BusinessException(ErrorCode.MACHINE_EXIST);
@@ -123,7 +116,7 @@ public class MachineServiceImpl extends ServiceImpl<MachineMapper, Machine> impl
     @Override
     public void openMachine(Integer id) {
         Machine machine = mapper.selectById(id);
-        positionService.openPosition(machine.getCode(),null);
+        positionService.openPosition(machine.getCode());
 
 //        String topic = "controller/"+cab.getMachineCode();
 ////		"controller/4301473331324B4D066BFF36"
@@ -132,5 +125,34 @@ public class MachineServiceImpl extends ServiceImpl<MachineMapper, Machine> impl
 //        Message message = MessageBuilder.withPayload(cabinetIndex)
 //                //发送的主题
 //                .setHeader(MqttHeaders.TOPIC, topic) .setHeader(MqttHeaders.QOS, 2).build();
+    }
+
+    @Override
+    public MachinePage notOrderMachine(MachinePage page) {
+
+        int count = mapper.notOrderMachineCount(page);
+        if(count < 1 ){
+            return page;
+        }
+        List<MachineDto> machines =  mapper.notOrderMachinePage(page);
+        getMachineState(machines);
+        page.setList(machines);
+        page.setTotalCount(count);
+
+        return page;
+    }
+
+    private void getMachineState(List<MachineDto> machines) {
+        machines.forEach(machineDto -> {
+            MachineState machineState = redisDao.get(MACHINE_STATE_PRE + machineDto.getCode(),MachineState.class);
+            if(null == machineState){
+                machineDto.setStateStr(MachineStatusEnum.OFFLINE.getMessage());
+                machineDto.setState(MachineStatusEnum.OFFLINE.getCode());
+            }else {
+                machineDto.setStateStr(machineState.getMachineState().getMessage());
+                machineDto.setState(machineState.getMachineState().getCode());
+                machineDto.setMachinePositionStr(machineState.getCabinetState());
+            }
+        });
     }
 }

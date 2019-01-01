@@ -36,22 +36,23 @@ public class QrCodeUtils {
 
     public static void main(String[] args) throws WriterException {
        String logoFile = "C:\\Users\\Administrator\\Desktop\\1.jpg";
-        String note = "11212245566";
-        String QrCodeFile = "C:\\Users\\Administrator\\Desktop\\" + note + ".png";
-        String url = "http://1c592r8399.51mypc.cn/html/?code=431832463834534D066DFF33";
+        String note = "456";
+        String QrCodeFile = "C:\\Users\\Administrator\\Desktop\\";
+        String url = "http://vendor.xinxiconnect.com/api/mobile";
         encode(note,logoFile,QrCodeFile,url);
     }
 
     // 生成带logo的二维码图片
     public synchronized static String encode(String note,String logoFileUrl, String codeFileUrl, String qrUrl) {
         File logoFile = new File(logoFileUrl);
-        File codeFile = new File(codeFileUrl);
+        File codeFile = new File(codeFileUrl+note + ".png");
         BitMatrix bm = null;
         BufferedImage image = null;
         try {
             MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
             // 参数顺序分别为：编码内容，编码类型，生成图片宽度，生成图片高度，设置参数
-            bm = multiFormatWriter.encode(qrUrl, BarcodeFormat.QR_CODE, WIDTH, HEIGHT, hints);
+            bm = multiFormatWriter.encode(qrUrl+"/api/mobile?code="+note
+                    , BarcodeFormat.QR_CODE, WIDTH, HEIGHT, hints);
             image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
 
             // 开始利用二维码数据创建Bitmap图片，分别设为黑（0xFFFFFFFF）白（0xFF000000）两色

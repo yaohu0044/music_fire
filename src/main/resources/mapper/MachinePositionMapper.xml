@@ -38,7 +38,7 @@
         c.`name` AS commodityName,
         c.price,
         mp.commodity_id AS commodityId ,
-        mp.machine_id as machineId,
+        mp.machine_id as machine_id,
         cp.path as shrinkageChart
         FROM
         machine_position mp

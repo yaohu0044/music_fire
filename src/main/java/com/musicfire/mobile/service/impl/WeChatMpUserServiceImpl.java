@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.musicfire.common.businessException.BusinessException;
 import com.musicfire.common.businessException.ErrorCode;
 import com.musicfire.common.config.WechatAccountConfig;
+import com.musicfire.common.utiles.Constant;
 import com.musicfire.common.utiles.IpUtil;
 import com.musicfire.common.utiles.UUIDTool;
 import com.musicfire.mobile.dao.WeChatMpUserMapper;
@@ -27,8 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import static com.musicfire.mobile.wxpay.WXPayConstants.DOMAIN_API;
-import static com.musicfire.mobile.wxpay.WXPayConstants.UNIFIEDORDER_URL_SUFFIX;
+import static com.musicfire.mobile.wxpay.WXPayConstants.*;
 
 /**
  * <p>
@@ -48,9 +48,14 @@ public class WeChatMpUserServiceImpl extends ServiceImpl<WeChatMpUserMapper, WeC
     @Resource
     private WechatAccountConfig accountConfig;
 
+    @Resource
+    private WeChatMpUserMapper mpUserMapper;
+
     @Override
     public WeChatMpUser queryByOpenId(String openId) {
-        return null;
+        WeChatMpUser weChatMpUser = new WeChatMpUser();
+        weChatMpUser.setOpenId(openId);
+        return mpUserMapper.selectOne(weChatMpUser);
     }
 
     @Override
@@ -65,19 +70,21 @@ public class WeChatMpUserServiceImpl extends ServiceImpl<WeChatMpUserMapper, WeC
             paraMap.put("body", "微信支付");
             paraMap.put("out_trade_no", unifiedNum);
             paraMap.put("spbill_create_ip", IpUtil.getIpAddr(request));
-            paraMap.put("openid", accountConfig.getOpenAppId());
+            System.out.println("转换之前的openId"+request.getSession().getAttribute(Constant.WECHAT_OPEN_ID));
+            String openId = (String)request.getSession().getAttribute(Constant.WECHAT_OPEN_ID);
+            //获取到的opend
+            System.out.println("openId");
+            paraMap.put("openid", openId);
             paraMap.put("total_fee", WXPayUtil.getMoney(amount));
             log.info("paramap:{}",paraMap);
             String xmlStr =  unifiedOrder(paraMap);
             String prepay_id = "";
             String nonce_str = "";
-            String sign = "";
             if (xmlStr.contains("SUCCESS")) {
                 Map<String, String> map = WXPayUtil.doXMLParse(xmlStr);
                 log.info(" get doXMLParse:{}", map);
                 prepay_id = MapUtils.getString(map, "prepay_id");
                 nonce_str = MapUtils.getString(map, "nonce_str");
-                sign = MapUtils.getString(map, "sign");
                 log.info(" get doXMLParse:{}", map);
             } else {
                 log.warn("=== 支付错误 failed! ===");
@@ -104,11 +111,12 @@ public class WeChatMpUserServiceImpl extends ServiceImpl<WeChatMpUserMapper, WeC
         paraMap.put("appid", accountConfig.getMpAppId());
         paraMap.put("mch_id", accountConfig.getMchId());
         paraMap.put("nonce_str", WXPayUtil.create_nonce_str());
-        paraMap.put("trade_type", "JSAPI");
+        paraMap.put("trade_type", JSAPI);
         paraMap.put("notify_url", accountConfig.getNotifyUrl());
         log.info("para:{}",paraMap);
         String sign = WXPayUtil.generateSignature(paraMap,accountConfig.getMchKey(), WXPayConstants.SignType.MD5);
         paraMap.put("sign", sign);
+
         String xml = WXPayUtil.mapToXml(paraMap);
         return HttpUtils.post(requestUrl, xml);
     }

@@ -26,21 +26,21 @@
     <select id="userByPage" parameterType="com.musicfire.modular.system.query.UserPage" resultMap="NewResult">
         select * from sys_user where flag =false
         <if test="null != name and ''!= name">
-            and name CONCAT('%',#{name},'%')
+            and name like CONCAT('%',#{name},'%')
         </if>
         limit #{startPosition},#{pageSize}
     </select>
     <select id="countByPage" parameterType="com.musicfire.modular.system.query.UserPage" resultType="java.lang.Integer">
         select count(id) from sys_user where flag =false
         <if test="null != name and ''!= name">
-            and name CONCAT('%',#{name},'%')
+            and name like CONCAT('%',#{name},'%')
         </if>
     </select>
     <select id="queryUserByName" parameterType="java.lang.String" resultMap="BaseResultMap">
         select u.* from sys_user_role ur
         left join sys_user u on ur.user_id = u.id where u.flag = false
         <if test="null != name and ''!= name">
-            u.name CONCAT('%',#{name},'%')
+            u.name like CONCAT('%',#{name},'%')
         </if>
     </select>
 

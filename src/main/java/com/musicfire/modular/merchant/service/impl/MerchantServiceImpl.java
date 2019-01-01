@@ -149,4 +149,10 @@ public class MerchantServiceImpl extends ServiceImpl<MerchantMapper, Merchant> i
         merchantPage.setMerchantName(merchantName);
         return mapper.merchantByPage(merchantPage);
     }
+
+    @Override
+    public List<MerchantDto> queryPageAll(MerchantPage page) {
+        List<MerchantDto> dtos = mapper.merchantByPage(page);
+        return dtos;
+    }
 }

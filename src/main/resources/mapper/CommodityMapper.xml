@@ -28,7 +28,10 @@
            and c.name LIKE CONCAT('%',#{name},'%')
         </if>
         order by c.id desc
-        limit #{startPosition},#{pageSize}
+        <if test="pageSize != -1">
+            limit #{startPosition},#{pageSize}
+        </if>
+
     </select>
     <select id="queryCount" resultType="java.lang.Integer" parameterType="com.musicfire.modular.commodity.query.CommodityPage">
         select  count(c.id)  from commodity c

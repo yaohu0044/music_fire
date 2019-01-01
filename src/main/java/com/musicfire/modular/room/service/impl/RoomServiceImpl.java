@@ -91,13 +91,12 @@ public class RoomServiceImpl extends ServiceImpl<RoomMapper, Room> implements IR
         r.setName(name);
         r.setFlag(false);
         Room room2 = mapper.selectOne(r);
-        if(null != room2){
-            throw new BusinessException(ErrorCode.ROOM_EXIST);
-        }
-
 
         if (null != room.getId()) {
             Room room1 = mapper.selectById(room.getId());
+            if(!room2.getName().equals(room1.getName())){
+                throw new BusinessException(ErrorCode.ROOM_EXIST);
+            }
             if(room1.getMachineId().intValue()!=room.getMachineId()){
                 //还原原来机器被分配状态
                 EntityWrapper<Machine> entityWrapper = new EntityWrapper<>();
@@ -114,6 +113,9 @@ public class RoomServiceImpl extends ServiceImpl<RoomMapper, Room> implements IR
             };
             mapper.updateById(room);
         }else{
+            if(null != room2){
+                throw new BusinessException(ErrorCode.ROOM_EXIST);
+            }
             mapper.insert(room);
             EntityWrapper<Machine> entityWrapper = new EntityWrapper<>();
             entityWrapper.eq("id",room.getMachineId());

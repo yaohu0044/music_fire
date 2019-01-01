@@ -3,6 +3,8 @@ package com.musicfire.mobile.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.musicfire.common.config.redisdao.RedisDao;
+import com.musicfire.common.utiles.Constant;
+import com.musicfire.mobile.service.AliPayService;
 import com.musicfire.mobile.service.IWeChatMpUserService;
 import com.musicfire.mobile.wxpay.WXPayUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +20,7 @@ import springfox.documentation.spring.web.json.Json;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -30,16 +33,17 @@ public class WxPayController {
 
     private final RedisDao redisDao;
 
-
+    private final AliPayService aliPayService;
 
 
     private final IWeChatMpUserService weChatMpUserService;
 
 
     @Autowired
-    public WxPayController(RedisDao redisDao,IWeChatMpUserService weChatMpUserService) {
+    public WxPayController(AliPayService aliPayService,RedisDao redisDao,IWeChatMpUserService weChatMpUserService) {
         this.redisDao = redisDao;
         this.weChatMpUserService = weChatMpUserService;
+        this.aliPayService= aliPayService;
     }
 
 
@@ -76,12 +80,18 @@ public class WxPayController {
             log.info(" wxshop charge callback, orderid:{}, result_code:{}, MAP:{}", out_trade_no, return_code, map);
             if (StringUtils.isBlank(out_trade_no)) {
                 return "<xml><return_code><![CDATA[FAIL]]></return_code><return_msg><![CDATA[订单不存在]]></return_msg></xml>";
+            }else if("SUCCESS".equals(return_code)){
+                BigDecimal divide = BigDecimal.valueOf(Double.valueOf(total_fee)).divide(BigDecimal.valueOf(100));
+                aliPayService.saveAliPayOrder(out_trade_no, transaction_id, divide.toString(),String.valueOf(2));
+                return "<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[OK]]></return_msg></xml>";
+            }else{
+                System.out.println("微信支付失败："+return_code);
+                return "";
             }
         } catch (Exception e) {
             e.printStackTrace();
             log.error(e.getMessage(), e);
             return "<xml><return_code><![CDATA[FAIL]]></return_code><return_msg><![CDATA[解析错误]]></return_msg></xml>";
         }
-        return "<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[OK]]></return_msg></xml>";
     }
 }

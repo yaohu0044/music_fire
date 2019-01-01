@@ -10,4 +10,6 @@ public class OrderDto extends Order {
     private String commodityName;
     private String positionNum;
     private String commodityDes;
+    private Integer num;
+    private String roomName;
 }

@@ -24,4 +24,6 @@ public class MachinePositionDto extends MachinePosition {
     private Integer commodityId;
 
     private String commodityDes;
+
+    private Integer machineState;
 }

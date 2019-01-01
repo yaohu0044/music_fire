@@ -2,6 +2,7 @@ package com.musicfire.modular.business.controller;
 
 import com.musicfire.common.handler.RequestHolder;
 import com.musicfire.common.utiles.Result;
+import com.musicfire.mobile.enums.ResultEnum;
 import com.musicfire.modular.business.service.BusinessService;
 import com.musicfire.modular.login.Login;
 import com.musicfire.modular.machine.query.MachinePositionPage;
@@ -11,7 +12,11 @@ import com.musicfire.modular.order.service.IOrderService;
 import com.musicfire.modular.room.query.RoomPage;
 import com.musicfire.modular.room.service.IRoomService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpSession;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/business")
@@ -92,5 +97,14 @@ public class BusinessController {
         orderPage.setUserId(currentUser.getUserId());
         OrderPage page = orderService.list(orderPage);
         return new Result().ok(page);
+    }
+
+    @GetMapping("/getTotal")
+    @ResponseBody
+    public Result total(OrderPage page) {
+        Login currentUser = RequestHolder.getCurrentUser();
+        page.setMerchantId(currentUser.getMerchantId());
+        Map<String, Object> map = orderService.total(page);
+        return new Result().ok(map);
     }
 }

@@ -41,8 +41,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     @Override
     public void save(User user,List<Integer> roles) {
 
-
-
         if (ObjectUtils.isEmpty(user.getId())) {
             User user1 = new User();
             user1.setLoginName(user.getLoginName());

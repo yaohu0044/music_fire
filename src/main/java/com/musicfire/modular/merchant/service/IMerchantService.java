@@ -30,4 +30,12 @@ public interface IMerchantService extends IService<Merchant> {
      * @return 商家信息
      */
     List<MerchantDto> getAll(String merchantName);
+
+    /**
+     * 导出商家
+     * @param page
+     * @return
+     */
+    List<MerchantDto> queryPageAll(MerchantPage page);
+
 }

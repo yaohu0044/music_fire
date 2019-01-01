@@ -9,7 +9,7 @@
     <script type="text/javascript" src="../../static/js/dot.min.js"></script>
 </head>
 <body>
-<div class="title" id="commodityName">这个是商品名</div>
+<!--<div class="title" id="commodityName"></div>-->
 <div class="goods-list">
     <div class="details-info">
         <div class="details-img"></div>
@@ -34,7 +34,6 @@
             type: "get",
             data: {},
             success: function (data) {
-                debugger
                 location.href="./orderInfo.html?unifiedNum="
                     +data.result.unifiedNum+"&price="+data.result.price
                     +"&machineName="+data.result.machineName+"&positionNum="+data.result.positionNum

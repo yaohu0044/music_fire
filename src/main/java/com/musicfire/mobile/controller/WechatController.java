@@ -1,6 +1,7 @@
 package com.musicfire.mobile.controller;
 
 
+import com.alibaba.fastjson.JSON;
 import com.musicfire.common.config.ProjectUrlConfig;
 import com.musicfire.common.utiles.Constant;
 import com.musicfire.mobile.entity.WeChatMpUser;
@@ -45,9 +46,10 @@ public class WechatController {
 
     @GetMapping("/authorize")
     public String authorize(@RequestParam("returnUrl") String returnUrl) {
+        System.out.println("授权微信："+returnUrl);
         //1. 配置
         //2. 调用方法
-        String url = projectUrlConfig.getWechatMpAuthorize() + "/wechat/userInfo";
+        String url = projectUrlConfig.getWechatMpAuthorize() + "/api/wechat/userInfo";
         String redirectUrl = wxMpService.oauth2buildAuthorizationUrl(url, WxConsts.OAUTH2_SCOPE_USER_INFO, URLEncoder.encode(returnUrl));
         log.info("redirectUrl:{}",redirectUrl);
         return "redirect:" + redirectUrl;
@@ -64,6 +66,7 @@ public class WechatController {
             log.info("mpuser:{}",mpUser);
             if(mpUser!=null){
                 WeChatMpUser weChatMpUser =  weChatMpUserService.queryByOpenId(mpUser.getOpenId());
+                System.out.println("微信授权返回对象："+JSON.toJSONString(weChatMpUser));
               if(weChatMpUser==null){
                   weChatMpUser = new WeChatMpUser();
                   weChatMpUser.setOpenId(mpUser.getOpenId());

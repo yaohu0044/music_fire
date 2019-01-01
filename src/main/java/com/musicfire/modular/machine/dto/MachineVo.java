@@ -25,15 +25,12 @@ public class MachineVo {
     /**
      * 经纬度
      */
-    @NotBlank(groups = {Update.class,Insert.class},message="经纬度不能为空")
     private String lonAndLat;
     /**
      * 商家id
      */
-    @NotNull(groups = {Update.class,Insert.class},message = "商家Id不能为空")
     private Integer merchantId;
 
-    @NotNull(groups = {Update.class,Insert.class},message = "机器所在地不能为空")
     private String address;
 
     /**

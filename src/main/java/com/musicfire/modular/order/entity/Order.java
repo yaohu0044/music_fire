@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableName;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -17,7 +18,7 @@ import java.util.Date;
  */
 @TableName("`order`")
 @Data
-public class Order{
+public class Order implements Serializable {
 
     private Integer id;
     /**
@@ -72,5 +73,10 @@ public class Order{
     @TableField("trade_no")
     private String tradeNo;
 
+    @TableField(exist = false)
+    private String userName;
+
+    @TableField(exist = false)
+    private String headImg;
 
 }

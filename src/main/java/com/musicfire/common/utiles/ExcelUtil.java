@@ -4,9 +4,11 @@ import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.util.CellRangeAddressList;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -311,5 +313,21 @@ public class ExcelUtil<T> {
 				regions, constraint);
 		sheet.addValidationData(data_validation_list);
 	}
-
+	//发送响应流方法
+	public static void setResponseHeader(HttpServletResponse response, String fileName) {
+		try {
+			try {
+				fileName = new String(fileName.getBytes(),"ISO8859-1");
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			response.setContentType("application/octet-stream;charset=ISO8859-1");
+			response.setHeader("Content-Disposition", "attachment;filename="+ fileName);
+			response.addHeader("Pargam", "no-cache");
+			response.addHeader("Cache-Control", "no-cache");
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+	}
 }

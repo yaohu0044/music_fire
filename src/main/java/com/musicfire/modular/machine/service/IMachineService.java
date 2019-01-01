@@ -41,5 +41,10 @@ public interface IMachineService extends IService<Machine> {
      */
     void openMachine(Integer id);
 
-
+    /**
+     * 根据条件返回没有产生订单的机器
+     * @param page
+     * @return
+     */
+    MachinePage notOrderMachine(MachinePage page);
 }

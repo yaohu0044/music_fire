@@ -18,4 +18,5 @@ public class Login  {
     private Integer merchantId;
 
     private String token;
+    private String headImg;
 }

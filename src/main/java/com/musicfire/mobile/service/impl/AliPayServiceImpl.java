@@ -65,20 +65,20 @@ public class AliPayServiceImpl extends ServiceImpl<AliPayUserInfoMapper, AliPayU
 
     @Transactional
     @Override
-    public void saveAliPayOrder(String out_trade_no, String trade_no, String total_amount) {
+    public void saveAliPayOrder(String out_trade_no, String trade_no, String total_amount,String type) {
         EntityWrapper<Order> entityWrapper = new EntityWrapper<>();
         entityWrapper.eq("unified_num",out_trade_no);
         List<Order> orders = orderService.selectList(entityWrapper);
         if(null == orders || orders.size()<1){
             throw new BusinessException(ErrorCode.ORDER_VERIFICATION_ERR);
         }
-        BigDecimal orderTotalAmount = orders.stream().map(Order::getPrice).reduce(BigDecimal.ZERO, BigDecimal::add);
-        if(!orderTotalAmount.toString().equals(total_amount)){
-            throw new BusinessException(ErrorCode.PAY_AMOUNT_ERR);
-        }
+//        BigDecimal orderTotalAmount = orders.stream().map(Order::getPrice).reduce(BigDecimal.ZERO, BigDecimal::add);
+//        if(!orderTotalAmount.toString().equals(total_amount)){
+//            throw new BusinessException(ErrorCode.PAY_AMOUNT_ERR);
+//        }
         Order order = new Order();
         order.setState(ResultEnum.ORDER_STATE_SUCCESS.getCode());
-        order.setPaymentMethod(ResultEnum.ALI_PAY.getCode());
+        order.setPaymentMethod(Integer.parseInt(type));
         order.setTradeNo(trade_no);
         orderService.update(order,entityWrapper);
         //获取机器code
@@ -86,7 +86,13 @@ public class AliPayServiceImpl extends ServiceImpl<AliPayUserInfoMapper, AliPayU
         //打开仓门
         orders.forEach(o->{
             try {
-                machinePositionService.openPosition(machine.getCode(),o.getMachinePositionNum());
+                //获取仓位
+                MachinePosition mp = machinePositionService.selectById(o.getMachinePositionNum());
+                machinePositionService.openPosition(machine.getCode(),mp.getNum());
+                MachinePosition machinePosition = new MachinePosition();
+                machinePosition.setAvailable(false);
+                machinePosition.setId(o.getMachinePositionNum());
+                machinePositionService.updateById(machinePosition);
                 Thread.sleep(500L);
             } catch (InterruptedException e) {
                 e.printStackTrace();

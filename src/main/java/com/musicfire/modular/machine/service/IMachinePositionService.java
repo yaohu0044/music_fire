@@ -32,6 +32,12 @@ public interface IMachinePositionService extends IService<MachinePosition> {
     void openPosition(String machineCode,Integer num);
 
     /**
+     * 打开仓门
+     * @param machineCode 机器code
+     */
+    void openPosition(String machineCode);
+
+    /**
      * 根据机器code获取仓位所有商品信息
      * @param code 机器code
      * @return 商品信息
@@ -44,4 +50,12 @@ public interface IMachinePositionService extends IService<MachinePosition> {
      * @return
      */
     List<MachinePositionDto> queryByIds(List<Integer> ids);
+
+    /**
+     * 购买失败打开仓门
+     * @param code
+     * @param num
+     * @return
+     */
+    void purchaseErrOpenPosition(String code, Integer num,String unifiedNum);
 }

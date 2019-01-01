@@ -537,6 +537,7 @@ public class DateTool {
 		return dateString;
 	}
 
+
 	/**
 	 * 获取昨天的时间
 	 * @param time
@@ -764,7 +765,15 @@ public class DateTool {
 		Date date = new Date(millSec);
 		return sdf.format(date);
 	}
-	public static void main(String[] args) throws ParseException {
-		monthOfDayList("2017-12");
+
+    /**
+     * 获取指定天之前日期
+     * @param day 天数
+     * @return
+     */
+	public static Date getBefDay(Integer day){
+        Calendar ca = Calendar.getInstance();
+        ca.add(Calendar.DATE,-7);
+        return ca.getTime();
 	}
 }

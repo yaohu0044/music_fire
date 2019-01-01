@@ -32,7 +32,10 @@
         <if test="null != merchantName and ''!= merchantName">
             and u.name LIKE CONCAT('%',#{merchantName},'%')  or m.title LIKE CONCAT('%',#{merchantName},'%')
         </if>
-         limit #{startPosition},#{pageSize}
+        <if test="pageSize != -1 ">
+            limit #{startPosition},#{pageSize}
+        </if>
+
     </select>
     <select id="countByPage" parameterType="com.musicfire.modular.merchant.query.MerchantPage" resultType="java.lang.Integer">
         select count(m.id) from merchant m

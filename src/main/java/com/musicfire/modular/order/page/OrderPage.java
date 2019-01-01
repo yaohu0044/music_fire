@@ -10,4 +10,6 @@ public class OrderPage extends BasePage {
     private String endTime;
     private String startTime;
     private Integer userId;
+    private Integer merchantId;
+    private Integer state;
 }

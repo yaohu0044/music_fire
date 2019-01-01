@@ -20,6 +20,7 @@ public enum ErrorCode {
     ROOM_EXIST(20015,"房间名重复"),
     LOGO_NAME_EXIST(20016,"登录明重复"),
     NOT_EXIST(20017,"信息不存在"),
+    RE_SELECTION(20018,"没有改商品。请重新选择"),
     ;
 
     private int code;

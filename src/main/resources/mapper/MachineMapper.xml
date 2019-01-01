@@ -22,6 +22,7 @@
     </resultMap>
     <resultMap id="NewResultMap" type="com.musicfire.modular.machine.dto.MachineDto" extends="BaseResultMap">
         <result column="merchantName" property="merchantName" />
+        <result column="roomName" property="roomName" />
     </resultMap>
 
     <select id="queryByMachine" parameterType="com.musicfire.modular.machine.query.MachinePage" resultMap="NewResultMap">
@@ -38,7 +39,16 @@
         <if test="null != name and '' != name">
             and mac.name LIKE CONCAT('%',#{name},'%')
         </if>
-        limit #{startPosition},#{pageSize}
+        <if test="allocate ==true">
+            and mac.merchant_id is not null  and mac.merchant_id >0
+        </if>
+        <if test="allocate ==false ">
+            and (mac.merchant_id is null or mac.merchant_id =0)
+        </if>
+        <if test="pageSize != -1">
+            limit #{startPosition},#{pageSize}
+        </if>
+
     </select>
     <select id="queryByCount" parameterType="com.musicfire.modular.machine.query.MachinePage" resultType="java.lang.Integer">
         select count(mac.id) from machine mac
@@ -54,6 +64,49 @@
         <if test="null != name and '' != name">
             and mac.name LIKE CONCAT('%',#{name},'%')
         </if>
+        <if test="allocate ==true">
+            and mac.merchant_id is not null and mac.merchant_id >0
+        </if>
+        <if test="allocate ==false ">
+            and (mac.merchant_id is null or mac.merchant_id =0)
+        </if>
+    </select>
+
+    <select id="notOrderMachinePage" parameterType="com.musicfire.modular.machine.query.MachinePage" resultMap="NewResultMap">
+        select mac.* ,u.name as merchantName,r.name as roomName from machine mac
+        left join merchant mer on mac.merchant_id = mer.id
+        left join sys_user u on u.id = mer.user_id
+        left join room r on r.machine_id = mac.id
+        where mac.flag =false
+        <if test="merchantName != null and merchantName!=''">
+            and u.name LIKE CONCAT('%',#{merchantName},'%')
+        </if>
+        and mac.id not in(select machine_id from `order`
+        <if test="startTime != null and endTime != null">
+            where create_time>#{startTime} and create_time &lt;#{endTime}
+        </if>
+        group by machine_id)
+
+        <if test="pageSize != -1">
+            limit #{startPosition},#{pageSize}
+        </if>
+
+    </select>
+    <select id="notOrderMachineCount" parameterType="com.musicfire.modular.machine.query.MachinePage" resultType="java.lang.Integer">
+        select count(mac.id) from machine mac
+        left join merchant mer on mac.merchant_id = mer.id
+        left join sys_user u on u.id = mer.user_id
+        left join room r on r.machine_id = mac.id
+        where mac.flag =false
+        <if test="merchantName != null and merchantName!=''">
+            and u.name LIKE CONCAT('%',#{merchantName},'%')
+        </if>
+        and mac.id not in(select machine_id from `order`
+        <if test="startTime != null and endTime != null">
+            where create_time>#{startTime} and create_time &lt;#{endTime}
+        </if>
+        group by machine_id)
+
     </select>
 
 </mapper>

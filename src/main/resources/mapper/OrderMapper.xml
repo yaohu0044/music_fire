@@ -4,37 +4,41 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.musicfire.modular.order.entity.Order">
-        <id column="id" property="id" />
-        <result column="machine_id" property="machineId" />
-        <result column="commodity_id" property="commodityId" />
-        <result column="merchant_id" property="merchantId" />
-        <result column="machine_position_num" property="machinePositionNum" />
-        <result column="price" property="price" />
-        <result column="payment_method" property="paymentMethod" />
-        <result column="state" property="state" />
-        <result column="create_time" property="createTime" />
-        <result column="number" property="number" />
-        <result column="account_account" property="accountAccount" />
-        <result column="trade_no" property="tradeNo" />
+        <id column="id" property="id"/>
+        <result column="machine_id" property="machineId"/>
+        <result column="commodity_id" property="commodityId"/>
+        <result column="merchant_id" property="merchantId"/>
+        <result column="machine_position_num" property="machinePositionNum"/>
+        <result column="price" property="price"/>
+        <result column="payment_method" property="paymentMethod"/>
+        <result column="state" property="state"/>
+        <result column="create_time" property="createTime"/>
+        <result column="number" property="number"/>
+        <result column="account_account" property="accountAccount"/>
+        <result column="trade_no" property="tradeNo"/>
     </resultMap>
     <resultMap id="NewResultMap" type="com.musicfire.modular.order.dto.OrderDto" extends="BaseResultMap">
-        <result column="merchantName" property="merchantName" />
-        <result column="machineName" property="machineName" />
-        <result column="commodityName" property="commodityName" />
+        <result column="merchantName" property="merchantName"/>
+        <result column="machineName" property="machineName"/>
+        <result column="commodityName" property="commodityName"/>
+        <result column="num" property="num"/>
+        <result column="roomName" property="roomName"/>
     </resultMap>
-    
+
     <select id="orderByPage" parameterType="com.musicfire.modular.order.page.OrderPage" resultMap="NewResultMap">
-        select o.*,u.name as merchantName, mac.name as machineName,c.name as commodityName  from `order` o
+        select r.name as roomName ,o.*,u.name as merchantName, mac.name as machineName,c.name as commodityName ,mp.num from `order` o
         left join merchant mer on mer.id = o.merchant_id
         left join machine mac on mac.id = o.machine_id
         left join sys_user u on u.id = mer.user_id
         left join commodity c on c.id = o.commodity_id
+        left join machine_position mp on mp.id = o.machine_position_num
+        left join room r on r.machine_id = mac.id
         <where>
             <if test="null != merchantName and ''!= merchantName">
                 and u.name LIKE CONCAT('%',#{merchantName},'%')
             </if>
             <if test="null != paymentMethod and ''!= paymentMethod">
-                and o.payment_method LIKE CONCAT('%',#{paymentMethod},'%')
+                and o.payment_method = #{paymentMethod}
             </if>
             <if test="null != startTime and ''!= startTime">
                 and o.create_time > #{startTime}
@@ -42,10 +46,17 @@
             <if test="null != endTime and ''!= endTime">
                 and o.create_time &lt; #{endTime}
             </if>
-            <if test="null != userId and ''!= userId">
+            <if test="null != merchantId">
+                and o.merchant_id = #{merchantId}
+            </if>
+            <if test="null != userId ">
                 and u.id = #{userId}
             </if>
+            <if test="null != state ">
+                and o.state = #{state}
+            </if>
         </where>
+        order by create_time desc
         limit #{startPosition},#{pageSize}
     </select>
     <select id="countByPage" parameterType="com.musicfire.modular.order.page.OrderPage" resultType="java.lang.Integer">
@@ -53,12 +64,15 @@
         left join merchant mer on mer.id = o.merchant_id
         left join machine mac on mac.id = o.machine_id
         left join sys_user u on u.id = mer.user_id
+        left join commodity c on c.id = o.commodity_id
+        left join machine_position mp on mp.id = o.machine_position_num
+        left join room r on r.machine_id = mac.id
         <where>
             <if test="null != merchantName and ''!= merchantName">
                 and u.name LIKE CONCAT('%',#{merchantName},'%')
             </if>
             <if test="null != paymentMethod and ''!= paymentMethod">
-                and o.payment_method LIKE CONCAT('%',#{paymentMethod},'%')
+                and o.payment_method = #{paymentMethod}
             </if>
             <if test="null != startTime and ''!= startTime">
                 and o.create_time > #{startTime}
@@ -66,9 +80,66 @@
             <if test="null != endTime and ''!= endTime">
                 and o.create_time &lt; #{endTime}
             </if>
+            <if test="null != userId ">
+                and u.id = #{userId}
+            </if>
+            <if test="null != merchantId ">
+                and u.merchant_id = #{merchantId}
+            </if>
+            <if test="null != state ">
+                and o.state = #{state}
+            </if>
         </where>
     </select>
     <select id="orderReport" resultType="java.util.Map">
         select DATE_FORMAT(create_time,'%Y-%m-%d') days,count( commodity_id) commodityCount ,count(id)as `count` from `order` where DATE_SUB(CURDATE(), INTERVAL 7 DAY) &lt;= create_time group by  days
+    </select>
+    <select id="profit" resultType="java.lang.Integer" parameterType="java.util.List">
+        select sum(price) from commodity where id in(
+        <foreach collection="commodityIds" separator="," item="item">
+            #{item}
+        </foreach>
+        )
+
+    </select>
+    <select id="totalTo" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        SELECT * FROM `order` where DATE_SUB(CURDATE(), INTERVAL 30 DAY) &lt;= create_time and state = 1 and merchant_id =#{merchantId};
+    </select>
+    <select id="data" parameterType="java.util.Map" resultType="java.util.Map">
+        select c.name,o.create_time,
+        CONCAT("进价",c.price,"元,售",o.price) as des1,
+        CONCAT(1,'件利润(',o.price-c.price,'元)','销售额',o.price,"总优惠(",0,')') as des
+        from `order` o
+        left join commodity c on o.commodity_id = c.id
+        where o.merchant_id =#{merchantId} and o.state = 1
+        <if test='endTime !=null and endTime !="" and startTime !="" and startTime!=null'>
+            and o.create_time &lt; #{endTime} and o.create_time>#{startTime}
+        </if>
+    </select>
+    <select id="orderReportCount" parameterType="com.musicfire.modular.order.page.OrderPage"
+            resultType="com.musicfire.modular.order.dto.OrderReport">
+        select count(id) as orderNum,sum(price) as orderPrice,DATE_FORMAT(create_time,'%Y-%m-%d') as orderDate
+        from `order`
+        <where>
+            <if test="startTime != null">
+                and create_time>#{startTime}
+            </if>
+            <if test="endTime != null">
+                and create_time &lt;#{endTime}
+            </if>
+            <if test="merchantName !=null ">
+                and merchant_id = #{merchantId}
+            </if>
+
+        </where>
+        group by DATE_FORMAT(create_time,'%Y-%m-%d')
+    </select>
+
+    <select id="orderReportPaymentMethod" resultType="com.musicfire.modular.order.dto.OrderReport">
+       select count(id) as orderNum,sum(price) as orderPrice,(CASE WHEN payment_method = '1' THEN '支付宝'   WHEN payment_method = '2' THEN '微信' end ) as paymentMethodStr
+        from  `order`
+        where payment_method is not null
+        and create_time >(DATE_SUB(curdate(),INTERVAL 0 DAY))
+        group by payment_method
     </select>
 </mapper>

@@ -4,6 +4,12 @@
     padding: 0;
     list-style: none;
 }
+/*{*/
+    /*background: url("/background/background.png") no-repeat;*/
+    /*-webkit-background-size: 100% auto;*/
+    /*background-size: 100% auto;*/
+    /*background-position: 100% center;*/
+/*}*/
 .title{
     width: 100%;
     height: 50px;
@@ -34,7 +40,7 @@
 }
 .goods-info{
     width: 100%;
-    height: 150px;
+    height: 140px;
     border: 1px solid #eeeeee;
     border-top: 0px;
     -webkit-box-shadow: 0 2px 3px -1px #999;
@@ -55,7 +61,7 @@
 .select-many div{
     width: 14px;
     height: 14px;
-    margin: 68px 0 0 2px;
+    margin: 63px 0 0 2px;
 }
 .select-many div.sel{
     background: url("../img/box_sel.png") no-repeat;
@@ -72,36 +78,36 @@
 }
 .passageway{
     width: 100%;
-    height: 40px;
-    line-height: 40px;
+    height: 10px;
+    line-height: 10px;
     font-size: 16px;
 }
 .goods-content{
-    height: 80px;
+    height: 100px;
     width: 100%;
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
-    padding: 10px;
 }
 .goods-img{
-    width: 50px;
-    height: 50px;
+    width: 90px;
+    height: 90px;
     background: #999999;
     float: left;
 }
 .goods-details{
-    width: calc(100% - 60px);
-    height: 50px;
+    width: calc(100% - 90px);
+    height: 90px;
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
-    padding-left: 10px;
+    padding-left: 30px;
     font-family: "黑体";
     font-size: 18px;
     float: left;
 }
 .goods-num{
-    font-size: 16px;
-    color: #666;
+    font-size: 16px;.info-table li div.label
+    color: #ff455d;
+    margin-top: 10px;
 }
 .goods-handle{
     width: 100%;
@@ -203,13 +209,13 @@
 }
 .info-table li div.label{
     width: 30%;
-    height: 30px;
+    height: auto;
     line-height: 30px;
     float: left;
 }
 .info-table li div.explain{
     width: 70%;
-    height: 30px;
+    overflow: hidden;
     line-height: 30px;
     float: left;
 }
@@ -220,8 +226,10 @@
 }
 .order-btn-list{
     width: 96%;
-    margin: 0 auto;
     height: auto;
+    position: fixed;
+    bottom: 20px;
+    left: 2%;
 }
 .order-cancel{
     background: rgb(255, 69, 93);

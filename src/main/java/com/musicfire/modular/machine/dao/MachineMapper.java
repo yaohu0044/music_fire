@@ -22,4 +22,8 @@ public interface MachineMapper extends BaseMapper<Machine> {
     List<MachineDto> queryByMachine(MachinePage page);
 
     int queryByCount(MachinePage page);
+
+    int notOrderMachineCount(MachinePage page);
+
+    List<MachineDto> notOrderMachinePage(MachinePage page);
 }

@@ -72,7 +72,7 @@ public class LoginServiceImpl implements LoginService {
 
                 Login login = new Login();
                 login.setUserName(loginName);
-                login.setMenuDTos(menuDTos);
+
                 login.setRoles(roleNames);
                 //如果是商家,则角色只能是一个.返回商家的title
                 if(roles.get(0).getId()==3){
@@ -81,8 +81,13 @@ public class LoginServiceImpl implements LoginService {
                     Merchant merchant = merchantService.selectOne(entityWrapper);
                     login.setTitle(merchant.getTitle());
                     login.setMerchantId(merchant.getId());
+                }else{
+                    menuDTos = menuDTos.stream().filter(menuDto -> menuDto.getId() != 26).collect(Collectors.toList());
+
                 }
+                login.setMenuDTos(menuDTos);
                 String token = Md5.makeToken();
+                login.setHeadImg(user.getHeadPortrait());
                 login.setToken(token);
                 login.setUserId(user.getId());
                 redisDao.add(token, JSONObject.toJSONString(login));

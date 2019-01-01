@@ -11,10 +11,7 @@
 <body>
 <div class="title">订单详情</div>
 <ul class="info-table">
-    <li>
-        <div class="label">设备名</div>
-        <div class="explain" id="machineName">XXW-00089</div>
-    </li>
+
     <li>
         <div class="label">仓号</div>
         <div class="explain" id="positionNum">1</div>
@@ -60,7 +57,7 @@
     //     document.querySelector("#aliPayment").addEventListener("click",function () {
     //         // alert(123)
     //         // $.ajax({
-    //         //     url: '/api/mobilePay/'+unifiedNum,
+    //         //     url: '/mobilePay/'+unifiedNum,
     //         //     type: "post",
     //         //     data: {},
     //         //     success: function (data) {
@@ -94,18 +91,7 @@
                     var pg = data.pg;
                     var signType = data.signType;
                     var paySign = data.paySign;
-
-                    alert(appId);
-                    alert(timeStamp);
-                    alert(nonceStr);
-                    alert(pg);
-                    alert(signType);
-                    alert(paySign);
-
-
-
                     if (typeof WeixinJSBridge == "undefined") {
-                        alert(456)
                         if (document.addEventListener) {
                             document.addEventListener(
                                 'WeixinJSBridgeReady',
@@ -131,7 +117,15 @@
                             },
 
                             function (res) {
-
+                                if (res.err_msg == "get_brand_wcpay_request:ok") {
+                                    window.location.href = '/paymentResult.html?unifiedNum=' + unifiedNum+'&positionNum='+getQueryStringByName("positionNum");
+                                }
+                                if (res.err_msg == "get_brand_wcpay_request:cancel") {
+                                    alert("交易取消");
+                                }
+                                if (res.err_msg == "get_brand_wcpay_request:fail") {
+                                    alert("支付失败");
+                                }
                             });
                     }
                 }

@@ -17,6 +17,8 @@ import com.musicfire.common.utiles.Constant;
 import com.musicfire.mobile.dto.AliPayCallRequestBody;
 import com.musicfire.mobile.entity.AliPayUserInfo;
 import com.musicfire.mobile.service.AliPayService;
+import com.musicfire.modular.machine.entity.MachinePosition;
+import com.musicfire.modular.machine.service.IMachinePositionService;
 import com.musicfire.modular.order.entity.Order;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -25,6 +27,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -51,12 +54,15 @@ public class AliPayController {
 
     private final RedisDao redisDao;
 
+    private final IMachinePositionService iMachinePositionService;
+
     @Autowired
-    public AliPayController(AliPayConfig aliPayConfig, RedisDao redisDao, AliPayService aliPayService, ProjectUrlConfig projectUrlConfig) {
+    public AliPayController(AliPayConfig aliPayConfig, RedisDao redisDao, AliPayService aliPayService, ProjectUrlConfig projectUrlConfig,IMachinePositionService iMachinePositionService ) {
         this.aliPayConfig = aliPayConfig;
         this.aliPayService = aliPayService;
         this.projectUrlConfig = projectUrlConfig;
         this.redisDao = redisDao;
+        this.iMachinePositionService = iMachinePositionService;
     }
 
 
@@ -65,14 +71,14 @@ public class AliPayController {
      */
     @GetMapping("/authorize")
     public String authorize(String code) {
-
+        System.out.println("开始支付宝授权："+code);
         //页面回调地址 必须与应用中的设置一样
-        String return_url = projectUrlConfig.vendingmachine + "/alipay/userInfo";
+        String return_url = projectUrlConfig.vendingmachine + "/api/alipay/userInfo";
         //回调地址必须经encode
         return_url = java.net.URLEncoder.encode(return_url);
 
-        //重定向到授权页面
 
+        //重定向到授权页面
         String redirectUrl = "https://openauth.alipay.com/oauth2/publicAppAuthorize.htm?app_id=" + aliPayConfig.getAppid()
                 + "&scope=auth_user&redirect_uri=" + return_url + "&state=" + code;
         log.info("redirectUrl:{}", redirectUrl);
@@ -82,7 +88,7 @@ public class AliPayController {
     }
     @RequestMapping(value = "/userInfo")
     public String getAliPayAuth(String auth_code, HttpSession session, String state) {
-
+        System.out.println("授权支付宝："+state);
 
         log.info("state:{}", state);
         AlipayClient alipayClient = new DefaultAlipayClient(aliPayConfig.getOpen_api_domain(),
@@ -117,10 +123,13 @@ public class AliPayController {
                     entityWrapper.eq("user_id",userInfoShareResponse.getUserId());
                     List<AliPayUserInfo> aliPayUserInfo = aliPayService.selectList(entityWrapper);
                     AliPayUserInfo userInfo =null;
+                    System.out.println("支付宝用户信息："+JSON.toJSONString(userInfoShareResponse));
                     if(null == aliPayUserInfo || aliPayUserInfo.size()==0){
                         userInfo = new AliPayUserInfo();
                         BeanUtils.copyProperties(userInfoShareResponse, userInfo);
                         aliPayService.saveAliPayUser(userInfo);
+                    }else{
+                        userInfo = aliPayUserInfo.get(0);
                     }
                     log.info("调用成功");
                     session.setAttribute(Constant.AI_PAY_USER, userInfo);
@@ -138,27 +147,18 @@ public class AliPayController {
             e.printStackTrace();
             return "redirect:/error.html";
         }
-        return "redirect:/goodsList.html";
+        System.out.println("跳转到买卖页面");
+        return "redirect:"+projectUrlConfig.mobile+"/goodsList.html?code="+state;
     }
 
     @PostMapping(value = "/notify")
-    public String aliPayNotify(HttpServletRequest request, PrintWriter out) throws UnsupportedEncodingException, AlipayApiException {
+    public String aliPayNotify(HttpServletRequest request, PrintWriter out) throws AlipayApiException {
 
         Map<String, String> params = new HashMap<>();
         Map requestParams = request.getParameterMap();
-        for (Iterator iter = requestParams.keySet().iterator(); iter.hasNext(); ) {
-            String name = (String) iter.next();
-            String[] values = (String[]) requestParams.get(name);
-            String valueStr = "";
-            for (int i = 0; i < values.length; i++) {
-                valueStr = (i == values.length - 1) ? valueStr + values[i] : valueStr + values[i] + ",";
-            }
-            System.out.println(">>>>>参数" + name + ":" + valueStr);
-            params.put(name, valueStr);
-        }
+        param(params, requestParams);
 
-
-       //现乱码时使用。如果mysign和sign不相等也可以使用这段代码转化
+        //现乱码时使用。如果mysign和sign不相等也可以使用这段代码转化
         // valueStr = new String(valueStr.getBytes(StandardCharsets.UTF_8), StandardCharsets.UTF_8);
         //商户订单号
         String out_trade_no = new String(request.getParameter("out_trade_no").getBytes(StandardCharsets.UTF_8
@@ -172,7 +172,9 @@ public class AliPayController {
 
         if (verify_result) {
             if (trade_status.equals("TRADE_SUCCESS")) {
-                aliPayService.saveAliPayOrder(out_trade_no, trade_no, params.get("total_amount"));
+                AliPayUserInfo userInfo = (AliPayUserInfo)request.getSession().getAttribute(Constant.AI_PAY_USER);
+                System.out.println("支付宝支持成功账号信息："+JSON.toJSONString(userInfo));
+                aliPayService.saveAliPayOrder(out_trade_no, trade_no, params.get("total_amount"),String.valueOf(1));
             }
             out.println("success");
         } else {//验证失败
@@ -183,8 +185,9 @@ public class AliPayController {
 
 
     public String aliPay(String unifiedNum) {
-
+        System.out.println("支付宝当前订单Id"+unifiedNum);
         List<Order> orders = redisDao.getList(unifiedNum, Order.class);
+        System.out.println("支付订单信息："+JSON.toJSONString(orders));
         BigDecimal reduce = orders.stream().map(Order::getPrice).reduce(BigDecimal.ZERO, BigDecimal::add);
 
         //获得初始化的AlipayClient,请勿更改参数顺序
@@ -210,7 +213,8 @@ public class AliPayController {
 
         String notify_url = aliPayConfig.getNotify_url();
 
-        String return_url = aliPayConfig.getReturn_url();
+
+        String return_url = aliPayConfig.getReturn_url()+"?unifiedNum="+orders.get(0).getUnifiedNum();
 
         //设置支付宝回调地址
         request.setReturnUrl(return_url);
@@ -229,5 +233,16 @@ public class AliPayController {
         }
         return  rest;
     }
-
+    private void param(Map<String, String> params, Map requestParams) {
+        for (Iterator iter = requestParams.keySet().iterator(); iter.hasNext(); ) {
+            String name = (String) iter.next();
+            String[] values = (String[]) requestParams.get(name);
+            String valueStr = "";
+            for (int i = 0; i < values.length; i++) {
+                valueStr = (i == values.length - 1) ? valueStr + values[i] : valueStr + values[i] + ",";
+            }
+            System.out.println(">>>>>参数" + name + ":" + valueStr);
+            params.put(name, valueStr);
+        }
+    }
 }
