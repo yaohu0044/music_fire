@@ -6,16 +6,20 @@ import com.musicfire.common.businessException.BusinessException;
 import com.musicfire.common.businessException.ErrorCode;
 import com.musicfire.common.config.redisdao.RedisDao;
 import com.musicfire.modular.machine.entity.Machine;
+import com.musicfire.modular.machine.entity.MachinePosition;
 import com.musicfire.modular.machine.entity.MachineState;
 import com.musicfire.modular.machine.machine_enum.MachineStatusEnum;
+import com.musicfire.modular.machine.service.IMachinePositionService;
 import com.musicfire.modular.machine.service.IMachineService;
 import com.musicfire.modular.room.dao.RoomMapper;
 import com.musicfire.modular.room.dto.RoomDto;
 import com.musicfire.modular.room.entity.Room;
 import com.musicfire.modular.room.query.RoomPage;
 import com.musicfire.modular.room.service.IRoomService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -43,6 +47,9 @@ public class RoomServiceImpl extends ServiceImpl<RoomMapper, Room> implements IR
     @Resource
     private IMachineService machineService;
 
+    @Resource
+    private IMachinePositionService positionService;
+
     @Override
     public RoomPage queryByRoom(RoomPage page) {
         int count = mapper.queryByCount(page);
@@ -59,6 +66,21 @@ public class RoomServiceImpl extends ServiceImpl<RoomMapper, Room> implements IR
             }else {
                 room.setState(machineState.getMachineState().getCode());
                 room.setStateStr(machineState.getMachineState().getMessage());
+                EntityWrapper<MachinePosition> entityWrapper = new EntityWrapper<>();
+                entityWrapper.eq("machine_id",room.getMachineId());
+                List<MachinePosition> machinePositions = positionService.selectList(entityWrapper);
+                List<MachinePosition> collect = machinePositions.stream().filter(machinePosition -> !machinePosition.getAvailable()).collect(Collectors.toList());
+                if(!CollectionUtils.isEmpty(collect)){
+                    room.setMachinePosition(true);
+                }
+
+//                String cabinetState = machineState.getCabinetState();
+//                if(StringUtils.isNotEmpty(cabinetState)){
+//                    int i = cabinetState.indexOf("1");
+//                    if(-1 == i){
+//                        room.setMachinePosition(true);
+//                    }
+//                }
             }
         });
         page.setList(rooms);
@@ -94,7 +116,7 @@ public class RoomServiceImpl extends ServiceImpl<RoomMapper, Room> implements IR
 
         if (null != room.getId()) {
             Room room1 = mapper.selectById(room.getId());
-            if(!room2.getName().equals(room1.getName())){
+            if(null != room2 && !room2.getName().equals(room1.getName())){
                 throw new BusinessException(ErrorCode.ROOM_EXIST);
             }
             if(room1.getMachineId().intValue()!=room.getMachineId()){

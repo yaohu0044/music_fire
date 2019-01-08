@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.musicfire.modular.system.dao.UserMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.musicfire.modular.system.entity.User">
+        <id column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="gender" property="gender" />
+        <result column="password" property="password" />
+        <result column="login_name" property="loginName" />
+        <result column="date_birth" property="dateBirth" />
+        <result column="phone" property="phone" />
+        <result column="qq" property="qq" />
+        <result column="head_portrait" property="headPortrait" />
+        <result column="tel" property="tel" />
+        <result column="email" property="email" />
+        <result column="flag" property="flag" />
+        <result column="create_time" property="createTime" />
+        <result column="create_id" property="createId" />
+        <result column="update_time" property="updateTime" />
+        <result column="update_id" property="updateId" />
+    </resultMap>
+    <resultMap id="NewResult" type="com.musicfire.modular.system.dto.UserDto" extends="BaseResultMap">
+    </resultMap>
+    <select id="userByPage" parameterType="com.musicfire.modular.system.query.UserPage" resultMap="NewResult">
+        select * from sys_user where flag =false
+        <if test="null != name and ''!= name">
+            and name like CONCAT('%',#{name},'%')
+        </if>
+        limit #{startPosition},#{pageSize}
+    </select>
+    <select id="countByPage" parameterType="com.musicfire.modular.system.query.UserPage" resultType="java.lang.Integer">
+        select count(id) from sys_user where flag =false
+        <if test="null != name and ''!= name">
+            and name like CONCAT('%',#{name},'%')
+        </if>
+    </select>
+    <select id="queryUserByName" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select u.* from sys_user_role ur
+        left join sys_user u on ur.user_id = u.id where u.flag = false
+        <if test="null != name and ''!= name">
+            u.name like CONCAT('%',#{name},'%')
+        </if>
+    </select>
+
+</mapper>

@@ -178,14 +178,12 @@ public class MachineController {
     @GetMapping("/notOrderMachine")
     public Result notOrderMachine(MachinePage page) {
         if (page.getStartTime() == null) {
-            page.setStartTime(DateTool.getBefDay(7));
+            page.setStartTime(DateTool.getFormat(DateTool.getBefDay(7)));
         }
         if (page.getEndTime() == null) {
-            page.setEndTime(new Date());
+            page.setEndTime(DateTool.getFormat(new Date()));
         }
-        if (page.getStartTime().getTime() > page.getEndTime().getTime()) {
-            return new Result().fail("时间错误");
-        }
+
         MachinePage machinePage = service.notOrderMachine(page);
 
         return new Result().ok(machinePage);

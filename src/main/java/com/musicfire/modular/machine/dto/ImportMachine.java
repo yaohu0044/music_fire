@@ -22,4 +22,10 @@ public class ImportMachine {
     @ExcelVOAttribute(name = "机器code", column = "C")
     private String code;
 
+    /**
+     * 机器code
+     */
+    @ExcelVOAttribute(name = "商家Id", column = "D")
+    private Integer merchantId;
+
 }

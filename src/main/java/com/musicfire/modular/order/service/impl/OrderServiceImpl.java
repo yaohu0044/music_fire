@@ -41,7 +41,7 @@ import java.util.stream.Collectors;
 
 /**
  * <p>
- *  服务实现类
+ * 服务实现类
  * </p>
  *
  * @author author
@@ -85,36 +85,26 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         }
         List<OrderDto> page = mapper.orderByPage(orderPage);
         page.forEach(order -> {
-            if(null != order.getPaymentMethod()){
-                if(order.getPaymentMethod()==1){
+            if (null != order.getPaymentMethod()) {
+                if (order.getPaymentMethod() == 1) {
                     EntityWrapper<AliPayUserInfo> aliPayUserInfoEntityWrapper = new EntityWrapper<>();
-                    aliPayUserInfoEntityWrapper.eq("user_id",order.getAccountAccount());
+                    aliPayUserInfoEntityWrapper.eq("user_id", order.getAccountAccount());
                     AliPayUserInfo aliPayUserInfo = aliPayService.selectOne(aliPayUserInfoEntityWrapper);
-                    if(null != aliPayUserInfo){
+                    if (null != aliPayUserInfo) {
                         order.setUserName(aliPayUserInfo.getNickName());
                         order.setHeadImg(aliPayUserInfo.getAvatar());
                     }
 
-                }else if(order.getPaymentMethod()==2){
+                } else if (order.getPaymentMethod() == 2) {
                     EntityWrapper<WeChatMpUser> wrapper = new EntityWrapper<>();
-                    wrapper.eq("open_id",order.getAccountAccount());
+                    wrapper.eq("open_id", order.getAccountAccount());
                     WeChatMpUser weChatMpUser = weChatMpUserService.selectOne(wrapper);
-                    if(null != weChatMpUser){
+                    if (null != weChatMpUser) {
                         order.setUserName(weChatMpUser.getNickname());
                         order.setHeadImg(weChatMpUser.getHeadImgUrl());
                     }
 
                 }
-//                if(null != order.getMerchantId()){
-//                    EntityWrapper<Room> roomEntityWrapper = new EntityWrapper<>();
-//                    roomEntityWrapper.eq("merchant_id",order.getMerchantId());
-//                    Room room = roomService.selectOne(roomEntityWrapper);
-//                    if(null != room){
-//                        order.setRoomName(room.getName());
-//                    }
-//
-//                }
-
             }
 
         });
@@ -125,7 +115,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
     @Transactional
     @Override
-    public BigDecimal inserAll(List<Integer> ids, String unifiedNum,String userId,Integer payType) {
+    public BigDecimal inserAll(List<Integer> ids, String unifiedNum, String userId, Integer payType) {
         EntityWrapper<MachinePosition> machinePositionEntityWrapper = new EntityWrapper<>();
         machinePositionEntityWrapper.in("id", ids);
         List<MachinePosition> machinePositions = machinePositionService.selectList(machinePositionEntityWrapper);
@@ -154,31 +144,31 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             mapper.insert(order);
             orders.add(order);
         });
-        redisDao.add(unifiedNum,orders);
+        redisDao.add(unifiedNum, orders);
         return reduce;
     }
 
     @Override
     public Map<String, Object> total(OrderPage page) {
-        if(null == page.getMerchantId()){
+        if (null == page.getMerchantId()) {
             throw new BusinessException("该用户不是商家不能查看信息");
         }
         //销售额
         page.setState(1);
         List<OrderDto> orders = mapper.orderByPage(page);
 
-        Map<String,Object> map = new HashMap<>();
-        BigDecimal sellingPrice =new BigDecimal(0);
-        if(CollectionUtils.isEmpty(orders)){
-            map.put("totalTo",0);
-            map.put("singular",0);
-            map.put("sellingPrice",0);
-            map.put("profit",0);
-            map.put("data","");
+        Map<String, Object> map = new HashMap<>();
+        BigDecimal sellingPrice = new BigDecimal(0);
+        if (CollectionUtils.isEmpty(orders)) {
+            map.put("totalTo", 0);
+            map.put("singular", 0);
+            map.put("sellingPrice", 0);
+            map.put("profit", 0);
+            map.put("data", "");
             return map;
         }
-        for (Order order: orders) {
-                sellingPrice = sellingPrice.add(order.getPrice());
+        for (Order order : orders) {
+            sellingPrice = sellingPrice.add(order.getPrice());
         }
 
         List<Integer> commodityIds = orders.stream().map(Order::getCommodityId).collect(Collectors.toList());
@@ -187,13 +177,13 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         //30天成交量
         List<Order> totalTo = mapper.totalTo(page.getMerchantId());
         //成交详情
-        List<Map<String,String>> data =mapper.data(page);
+        List<Map<String, String>> data = mapper.data(page);
         data.removeAll(Collections.singleton(null));
-        map.put("totalTo",totalTo.size());
-        map.put("singular",commodityIds.size());
-        map.put("sellingPrice",sellingPrice);
-        map.put("profit",sellingPrice.subtract(new BigDecimal(ObjectUtils.isEmpty(profit)?0:profit)));
-        map.put("data",data);
+        map.put("totalTo", totalTo.size());
+        map.put("singular", commodityIds.size());
+        map.put("sellingPrice", sellingPrice);
+        map.put("profit", sellingPrice.subtract(new BigDecimal(ObjectUtils.isEmpty(profit) ? 0 : profit)));
+        map.put("data", data);
 
 
         return map;

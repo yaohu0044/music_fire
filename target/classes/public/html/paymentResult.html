@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <title>商品出仓</title>
+    <link rel="stylesheet" href="../../static/css/public.css"/>
+</head>
+<body>
+<div class="title">商品出仓</div>
+<div class="goods-list">
+    <div class="details-info" style="height: 410px">
+        <div class="details-img"></div>
+        <div id="nowDate" class="details-time-and-money">2018-11-19</div>
+    </div>
+</div>
+<div class="order-btn-list" style="margin-top: 20px">
+    <div class="goods-btn order-cancel" onclick="paymentFail()">开仓</div>
+    <div class="goods-btn order-payment" onclick="paymentSuccess()">成功</div>
+</div>
+<script type="text/javascript" src="../../static/js/jquery.min.js"></script>
+<script type="text/javascript">
+    var code = localStorage.getItem("code");
+    var num = getQueryStringByName("positionNum");
+    var unifiedNum = getQueryStringByName("unifiedNum");
+    $("#nowDate").text(getNowDate());
+
+
+    /**
+     * 购买失败
+     **/
+    function paymentFail(){
+        $.ajax({
+            url: '/api/machinePosition/purchaseErrOpenPosition',
+            type: "get",
+            data: {
+                code:code,
+                num:num,
+                unifiedNum:unifiedNum
+            },
+            success: function (data) {
+
+            }
+        })
+    }
+    /**
+     * 购买成功
+     *
+     *
+     * */
+    function paymentSuccess(){
+
+    }
+    /**
+     * 截取地址栏参数值并返回
+     */
+    function getQueryStringByName(name) {
+        var result = location.search.match(new RegExp("[\?\&]" + name + "=([^\&]+)", "i"));
+        if (result == null || result.length < 1) {
+            return "";
+        }
+        return result[1];
+    }
+
+    /**
+     * 获取当前时间 格式 yyyy-MM-dd
+     */
+    function getNowDate(){
+        var date = new Date();
+        var month = date.getMonth()+1;
+        var day = date.getDate()+1;
+        month = month<10 ? ("0"+month) : month;
+        day = day<10 ? ("0"+day) : day;
+        return date.getFullYear()+"-"+month+"-"+day;
+    }
+</script>
+</body>
+</html>

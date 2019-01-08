@@ -94,4 +94,12 @@ public class WxPayController {
             return "<xml><return_code><![CDATA[FAIL]]></return_code><return_msg><![CDATA[解析错误]]></return_msg></xml>";
         }
     }
+
+    @ResponseBody
+    @RequestMapping("notify1")
+    public String appPayNotify() {
+
+        aliPayService.saveAliPayOrder("1000001063961401", "1111", "2",String.valueOf(2));
+        return "123123";
+    }
 }

@@ -289,6 +289,9 @@ public class MachinePositionServiceImpl extends ServiceImpl<MachinePositionMappe
                     machinePosition.setId(o.getMachinePositionNum());
                     machinePositionService.updateById(machinePosition);
                     Thread.sleep(500L);
+                }else{
+                    o.setState(4);
+                    orderService.updateById(o);
                 }
 
             } catch (InterruptedException e) {

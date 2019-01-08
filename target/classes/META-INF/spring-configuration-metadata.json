@@ -1,0 +1,131 @@
+{
+  "hints": [],
+  "groups": [
+    {
+      "sourceType": "com.musicfire.common.config.AliPayConfig",
+      "name": "alipay",
+      "type": "com.musicfire.common.config.AliPayConfig"
+    },
+    {
+      "sourceType": "com.musicfire.common.config.WechatAccountConfig",
+      "name": "wechat",
+      "type": "com.musicfire.common.config.WechatAccountConfig"
+    }
+  ],
+  "properties": [
+    {
+      "sourceType": "com.musicfire.common.config.AliPayConfig",
+      "name": "alipay.a-e-s",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.musicfire.common.config.AliPayConfig",
+      "name": "alipay.alipay-public-key",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.musicfire.common.config.AliPayConfig",
+      "name": "alipay.appid",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.musicfire.common.config.AliPayConfig",
+      "name": "alipay.c-h-a-r-s-e-t",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.musicfire.common.config.AliPayConfig",
+      "name": "alipay.mcloud-api-domain",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.musicfire.common.config.AliPayConfig",
+      "name": "alipay.notify-url",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.musicfire.common.config.AliPayConfig",
+      "name": "alipay.open-api-domain",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.musicfire.common.config.AliPayConfig",
+      "name": "alipay.private-key",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.musicfire.common.config.AliPayConfig",
+      "name": "alipay.public-key",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.musicfire.common.config.AliPayConfig",
+      "name": "alipay.return-url",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.musicfire.common.config.AliPayConfig",
+      "name": "alipay.sign-type",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.musicfire.common.config.AliPayConfig",
+      "name": "alipay.uid",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.musicfire.common.config.WechatAccountConfig",
+      "name": "wechat.key-path",
+      "description": "商户证书路径",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.musicfire.common.config.WechatAccountConfig",
+      "name": "wechat.mch-id",
+      "description": "商户号",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.musicfire.common.config.WechatAccountConfig",
+      "name": "wechat.mch-key",
+      "description": "商户密钥",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.musicfire.common.config.WechatAccountConfig",
+      "name": "wechat.mp-app-id",
+      "description": "公众平台id",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.musicfire.common.config.WechatAccountConfig",
+      "name": "wechat.mp-app-secret",
+      "description": "公众平台密钥",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.musicfire.common.config.WechatAccountConfig",
+      "name": "wechat.notify-url",
+      "description": "微信支付异步通知地址",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.musicfire.common.config.WechatAccountConfig",
+      "name": "wechat.open-app-id",
+      "description": "开放平台id",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.musicfire.common.config.WechatAccountConfig",
+      "name": "wechat.open-app-secret",
+      "description": "开放平台密钥",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.musicfire.common.config.WechatAccountConfig",
+      "name": "wechat.template-id",
+      "description": "微信模版id",
+      "type": "java.util.Map<java.lang.String,java.lang.String>"
+    }
+  ]
+}

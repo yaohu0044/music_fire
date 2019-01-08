@@ -8,8 +8,8 @@ import java.util.List;
 public class ExportTest03 {
 	public static void main(String[] args) {
 		// 初始化数据
-		List<StudentVO> list = new ArrayList<StudentVO>();
- 
+		List<StudentVO> list = new ArrayList<>();
+
 		StudentVO vo = new StudentVO();
 		vo.setId(1);
 		vo.setName("李坤");
@@ -17,20 +17,20 @@ public class ExportTest03 {
 		vo.setClazz("五期提高班");
 		vo.setCompany("天融信");
 		list.add(vo);
- 
+
 		StudentVO vo2 = new StudentVO();
 		vo2.setId(2);
 		vo2.setName("曹贵生");
 		vo2.setClazz("五期提高班");
 		vo2.setCompany("中银");
 		list.add(vo2);
- 
+
 		StudentVO vo3 = new StudentVO();
 		vo3.setId(3);
 		vo3.setName("柳波");
 		vo3.setClazz("五期提高班");
 		list.add(vo3);
- 
+
 		FileOutputStream out = null;
 		try {
 			out = new FileOutputStream("d:\\success3.xls");

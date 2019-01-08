@@ -24,4 +24,9 @@ public class RoomDto extends Room {
     private String stateStr;
     private String machineName;
 
+    /**
+     * 机器是否有仓位处于打开状态 true 打开， false 未打开
+     */
+    private Boolean machinePosition = false;
+
 }

@@ -51,7 +51,7 @@ public class Order implements Serializable {
     @TableField("payment_method")
     private Integer paymentMethod;
     /**
-     * 订单状态
+     * 订单状态1:购买成功， 3 未付款 。 4 异常
      */
     private Integer state;
     /**

@@ -152,6 +152,7 @@ public class MachineServiceImpl extends ServiceImpl<MachineMapper, Machine> impl
                 machineDto.setStateStr(machineState.getMachineState().getMessage());
                 machineDto.setState(machineState.getMachineState().getCode());
                 machineDto.setMachinePositionStr(machineState.getCabinetState());
+                machineDto.setUptime(machineState.getUpdateTime());
             }
         });
     }

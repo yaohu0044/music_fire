@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.musicfire.modular.merchant.dao.MerchantMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.musicfire.modular.merchant.entity.Merchant">
+        <id column="id" property="id" />
+        <result column="title" property="title" />
+        <result column="type" property="type" />
+        <result column="logo" property="logo" />
+        <result column="lon_and_lat" property="lonAndLat" />
+        <result column="describe" property="describe" />
+        <result column="create_time" property="createTime" />
+        <result column="create_id" property="createId" />
+        <result column="update_time" property="updateTime" />
+        <result column="update_id" property="updateId" />
+        <result column="address" property="address" />
+        <result column="user_id" property="userId" />
+    </resultMap>
+    <resultMap id="NewResultMap" type="com.musicfire.modular.merchant.dto.MerchantDto" extends="BaseResultMap">
+        <result column="merchantName" property="merchantName" />
+        <result column="loginName" property="loginName" />
+        <result column="password" property="password" />
+        <result column="phone" property="phone" />
+    </resultMap>
+
+
+    <select id="merchantByPage" parameterType="com.musicfire.modular.merchant.query.MerchantPage" resultMap="NewResultMap">
+         select m.*,u.name as merchantName,u.login_name as loginName,u.password as password,u.phone as phone   from merchant m
+         left join sys_user u on u.id = m.user_id
+         where m.flag =false
+        <if test="null != merchantName and ''!= merchantName">
+            and u.name LIKE CONCAT('%',#{merchantName},'%')  or m.title LIKE CONCAT('%',#{merchantName},'%')
+        </if>
+        <if test="pageSize != -1 ">
+            limit #{startPosition},#{pageSize}
+        </if>
+
+    </select>
+    <select id="countByPage" parameterType="com.musicfire.modular.merchant.query.MerchantPage" resultType="java.lang.Integer">
+        select count(m.id) from merchant m
+        left join sys_user u on u.id = m.user_id
+        where m.flag =false
+        <if test="null != merchantName and ''!= merchantName">
+            and u.name LIKE CONCAT('%',#{merchantName},'%')  or m.title LIKE CONCAT('%',#{merchantName},'%')
+        </if>
+    </select>
+
+
+</mapper>

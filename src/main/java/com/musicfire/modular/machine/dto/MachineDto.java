@@ -16,4 +16,9 @@ public class MachineDto extends Machine {
     private String machinePositionStr;
 
     private String roomName;
+
+    /**
+     * 最后上线时间
+     */
+    private String uptime;
 }

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.musicfire.modular.commodity.dao.CommodityMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.musicfire.modular.commodity.entity.Commodity">
+        <id column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="describe" property="describe" />
+        <result column="introduce" property="introduce" />
+        <result column="purchase_price" property="purchasePrice" />
+        <result column="flag" property="flag" />
+        <result column="create_time" property="createTime" />
+        <result column="create_id" property="createId" />
+        <result column="update_time" property="updateTime" />
+        <result column="update_id" property="updateId" />
+        <result column="price" property="price" />
+        <result column="introduce_content" property="introduceContent" />
+    </resultMap>
+    <resultMap id="NewResultMap" type="com.musicfire.modular.commodity.entity.Dto.CommodityDto" extends="BaseResultMap">
+        <result column="path" property="path" />
+    </resultMap>
+    <select id="queryByCommodity" resultMap="NewResultMap" parameterType="com.musicfire.modular.commodity.query.CommodityPage">
+        select c.*,pic.path as path  from commodity c
+        left join commodity_pic as pic on pic.commodity_id = c.id
+        where c.flag = false
+        <if test="null != name and '' != name">
+           and c.name LIKE CONCAT('%',#{name},'%')
+        </if>
+        order by c.id desc
+        <if test="pageSize != -1">
+            limit #{startPosition},#{pageSize}
+        </if>
+
+    </select>
+    <select id="queryCount" resultType="java.lang.Integer" parameterType="com.musicfire.modular.commodity.query.CommodityPage">
+        select  count(c.id)  from commodity c
+        left join commodity_pic as pic on pic.commodity_id = c.id
+        where c.flag = false
+        <if test="null != name and '' != name">
+            and c.name LIKE CONCAT('%',#{name},'%')
+        </if>
+    </select>
+    <select id="queryHotCommodity"  resultMap="NewResultMap">
+        select * from commodity where id in(
+        select * from (
+        select t.commodityId from (select count(id) as total,commodity_id as commodityId from `order` group by commodity_id) t order by t.total limit 4)a)
+    </select>
+    <select id="queryByIds"  resultType="java.util.List" resultMap="NewResultMap">
+        select * from commodity c
+        left join commodity_stock cs on cs.commodity_id = c.id
+        where c.id in (
+        <foreach collection="ids" item="item" separator=",">
+            #{item}
+        </foreach>
+        )
+    </select>
+</mapper>

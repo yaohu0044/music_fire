@@ -12,6 +12,6 @@ public class MachinePage extends BasePage {
     private String merchantName;
     private Boolean allocate; //true : 分配，false：没分配
 
-    private Date startTime;
-    private Date endTime;
+    private String startTime;
+    private String endTime;
 }
