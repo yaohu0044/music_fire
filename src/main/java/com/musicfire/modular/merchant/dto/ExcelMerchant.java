@@ -31,4 +31,7 @@ public class ExcelMerchant {
 
     @ExcelVOAttribute(name = "商家地址", column = "C")
     private String address;
+
+    @ExcelVOAttribute(name = "商家Id", column = "H")
+    private Integer id;
 }

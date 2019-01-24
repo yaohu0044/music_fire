@@ -38,4 +38,10 @@ public class ExcelCommodity {
     @ExcelVOAttribute(name = "进价", column = "H")
     private BigDecimal purchasePrice;
 
+    /**
+     * 进价
+     */
+    @ExcelVOAttribute(name = "商品ID", column = "I")
+    private Integer id;
+
 }

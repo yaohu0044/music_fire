@@ -85,7 +85,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         }
         List<OrderDto> page = mapper.orderByPage(orderPage);
         page.forEach(order -> {
-            if (null != order.getPaymentMethod()) {
+            if (null != order.getPaymentMethod()&& orderPage.getPageSize()>0) {
                 if (order.getPaymentMethod() == 1) {
                     EntityWrapper<AliPayUserInfo> aliPayUserInfoEntityWrapper = new EntityWrapper<>();
                     aliPayUserInfoEntityWrapper.eq("user_id", order.getAccountAccount());

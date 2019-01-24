@@ -74,6 +74,7 @@ public class MachinePositionServiceImpl extends ServiceImpl<MachinePositionMappe
             Integer id = machinePosition.getId();
             MachinePosition mp = machinePositionMapper.selectById(id);
             mp.setCommodityId(machinePosition.getCommodityId());
+            mp.setNum(machinePosition.getNum());
             machinePositionMapper.updateById(mp);
         } else {
             EntityWrapper<MachinePosition> entityWrapper = new EntityWrapper<>();
@@ -83,13 +84,16 @@ public class MachinePositionServiceImpl extends ServiceImpl<MachinePositionMappe
             if (machinePositions.size() >= 10) {
                 throw new BusinessException(ErrorCode.POSITION_OVERRUN);
             }
-            List<Integer> collect = machinePositions.stream().map(MachinePosition::getNum).collect(Collectors.toList());
-            if (collect.size() == 0) {
-                machinePosition.setNum(1);
-            } else {
-                Integer max1 = Collections.max(collect);
-                machinePosition.setNum(max1 + 1);
+            if(null == machinePosition.getNum()){
+                List<Integer> collect = machinePositions.stream().map(MachinePosition::getNum).collect(Collectors.toList());
+                if (collect.size() == 0) {
+                    machinePosition.setNum(1);
+                } else {
+                    Integer max1 = Collections.max(collect);
+                    machinePosition.setNum(max1 + 1);
+                }
             }
+
             machinePosition.setState(MachinePositionEnum.CLOSED.getCode());
             machinePositionMapper.insert(machinePosition);
         }

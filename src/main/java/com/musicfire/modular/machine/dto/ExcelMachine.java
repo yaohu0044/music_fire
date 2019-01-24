@@ -40,4 +40,17 @@ public class ExcelMachine {
      */
     @ExcelVOAttribute(name = "是否分配房间", column = "H")
     private Boolean distribution;
+
+    /**
+     * 商家Id
+     */
+    @ExcelVOAttribute(name = "商家Id", column = "I")
+    private Integer merchantId;
+
+
+    /**
+     * 商家Id
+     */
+    @ExcelVOAttribute(name = "机器ID", column = "J")
+    private Integer id;
 }

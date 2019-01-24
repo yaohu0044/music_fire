@@ -8,24 +8,27 @@ import com.musicfire.common.businessException.ErrorCode;
 import com.musicfire.common.utiles.*;
 import com.musicfire.mobile.controller.AliPayController;
 import com.musicfire.mobile.entity.AliPayUserInfo;
+import com.musicfire.modular.machine.dto.ExcelMachine;
 import com.musicfire.modular.machine.dto.MachinePositionDto;
 import com.musicfire.modular.machine.entity.MachinePosition;
 import com.musicfire.modular.machine.service.IMachinePositionService;
 import com.musicfire.modular.order.dto.OrderDto;
+import com.musicfire.modular.order.dto.OrderExport;
 import com.musicfire.modular.order.dto.OrderReport;
 import com.musicfire.modular.order.dto.ReportParam;
 import com.musicfire.modular.order.entity.Order;
 import com.musicfire.modular.order.page.OrderPage;
 import com.musicfire.modular.order.service.IOrderService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -95,7 +98,40 @@ public class OrderController {
         OrderPage page = service.list(orderPage);
         return new Result().ok(page);
     }
+    @GetMapping("/exportOrder")
+    public void exportOrder(OrderPage orderPage, HttpServletResponse response) throws IOException {
+        orderPage.setPageSize(-1);
+        OrderPage order = service.list(orderPage);
+        List<?> list = order.getList();
+        List<OrderExport> orderExports = new ArrayList<>();
+        list.forEach(o -> {
+            OrderExport orderExport = new OrderExport();
+            BeanUtils.copyProperties(o, orderExport);
+            if(1 == orderExport.getState()){
+                orderExport.setStateStr("购买成功");
+            }else if(3 == orderExport.getState()){
+                orderExport.setStateStr("未付款");
+            }else if(4 == orderExport.getState()){
+                orderExport.setStateStr("订单异常");
+            }
+            if(null != orderExport.getPaymentMethod()){
+                if(1 == orderExport.getPaymentMethod()){
+                    orderExport.setPaymentMethodStr("支付宝支付");
+                }else{
+                    orderExport.setPaymentMethodStr("微信支付");
+                }
+            }
+            orderExport.setCreateTimeStr(DateTool.getFormat(orderExport.getCreateTime()));
 
+            orderExports.add(orderExport);
+        });
+
+        String fileName = "订单信息" + System.currentTimeMillis() + ".xls";
+        ExcelUtil.setResponseHeader(response, fileName);
+        OutputStream out = response.getOutputStream();
+        ExcelUtil<OrderExport> util = new ExcelUtil<>(OrderExport.class);// 创建工具类.
+        util.exportExcel(orderExports, "订单新", 65536, out);// 导出
+    }
 
 }
 

@@ -4,10 +4,7 @@ package com.musicfire.modular.machine.controller;
 import com.musicfire.common.businessException.BusinessException;
 import com.musicfire.common.businessException.ErrorCode;
 import com.musicfire.common.handler.RequestHolder;
-import com.musicfire.common.utiles.Conf;
-import com.musicfire.common.utiles.DateTool;
-import com.musicfire.common.utiles.ExcelUtil;
-import com.musicfire.common.utiles.Result;
+import com.musicfire.common.utiles.*;
 import com.musicfire.common.validated.Insert;
 import com.musicfire.common.validated.Update;
 import com.musicfire.modular.login.Login;
@@ -157,9 +154,10 @@ public class MachineController {
         List<ImportMachine> lists = util.importExcel("机器基本导入", fis);
         List<Machine> machines = new ArrayList<>();
         lists.forEach(importMiachine -> {
-            Machine merchant = new Machine();
-            BeanUtils.copyProperties(importMiachine, merchant);
-            machines.add(merchant);
+            Machine machine = new Machine();
+            BeanUtils.copyProperties(importMiachine, machine);
+            machine.setQrCodeUrl(QrCodeUtils.encode(machine.getCode(),Conf.getValue("logoPic"),Conf.getValue("picture"),Conf.getValue("text")));
+            machines.add(machine);
         });
 
         service.insertBatch(machines);
