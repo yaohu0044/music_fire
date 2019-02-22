@@ -12,6 +12,7 @@ E:\music_fire\src\main\java\com\musicfire\modular\machine\dto\MachineDto.java
 E:\music_fire\src\main\java\com\musicfire\mobile\wxpay\WXPayRequest.java
 E:\music_fire\src\main\java\com\musicfire\modular\business\service\impl\BusinessServiceImpl.java
 E:\music_fire\src\main\java\com\musicfire\mobile\controller\WechatController.java
+E:\music_fire\src\main\java\com\musicfire\modular\machine\dto\ImportMachinePosition.java
 E:\music_fire\src\main\java\com\musicfire\common\config\WebSocketConfig.java
 E:\music_fire\src\main\java\com\musicfire\mobile\controller\MobileController.java
 E:\music_fire\src\main\java\com\musicfire\mobile\dto\WechatInfo.java
@@ -114,6 +115,7 @@ E:\music_fire\src\main\java\com\musicfire\modular\commodity\entity\Dto\Commodity
 E:\music_fire\src\main\java\com\musicfire\common\utiles\QrCodeUtils1.java
 E:\music_fire\src\main\java\com\musicfire\modular\system\controller\RoleController.java
 E:\music_fire\src\main\java\com\musicfire\modular\system\service\impl\UserServiceImpl.java
+E:\music_fire\src\main\java\com\musicfire\common\handler\LoginUserInterceptor1.java
 E:\music_fire\src\main\java\com\musicfire\modular\system\dto\UserVo.java
 E:\music_fire\src\main\java\com\musicfire\modular\room\service\impl\RoomServiceImpl.java
 E:\music_fire\src\main\java\com\musicfire\modular\commodity\dao\ExcelCommodity.java
@@ -196,6 +198,7 @@ E:\music_fire\src\main\java\com\musicfire\modular\system\dao\AliPaySettingMapper
 E:\music_fire\src\main\java\com\musicfire\common\utiles\FileUploadUtil.java
 E:\music_fire\src\main\java\com\musicfire\modular\commodity\controller\CommodityController.java
 E:\music_fire\src\main\java\com\musicfire\common\resource\Upload.java
+E:\music_fire\src\main\java\com\musicfire\modular\order\dto\OrderExport.java
 E:\music_fire\src\main\java\com\musicfire\modular\system\entity\RoleMenu.java
 E:\music_fire\src\main\java\com\musicfire\modular\system\service\IMenuService.java
 E:\music_fire\src\main\java\com\musicfire\modular\system\dto\MenuDto.java
