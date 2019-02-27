@@ -1,6 +1,7 @@
 package com.musicfire.modular.merchant.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.musicfire.common.businessException.BusinessException;
 import com.musicfire.common.businessException.ErrorCode;
@@ -18,7 +19,6 @@ import com.musicfire.modular.system.service.IUserService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.ObjectUtils;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 
 /**
  * <p>
- *  服务实现类
+ * 服务实现类
  * </p>
  *
  * @author author
@@ -34,6 +34,7 @@ import java.util.stream.Collectors;
  */
 @Service
 public class MerchantServiceImpl extends ServiceImpl<MerchantMapper, Merchant> implements IMerchantService {
+
 
     @Resource
     private MerchantMapper mapper;
@@ -50,9 +51,9 @@ public class MerchantServiceImpl extends ServiceImpl<MerchantMapper, Merchant> i
     public void save(MerchantVo merchantVo) {
 
         Merchant merchant = new Merchant();
-        BeanUtils.copyProperties(merchantVo,merchant);
+        BeanUtils.copyProperties(merchantVo, merchant);
         User user = new User();
-        BeanUtils.copyProperties(merchantVo,user);
+        BeanUtils.copyProperties(merchantVo, user);
 
         user.setName(merchantVo.getMerchantName());
         if (null == merchant.getId()) {
@@ -63,7 +64,7 @@ public class MerchantServiceImpl extends ServiceImpl<MerchantMapper, Merchant> i
             EntityWrapper<User> userEntityWrapper = new EntityWrapper<>();
             userEntityWrapper.setEntity(user1);
             List<User> users = userService.selectList(userEntityWrapper);
-            if(users.size()>0){
+            if (users.size() > 0) {
                 throw new BusinessException(ErrorCode.LOGO_NAME_EXIST);
             }
             user.setPassword(Md5.generate(merchantVo.getPassword()));
@@ -72,13 +73,13 @@ public class MerchantServiceImpl extends ServiceImpl<MerchantMapper, Merchant> i
             mapper.insert(merchant);
         } else {
             User u = userService.selectById(merchantVo.getUserId());
-            if(null != u){
-                if(u.getPassword().equals(merchantVo.getPassword())){
+            if (null != u) {
+                if (u.getPassword().equals(merchantVo.getPassword())) {
                     user.setPassword(u.getPassword());
-                }else{
+                } else {
                     user.setPassword(Md5.generate(merchantVo.getPassword()));
                 }
-                if(!u.getLoginName().equals(merchantVo.getLoginName())){
+                if (!u.getLoginName().equals(merchantVo.getLoginName())) {
                     //验证登录名是否重复
                     User user1 = new User();
                     user1.setFlag(false);
@@ -86,11 +87,11 @@ public class MerchantServiceImpl extends ServiceImpl<MerchantMapper, Merchant> i
                     EntityWrapper<User> userEntityWrapper = new EntityWrapper<>();
                     userEntityWrapper.setEntity(user1);
                     List<User> users = userService.selectList(userEntityWrapper);
-                    if(users.size()>0){
+                    if (users.size() > 0) {
                         throw new BusinessException(ErrorCode.LOGO_NAME_EXIST);
                     }
                 }
-            }else{
+            } else {
                 throw new BusinessException(ErrorCode.NOT_EXIST);
             }
 
@@ -101,7 +102,7 @@ public class MerchantServiceImpl extends ServiceImpl<MerchantMapper, Merchant> i
         }
         //清楚商家原来权限
         EntityWrapper<UserRole> entityWrapper = new EntityWrapper<>();
-        entityWrapper.eq("user_id",user.getId());
+        entityWrapper.eq("user_id", user.getId());
         userRoleService.delete(entityWrapper);
         //给商家分权限为商户
         UserRole userRole = new UserRole();
@@ -129,16 +130,16 @@ public class MerchantServiceImpl extends ServiceImpl<MerchantMapper, Merchant> i
         Merchant merchant = new Merchant();
         merchant.setFlag(true);
         EntityWrapper<Merchant> merchantEntityWrapper = new EntityWrapper<>();
-        merchantEntityWrapper.in("id",ids);
-        mapper.update(merchant,merchantEntityWrapper);
+        merchantEntityWrapper.in("id", ids);
+        mapper.update(merchant, merchantEntityWrapper);
 
         List<Merchant> merchants = mapper.selectList(merchantEntityWrapper);
         List<Integer> userId = merchants.stream().map(Merchant::getUserId).collect(Collectors.toList());
         User user = new User();
         user.setFlag(true);
         EntityWrapper<User> userEntityWrapper = new EntityWrapper<>();
-        userEntityWrapper.in("id",userId);
-        userService.update(user,userEntityWrapper);
+        userEntityWrapper.in("id", userId);
+        userService.update(user, userEntityWrapper);
 
 
     }
@@ -154,5 +155,40 @@ public class MerchantServiceImpl extends ServiceImpl<MerchantMapper, Merchant> i
     public List<MerchantDto> queryPageAll(MerchantPage page) {
         List<MerchantDto> dtos = mapper.merchantByPage(page);
         return dtos;
+    }
+
+    @Override
+    public void allotAgent(MerchantVo merchantVo) {
+//        清空原有分配
+        EntityWrapper<Merchant> entityWrapper = new EntityWrapper<>();
+        Wrapper<Merchant> entityWra = entityWrapper.eq("agent_id", merchantVo.getId());
+        Merchant merchant = new Merchant();
+        merchant.setAgentId(0);
+        mapper.update(merchant, entityWra);
+
+        if(null != merchantVo.getMerchantId() &&merchantVo.getMerchantId().size()>0){
+            //重新分配
+            EntityWrapper<Merchant> wrapper = new EntityWrapper<>();
+            Merchant m = new Merchant();
+            wrapper.in("id", merchantVo.getMerchantId());
+            m.setAgentId(merchantVo.getId());
+            mapper.update(m, wrapper);
+        }
+    }
+
+    @Override
+    public List<Merchant> undistributedBusiness() {
+
+        return mapper.undistributedBusiness();
+    }
+
+    @Override
+    public List<Merchant> agent() {
+        return mapper.agent();
+    }
+
+    @Override
+    public List<Merchant> queryByAgentId(Integer id) {
+        return mapper.queryByAgentId(id);
     }
 }

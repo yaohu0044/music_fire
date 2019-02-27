@@ -55,6 +55,9 @@
             <if test="null != state ">
                 and o.state = #{state}
             </if>
+            <if test="isAgents">
+                or mer.agent_id = #{agentsId}
+            </if>
         </where>
         order by create_time desc
         <if test="pageSize > 0">
@@ -87,10 +90,13 @@
                 and u.id = #{userId}
             </if>
             <if test="null != merchantId ">
-                and u.merchant_id = #{merchantId}
+                and o.merchant_id = #{merchantId}
             </if>
             <if test="null != state ">
                 and o.state = #{state}
+            </if>
+            <if test="isAgents">
+                or mer.agent_id = #{agentsId}
             </if>
         </where>
     </select>
@@ -105,8 +111,10 @@
         )
 
     </select>
-    <select id="totalTo" resultMap="BaseResultMap" parameterType="java.lang.Integer">
-        SELECT * FROM `order` where DATE_SUB(CURDATE(), INTERVAL 30 DAY) &lt;= create_time and state = 1 and merchant_id =#{merchantId};
+    <select id="totalTo" resultMap="BaseResultMap" parameterType="java.util.Map">
+        SELECT * FROM `order` o
+        left join merchant mer on mer.id = o.merchant_id
+        where DATE_SUB(CURDATE(), INTERVAL 30 DAY) &lt;= o.create_time and o.state = 1 and o.merchant_id =#{merchantId};
     </select>
     <select id="data" parameterType="java.util.Map" resultType="java.util.Map">
         select c.name,o.create_time,
@@ -114,9 +122,13 @@
         CONCAT(1,'件利润(',o.price-c.price,'元)','销售额',o.price,"总优惠(",0,')') as des
         from `order` o
         left join commodity c on o.commodity_id = c.id
+        left join merchant mer on mer.id = o.merchant_id
         where o.merchant_id =#{merchantId} and o.state = 1
         <if test='endTime !=null and endTime !="" and startTime !="" and startTime!=null'>
             and o.create_time &lt; #{endTime} and o.create_time>#{startTime}
+        </if>
+        <if test="isAgents">
+            or mer.agent_id = #{merchantId}
         </if>
     </select>
     <select id="orderReportCount" parameterType="com.musicfire.modular.order.page.OrderPage"

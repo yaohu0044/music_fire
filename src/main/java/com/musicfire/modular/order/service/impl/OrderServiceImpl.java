@@ -175,7 +175,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         //总金额
         Integer profit = mapper.profit(commodityIds);
         //30天成交量
-        List<Order> totalTo = mapper.totalTo(page.getMerchantId());
+        List<Order> totalTo = mapper.totalTo(page.getMerchantId(),page.isAgents());
         //成交详情
         List<Map<String, String>> data = mapper.data(page);
         data.removeAll(Collections.singleton(null));

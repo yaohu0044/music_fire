@@ -45,7 +45,7 @@ public interface OrderMapper extends BaseMapper<Order> {
      * @param merchantId 商家Id
      * @return
      */
-    List<Order> totalTo(Integer merchantId);
+    List<Order> totalTo(@Param("merchantId") Integer merchantId,@Param("isAgents") Boolean isAgents);
 
     /**
      *

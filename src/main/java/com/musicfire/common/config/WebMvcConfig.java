@@ -12,22 +12,38 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
+import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 
-@Configuration
-public class WebMvcConfig extends WebMvcConfigurerAdapter {
+//@Configuration
+public class WebMvcConfig implements WebMvcConfigurer {
+
+//    @Resource
+//    private LoginUserInterceptor loginInterceptor;
 
     @Bean
     public LoginUserInterceptor loginUserInterceptor(){
         return new LoginUserInterceptor();
     }
 
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(loginUserInterceptor()).addPathPatterns("/**");
-    }
+//    @Override
+//    public void addInterceptors(InterceptorRegistry registry) {
+//        //排除地址
+//        List<String> excludeList = new ArrayList<>();
+//        excludeList.add("/alipay/*");
+//        excludeList.add("/wechat/*");
+//        excludeList.add("/wxpay/*");
+//        excludeList.add("/mobilePay/*");
+//        excludeList.add("/mobile/*");
+//        excludeList.add("/mobile");
+//        excludeList.add("/mobile_register/*");
+//        excludeList.add("/mobile_register/*");
+//        registry.addInterceptor(loginInterceptor).addPathPatterns("/**").excludePathPatterns(excludeList);
+//    }
 
 
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {

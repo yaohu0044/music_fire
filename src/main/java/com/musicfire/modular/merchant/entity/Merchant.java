@@ -30,7 +30,7 @@ public class Merchant {
 //    @ExcelVOAttribute(
     private String title;
     /**
-     * 商家类型
+     * 商家类型 1:普通类型, 2 代理
      */
     @ExcelVOAttribute(name = "商家类型", column = "F")
     private Integer type;
@@ -60,5 +60,11 @@ public class Merchant {
     private Integer updateId;
 
     private Boolean flag;
+
+    /**
+     * 代理Id(只有客户类型是代理商时可用. 默认null)
+     */
+    @TableField("agent_id")
+    private Integer agentId;
 
 }

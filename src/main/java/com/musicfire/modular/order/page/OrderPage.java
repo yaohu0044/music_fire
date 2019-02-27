@@ -12,4 +12,8 @@ public class OrderPage extends BasePage {
     private Integer userId;
     private Integer merchantId;
     private Integer state;
+    //是否是代理 true是 false 不是
+    private boolean isAgents = false;
+    //代理Id
+    private Integer agentsId;
 }

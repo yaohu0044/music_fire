@@ -19,4 +19,6 @@ public class Login  {
 
     private String token;
     private String headImg;
+    //商家类型
+    private Integer merchantType;
 }

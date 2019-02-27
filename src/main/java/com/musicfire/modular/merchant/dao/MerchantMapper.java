@@ -22,4 +22,10 @@ public interface MerchantMapper extends BaseMapper<Merchant> {
     Integer countByPage(MerchantPage merchantPage);
 
     List<MerchantDto> merchantByPage(MerchantPage merchantPage);
+
+    List<Merchant> undistributedBusiness();
+
+    List<Merchant> agent();
+
+    List<Merchant> queryByAgentId(Integer id);
 }

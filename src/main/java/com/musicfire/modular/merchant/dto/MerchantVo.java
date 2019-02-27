@@ -6,6 +6,7 @@ import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Data
 public class MerchantVo {
@@ -64,5 +65,8 @@ public class MerchantVo {
     private String phone;
 
     private Integer userId;
+
+    //商家Id. 在给代理分配商家时使用
+    private List<Long> merchantId;
 
 }

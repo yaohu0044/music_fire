@@ -2,6 +2,7 @@ package com.musicfire.modular.merchant.controller;
 
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.musicfire.common.utiles.Conf;
 import com.musicfire.common.utiles.ExcelUtil;
 import com.musicfire.common.utiles.Result;
 import com.musicfire.common.validated.Insert;
@@ -16,6 +17,7 @@ import com.musicfire.modular.merchant.service.IMerchantService;
 import org.apache.http.HttpResponse;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -44,6 +46,9 @@ public class MerchantController {
     @Autowired
     private IMerchantService service;
 
+    @Value("${projectUrl.vendingmachine}")
+    public String serverUrl;
+
     @PostMapping("/save")
     public Result save(@Validated(value = Insert.class) @RequestBody MerchantVo merchantVo) {
         service.save(merchantVo);
@@ -54,6 +59,49 @@ public class MerchantController {
     public Result edit(@RequestBody @Validated(value = Update.class) MerchantVo merchantVo) {
         service.save(merchantVo);
         return new Result().ok();
+    }
+
+    /**
+     * 给代理分配商家
+     * @param merchantVo
+     * @return
+     */
+    @PostMapping("/allotAgent")
+    public Result allotAgent(@RequestBody  MerchantVo merchantVo) {
+        if(null == merchantVo.getId()){
+            return new Result().fail("信息有误,请检查");
+        }
+        service.allotAgent(merchantVo);
+        return new Result().ok();
+    }
+
+    /**
+     * 获取未分配商家
+     */
+    @GetMapping("/undistributedBusiness")
+    public Result undistributedBusiness() {
+        List<Merchant> merchants = service.undistributedBusiness();
+
+        return new Result().ok(merchants);
+    }
+    /**
+     *根据代理商查询商家
+     * @param id
+     * @return
+     */
+    @GetMapping("/queryByAgentId/{id}")
+    public Result queryByAgentId(@PathVariable Integer id ) {
+        List<Merchant> merchants = service.queryByAgentId(id);
+        return new Result().ok(merchants);
+    }
+    /**
+     * 获取代理商
+     */
+    @GetMapping("/agent")
+    public Result agent() {
+
+        List<Merchant> merchants = service.agent();
+        return new Result().ok(merchants);
     }
 
     @GetMapping("/list")
@@ -93,7 +141,7 @@ public class MerchantController {
     }
 
     @GetMapping("/exportMerchant")
-    public void exportMerchant(MerchantPage page, HttpServletResponse response) throws IOException {
+    public Result exportMerchant(MerchantPage page, HttpServletResponse response) throws IOException {
         page.setPageSize(-1);
         List<MerchantDto> list = service.queryPageAll(page);
         List<ExcelMerchant> merchants = new ArrayList<>();
@@ -110,10 +158,10 @@ public class MerchantController {
 
 
         String fileName = "商家信息"+System.currentTimeMillis()+".xls";
-        ExcelUtil.setResponseHeader(response,fileName);
-        OutputStream out = response.getOutputStream();
+        FileOutputStream out = new FileOutputStream(Conf.getValue("excelImportAddr")+"/"+fileName);
         ExcelUtil<ExcelMerchant> util = new ExcelUtil<>(ExcelMerchant.class);// 创建工具类.
         util.exportExcel(merchants, "商家信息", 65536, out);// 导出
+        return new Result().ok(serverUrl+"/"+fileName);
     }
 
 }

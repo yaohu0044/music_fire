@@ -81,9 +81,13 @@ public class LoginServiceImpl implements LoginService {
                     Merchant merchant = merchantService.selectOne(entityWrapper);
                     login.setTitle(merchant.getTitle());
                     login.setMerchantId(merchant.getId());
+                    //只有是代理商才返回商家类型
+                    if(merchant.getType()==2){
+                        login.setMerchantType(merchant.getType());
+                    }
                 }else{
+                    //id 为26代表商家. 不可变.
                     menuDTos = menuDTos.stream().filter(menuDto -> menuDto.getId() != 26).collect(Collectors.toList());
-
                 }
                 login.setMenuDTos(menuDTos);
                 String token = Md5.makeToken();

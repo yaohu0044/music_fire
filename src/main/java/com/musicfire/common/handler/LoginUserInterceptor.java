@@ -39,10 +39,14 @@ public class LoginUserInterceptor extends HandlerInterceptorAdapter {
                     RequestHolder.add(request);
                     return true;
                 }else{
-                    return true;
+                    //登录过期,跳入登录界面
+                    response.sendRedirect("http://vendor.xinxiconnect.com");
+                    return false;
                 }
             }else{
-                return true;
+                //跳入登录界面
+                response.sendRedirect("http://vendor.xinxiconnect.com");
+                return false;
             }
 
         }

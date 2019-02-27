@@ -21,10 +21,13 @@ import com.musicfire.modular.order.page.OrderPage;
 import com.musicfire.modular.order.service.IOrderService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.math.BigDecimal;
@@ -50,6 +53,9 @@ public class OrderController {
 
     @Autowired
     private AliPayController aliPay;
+
+    @Value("${projectUrl.vendingmachine}")
+    public String serverUrl;
 
     @GetMapping(value = "/saveOrder/{ids}")
     @ResponseBody
@@ -99,7 +105,7 @@ public class OrderController {
         return new Result().ok(page);
     }
     @GetMapping("/exportOrder")
-    public void exportOrder(OrderPage orderPage, HttpServletResponse response) throws IOException {
+    public Result exportOrder(OrderPage orderPage, HttpServletResponse response) throws IOException {
         orderPage.setPageSize(-1);
         OrderPage order = service.list(orderPage);
         List<?> list = order.getList();
@@ -127,11 +133,10 @@ public class OrderController {
         });
 
         String fileName = "订单信息" + System.currentTimeMillis() + ".xls";
-        ExcelUtil.setResponseHeader(response, fileName);
-        OutputStream out = response.getOutputStream();
+        FileOutputStream out = new FileOutputStream(Conf.getValue("excelImportAddr")+"/"+fileName);
         ExcelUtil<OrderExport> util = new ExcelUtil<>(OrderExport.class);// 创建工具类.
         util.exportExcel(orderExports, "订单新", 65536, out);// 导出
+        return new Result().ok(serverUrl+"/"+fileName);
     }
-
 }
 

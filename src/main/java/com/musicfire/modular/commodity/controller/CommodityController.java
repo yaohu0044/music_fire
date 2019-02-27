@@ -1,6 +1,7 @@
 package com.musicfire.modular.commodity.controller;
 
 
+import com.musicfire.common.utiles.Conf;
 import com.musicfire.common.utiles.ExcelUtil;
 import com.musicfire.common.utiles.Result;
 import com.musicfire.modular.commodity.dao.CommodityMapper;
@@ -12,12 +13,14 @@ import com.musicfire.modular.commodity.query.CommodityPage;
 import com.musicfire.modular.commodity.service.ICommodityService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -42,6 +45,9 @@ public class CommodityController {
 
     @Resource
     private CommodityMapper commodityMapper;
+
+    @Value("${projectUrl.vendingmachine}")
+    public String serverUrl;
 
     @PostMapping("/save")
     public Result commSave(@Validated @RequestBody CommodityVo commodityVo) {
@@ -93,7 +99,7 @@ public class CommodityController {
     }
 
     @GetMapping("/exportCommodity")
-    public void exportCommodity(CommodityPage page, HttpServletResponse response) throws IOException {
+    public Result exportCommodity(CommodityPage page, HttpServletResponse response) throws IOException {
         page.setPageSize(-1);
         List<CommodityDto> list = commodityMapper.queryByCommodity(page);
         List<ExcelCommodity> commoditys = new ArrayList<>();
@@ -105,10 +111,10 @@ public class CommodityController {
         });
 
         String fileName = "商品信息"+System.currentTimeMillis()+".xls";
-        ExcelUtil.setResponseHeader(response,fileName);
-        OutputStream out = response.getOutputStream();
+        FileOutputStream out = new FileOutputStream(Conf.getValue("excelImportAddr")+"/"+fileName);
         ExcelUtil<ExcelCommodity> util = new ExcelUtil<>(ExcelCommodity.class);// 创建工具类.
         util.exportExcel(commoditys, "商品信息", 65536, out);// 导出
+        return new Result().ok(serverUrl+"/"+fileName);
     }
 }
 

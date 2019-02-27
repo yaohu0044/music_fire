@@ -38,4 +38,18 @@ public interface IMerchantService extends IService<Merchant> {
      */
     List<MerchantDto> queryPageAll(MerchantPage page);
 
+    /**
+     * 给代理分配商家
+     * @param merchantVo
+     */
+    void allotAgent(MerchantVo merchantVo);
+
+    /**
+     * 获取未分配商家
+     */
+    List<Merchant> undistributedBusiness();
+
+    List<Merchant> agent();
+
+    List<Merchant> queryByAgentId(Integer id);
 }

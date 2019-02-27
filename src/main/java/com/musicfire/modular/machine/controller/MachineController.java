@@ -17,6 +17,7 @@ import com.musicfire.modular.machine.service.IMachineService;
 import com.musicfire.modular.merchant.service.IMerchantService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -40,6 +41,8 @@ public class MachineController {
     private final IMachineService service;
 
     private final IMerchantService service1;
+    @Value("${projectUrl.vendingmachine}")
+    public String serverUrl;
 
     @Autowired
     public MachineController(IMachineService service, IMerchantService service1) {
@@ -131,7 +134,7 @@ public class MachineController {
     }
 
     @GetMapping("/exportMachine")
-    public void exportMerchant(MachinePage page, HttpServletResponse response) throws IOException {
+    public Result exportMerchant(MachinePage page, HttpServletResponse response) throws IOException {
         page.setPageSize(-1);
         List<?> list = service.queryByMachine(page).getList();
         List<ExcelMachine> merchants = new ArrayList<>();
@@ -141,10 +144,10 @@ public class MachineController {
             merchants.add(excelMachine);
         });
         String fileName = "机器信息" + System.currentTimeMillis() + ".xls";
-        ExcelUtil.setResponseHeader(response, fileName);
-        OutputStream out = response.getOutputStream();
+        FileOutputStream out = new FileOutputStream(Conf.getValue("excelImportAddr")+"/"+fileName);
         ExcelUtil<ExcelMachine> util = new ExcelUtil<>(ExcelMachine.class);// 创建工具类.
         util.exportExcel(merchants, "机器信息", 65536, out);// 导出
+        return new Result().ok(serverUrl+"/"+fileName);
     }
 
     @PostMapping("/importMachine")

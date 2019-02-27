@@ -1,5 +1,6 @@
 package com.musicfire.modular.business.controller;
 
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.musicfire.common.handler.RequestHolder;
 import com.musicfire.common.utiles.Result;
 import com.musicfire.mobile.enums.ResultEnum;
@@ -7,6 +8,8 @@ import com.musicfire.modular.business.service.BusinessService;
 import com.musicfire.modular.login.Login;
 import com.musicfire.modular.machine.query.MachinePositionPage;
 import com.musicfire.modular.machine.service.IMachinePositionService;
+import com.musicfire.modular.merchant.entity.Merchant;
+import com.musicfire.modular.merchant.service.IMerchantService;
 import com.musicfire.modular.order.page.OrderPage;
 import com.musicfire.modular.order.service.IOrderService;
 import com.musicfire.modular.room.query.RoomPage;
@@ -16,6 +19,7 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import javax.swing.text.html.parser.Entity;
 import java.util.Map;
 
 @RestController
@@ -34,8 +38,12 @@ public class BusinessController {
     @Autowired
     private IOrderService orderService;
 
+    @Autowired
+    private IMerchantService merchantService;
+
     /**
-     *  商户获取所有房间和机器
+     * 商户获取所有房间和机器
+     *
      * @param page
      * @return
      */
@@ -50,7 +58,8 @@ public class BusinessController {
     }
 
     /**
-     *  商户获取所有房间和机器
+     * 商户获取所有房间和机器
+     *
      * @param machineId 机器Id
      * @return 机器仓位信息
      */
@@ -65,6 +74,7 @@ public class BusinessController {
 
     /**
      * 补货
+     *
      * @param machinePositionId 仓位Id
      * @return
      */
@@ -74,8 +84,10 @@ public class BusinessController {
         businessService.replenishment(machinePositionId);
         return new Result().ok();
     }
+
     /**
      * 全部补货
+     *
      * @param machineId 机器id
      * @return
      */
@@ -86,24 +98,42 @@ public class BusinessController {
         //打开全部机器全部仓位
         return new Result().ok();
     }
+
     /**
      * 我的订单
-     * @param  orderPage 订单分页
+     *
+     * @param orderPage 订单分页
      * @return 订单信息
      */
     @GetMapping("/orderList")
     public Result list(OrderPage orderPage) {
-        Login currentUser = RequestHolder.getCurrentUser();
-        orderPage.setUserId(currentUser.getUserId());
+        checkAgent(orderPage);
+        orderPage.setUserId(RequestHolder.getCurrentUser().getUserId());
         OrderPage page = orderService.list(orderPage);
         return new Result().ok(page);
+    }
+
+    private void checkAgent(OrderPage orderPage) {
+        Login currentUser = RequestHolder.getCurrentUser();
+        Integer userId = currentUser.getUserId();
+        if (null != userId) {
+            EntityWrapper<Merchant> merchantEntityWrapper = new EntityWrapper<>();
+            merchantEntityWrapper.eq("user_id", userId);
+            Merchant merchant = merchantService.selectOne(merchantEntityWrapper);
+            if (null != merchant) {
+                orderPage.setAgents(merchant.getType() == 2);
+                orderPage.setAgentsId(merchant.getId());
+//                orderPage.setMerchantId(merchant.getId());
+            }
+        }
     }
 
     @GetMapping("/getTotal")
     @ResponseBody
     public Result total(OrderPage page) {
-        Login currentUser = RequestHolder.getCurrentUser();
-        page.setMerchantId(currentUser.getMerchantId());
+        checkAgent(page);
+        page.setMerchantId(RequestHolder.getCurrentUser().getMerchantId());
+
         Map<String, Object> map = orderService.total(page);
         return new Result().ok(map);
     }
