@@ -49,14 +49,14 @@
             <if test="null != merchantId">
                 and o.merchant_id = #{merchantId}
             </if>
-            <if test="null != userId ">
-                and u.id = #{userId}
+            <if test="null != userId and isAgents">
+                and ( u.id = #{userId}  or mer.agent_id = #{agentsId})
+            </if>
+            <if test="null != userId and !isAgents">
+                u.id = #{userId}
             </if>
             <if test="null != state ">
                 and o.state = #{state}
-            </if>
-            <if test="isAgents">
-                or mer.agent_id = #{agentsId}
             </if>
         </where>
         order by create_time desc
@@ -86,17 +86,17 @@
             <if test="null != endTime and ''!= endTime">
                 and o.create_time &lt; #{endTime}
             </if>
-            <if test="null != userId ">
-                and u.id = #{userId}
+            <if test="null != userId and isAgents">
+                and ( u.id = #{userId}  or mer.agent_id = #{agentsId})
+            </if>
+            <if test="null != userId and !isAgents">
+                u.id = #{userId}
             </if>
             <if test="null != merchantId ">
                 and o.merchant_id = #{merchantId}
             </if>
             <if test="null != state ">
                 and o.state = #{state}
-            </if>
-            <if test="isAgents">
-                or mer.agent_id = #{agentsId}
             </if>
         </where>
     </select>
