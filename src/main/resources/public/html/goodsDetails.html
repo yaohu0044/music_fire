@@ -13,7 +13,9 @@
 <div class="goods-list">
 
     <div class="details-info">
-        <div class="details-img"></div>
+        <div class="details-img">
+            <img id="img-details" width="100%">
+        </div>
 
     </div>
     <div class="price-date">
@@ -21,17 +23,20 @@
         <div class="details-time-and-money" id="nowDate"></div>
     </div>
     <div id="describe"></div>
+    <div id="introduce"></div>
     <div class="goods-btn details-btn" onclick="purchase()">立即购买</div>
 </div>
 <script type="text/javascript">
 
     $('#priceId').html("￥"+getQueryStringByName("price"));
     $('#describe').html(decodeURI(getQueryStringByName("commodityName")))
+    $('#introduce').html(decodeURI(getQueryStringByName("introduce")))
    // $(".details-img").css("background","url("+getQueryStringByName('shrinkageChart')+")");
-    $(".details-img").css({
-        "background":"url("+getQueryStringByName('shrinkageChart')+")",
-        "backgroundSize":"100% 100%"
-    })
+   //  $(".details-img").css({
+   //      "background":"url("+getQueryStringByName('shrinkageChart')+")",
+   //      "backgroundSize":"100% 100%"
+   //  })
+    $("#img-details").attr("src",getQueryStringByName('shrinkageChart'))
      $('#nowDate').html(timeStamp2String(new Date().getTime()))
     function purchase(){
         $.ajax({

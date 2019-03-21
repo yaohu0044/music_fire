@@ -29,4 +29,6 @@ public interface UserMapper extends BaseMapper<User> {
      * @return
      */
     List<User> queryUserByName(String name);
+
+    List<User> queryAllAdmin();
 }

@@ -106,32 +106,7 @@ public class OrderController {
     }
     @GetMapping("/exportOrder")
     public Result exportOrder(OrderPage orderPage, HttpServletResponse response) throws IOException {
-        orderPage.setPageSize(-1);
-        OrderPage order = service.list(orderPage);
-        List<?> list = order.getList();
-        List<OrderExport> orderExports = new ArrayList<>();
-        list.forEach(o -> {
-            OrderExport orderExport = new OrderExport();
-            BeanUtils.copyProperties(o, orderExport);
-            if(1 == orderExport.getState()){
-                orderExport.setStateStr("购买成功");
-            }else if(3 == orderExport.getState()){
-                orderExport.setStateStr("未付款");
-            }else if(4 == orderExport.getState()){
-                orderExport.setStateStr("订单异常");
-            }
-            if(null != orderExport.getPaymentMethod()){
-                if(1 == orderExport.getPaymentMethod()){
-                    orderExport.setPaymentMethodStr("支付宝支付");
-                }else{
-                    orderExport.setPaymentMethodStr("微信支付");
-                }
-            }
-            orderExport.setCreateTimeStr(DateTool.getFormat(orderExport.getCreateTime()));
-
-            orderExports.add(orderExport);
-        });
-
+        List<OrderExport> orderExports = service.exportOrder(orderPage);
         String fileName = "订单信息" + System.currentTimeMillis() + ".xls";
         FileOutputStream out = new FileOutputStream(Conf.getValue("excelImportAddr")+"/"+fileName);
         ExcelUtil<OrderExport> util = new ExcelUtil<>(OrderExport.class);// 创建工具类.

@@ -20,7 +20,7 @@ spring:
       connection-timeout: 30000
       connection-test-query: SELECT 1
   redis:
-    host: 127.0.0.1
+    host: 39.104.54.139
     port: 6379
     password: xinxi@123
     keyPrefix: jeeplus
@@ -34,7 +34,16 @@ spring:
     testOnBorrow: true
     testWhileIdle: true
 
-
+  mail:
+    host: smtp.qq.com #smtp.qq.com
+    protocol: smtp #smtp
+    default-encoding: UTF-8
+    username: 865036341@qq.com #7557*****@qq.com
+    password: teejtaajotxjbfaj #jwgteykojlf*****
+    test-connection: true
+    thymeleaf:
+      cache: false #开发时关闭缓存
+    port: 587
 
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss

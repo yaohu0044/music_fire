@@ -1,7 +1,9 @@
 package com.musicfire.common.utiles;
 
+import com.musicfire.modular.order.dto.OrderExport;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.CellRangeAddressList;
 
 import javax.servlet.http.HttpServletResponse;
@@ -10,6 +12,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -35,6 +38,10 @@ import java.util.Map;
  */
 public class ExcelUtil<T> {
 	private Class<T> clazz;
+
+
+	private int startRow = 1;
+	private int endRow;
 
 	public ExcelUtil(Class<T> clazz) {
 		this.clazz = clazz;
@@ -329,5 +336,126 @@ public class ExcelUtil<T> {
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
+	}
+
+	/**
+	 * 对list数据源将其里面的数据导入到excel表单
+	 *
+	 * @param sheetName 工作表的名称
+	 * @param sheetSize 每个sheet中数据的行数,此数值必须小于65536
+	 * @param output    java输出流
+	 */
+	public boolean exportExcels(List<List<T>> list, String sheetName, int sheetSize,
+								OutputStream output) {
+		Field[] allFields = clazz.getDeclaredFields();// 得到所有定义字段
+		List<Field> fields = new ArrayList<Field>();
+		// 得到所有field并存放到一个list中.
+		for (Field field : allFields) {
+			if (field.isAnnotationPresent(ExcelVOAttribute.class)) {
+				fields.add(field);
+			}
+		}
+		HSSFWorkbook workbook = new HSSFWorkbook();// 产生工作薄对象
+		// excel2003中每个sheet中最多有65536行,为避免产生错误所以加这个逻辑.
+		if (sheetSize > 65536 || sheetSize < 1) {
+			sheetSize = 65536;
+		}
+		// 取出一共有多少个sheet.
+		double sheetNo = Math.ceil(list.get(0).size() / sheetSize);
+		for (int index = 0; index <= sheetNo; index++) {
+			HSSFSheet sheet = workbook.createSheet();// 产生工作表对象
+			if (sheetNo == 0) {
+				workbook.setSheetName(index, sheetName);
+			} else {
+				workbook.setSheetName(index, sheetName + index);// 设置工作表的名称.
+			}
+			HSSFRow row;
+			HSSFCell cell;// 产生单元格
+			row = sheet.createRow(0);// 产生一行
+			// 写入各个字段的列头名称
+			for (Field field : fields) {
+				ExcelVOAttribute attr = field
+						.getAnnotation(ExcelVOAttribute.class);
+				int col = getExcelCol(attr.column());// 获得列号
+				cell = row.createCell(col);// 创建列
+				cell.setCellType(CellType.STRING);// 设置列中写入内容为String类型
+				cell.setCellValue(attr.name());// 写入列名
+			}
+			for (int j = 0; j < list.size(); j++) {
+				endRow += list.get(j).size();
+				if(startRow<endRow){
+					setMergeColumns(sheet, startRow, endRow, 0, 0);
+					setMergeColumns(sheet, startRow, endRow, fields.size()-1, fields.size()-1);
+					setMergeColumns(sheet, startRow, endRow, fields.size()-2, fields.size()-2);
+				}
+				int startNo = index * sheetSize;
+				int endNo = Math.min(startNo + sheetSize, list.get(j).size());
+				// 写入各条记录,每条记录对应excel表中的一行
+				String sumstring ="SUM(";
+				String sumstring3 ="SUM(";
+				String sumstring1 ="";
+				String sumstring2 ="";
+				BigDecimal bigDecimal = new BigDecimal(0);
+				for (int i = startNo; i < endNo; i++) {
+					row = sheet.createRow(startRow+i);
+					T vo = (T) list.get(j).get(i); // 得到导出对象.
+					for (Field field : fields) {
+						field.setAccessible(true);// 设置实体类私有属性可访问
+						ExcelVOAttribute attr = field
+								.getAnnotation(ExcelVOAttribute.class);
+						try {
+							// 根据ExcelVOAttribute中设置情况决定是否导出,有些情况需要保持为空,希望用户填写这一列.
+							if (attr.isExport()) {
+								cell = row.createCell(getExcelCol(attr.column()));// 创建cell
+								cell.setCellType(CellType.STRING);
+								cell.setCellValue(field.get(vo) == null ? ""
+										: String.valueOf(field.get(vo)));// 如果数据存在就填入,不存在填入空格.
+							}
+						} catch (IllegalArgumentException | IllegalAccessException e) {
+							e.printStackTrace();
+						}
+					}
+					sumstring1 += "E"+(startRow+i+1)+"+";
+					sumstring2 += "K"+(startRow+i+1)+"+";
+				}
+				if(sumstring1.endsWith("+")){
+					sumstring1=sumstring1+0;
+				}
+				if(sumstring2.endsWith("+")){
+					sumstring2=sumstring2+0;
+				}
+				sumstring =sumstring+ sumstring1+")";//求和公式
+				sumstring3 =sumstring3+ sumstring2+")";//求和公式
+				sheet.getRow(startRow).getCell(fields.size()-2).setCellFormula(sumstring);
+				sheet.getRow(startRow).getCell(fields.size()-1).setCellFormula(sumstring+"-"+sumstring3);
+				startRow += endNo;
+			}
+
+		}
+		try {
+			output.flush();
+			workbook.write(output);
+			output.close();
+			return true;
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.out.println("Output is closed ");
+			return false;
+		}
+	}
+
+	/**
+	 * 设置某些列的值只能输入预制的数据,显示下拉框.
+	 *
+	 * @param sheet    要设置的sheet.
+	 * @param firstRow 开始行
+	 * @param endRow   结束行
+	 * @param firstCol 开始列
+	 * @param endCol   结束列
+	 * @return 设置好的sheet.
+	 */
+	private static void setMergeColumns(HSSFSheet sheet, int firstRow, int endRow, int firstCol, int endCol) {
+		CellRangeAddress region = new CellRangeAddress(firstRow, endRow, firstCol, endCol);
+		sheet.addMergedRegion(region);
 	}
 }

@@ -1,6 +1,7 @@
 package com.musicfire.modular.order.service;
 
 import com.baomidou.mybatisplus.service.IService;
+import com.musicfire.modular.order.dto.OrderExport;
 import com.musicfire.modular.order.dto.OrderReport;
 import com.musicfire.modular.order.dto.ReportParam;
 import com.musicfire.modular.order.entity.Order;
@@ -30,4 +31,10 @@ public interface IOrderService extends IService<Order> {
 
     Map<String, Object> total(OrderPage page);
 
+    /**
+     * 根据条件生成底单信息
+     * @param orderPage
+     * @return
+     */
+    List<OrderExport> exportOrder(OrderPage orderPage);
 }

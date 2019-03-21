@@ -40,4 +40,11 @@ public interface IUserService extends IService<User> {
      * @return
      */
     List<User> queryUserByName(String name);
+
+    /**
+     * 获取所有的系统管理员
+     * @param
+     * @return
+     */
+    List<User> queryAllAdmin();
 }

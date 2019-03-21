@@ -23,6 +23,7 @@
         <result column="price" property="price" />
         <result column="shrinkageChart" property="shrinkageChart" />
         <result column="commodityDes" property="commodityDes" />
+        <result column="introduce" property="introduce" />
 
     </resultMap>
 
@@ -39,7 +40,8 @@
         c.price,
         mp.commodity_id AS commodityId ,
         mp.machine_id as machine_id,
-        cp.path as shrinkageChart
+        cp.path as shrinkageChart,
+        c.introduce as introduce
         FROM
         machine_position mp
         LEFT JOIN machine m ON mp.machine_id = m.id

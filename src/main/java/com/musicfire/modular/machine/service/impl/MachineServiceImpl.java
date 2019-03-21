@@ -96,6 +96,7 @@ public class MachineServiceImpl extends ServiceImpl<MachineMapper, Machine> impl
                 if(mach.getId().intValue()==machine.getId().intValue()){
                     if(null == machine.getMerchantId()){
                         machine.setMerchantId(0);
+                        machine.setIsDistribution(false);
                     }
                     mapper.updateById(machine);
                 }else{

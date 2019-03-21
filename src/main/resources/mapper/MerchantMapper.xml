@@ -66,7 +66,7 @@
         FROM
             merchant m
             LEFT JOIN sys_user u ON m.user_id = u.id
-            where  m.type =2
+            where  m.type =2 and m.flag = 0
     </select>
 <select id="queryByAgentId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
       SELECT
@@ -75,7 +75,7 @@
         FROM
             merchant m
             LEFT JOIN sys_user u ON m.user_id = u.id
-            where  m.agent_id = #{id}
+            where  m.agent_id = #{id} and m.flag = 0
     </select>
 
 

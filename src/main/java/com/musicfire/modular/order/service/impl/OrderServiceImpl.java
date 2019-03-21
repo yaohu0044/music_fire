@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.musicfire.common.businessException.BusinessException;
 import com.musicfire.common.config.redisdao.RedisDao;
+import com.musicfire.common.utiles.DateTool;
 import com.musicfire.common.utiles.UUIDTool;
 import com.musicfire.mobile.entity.AliPayUserInfo;
 import com.musicfire.mobile.entity.WeChatMpUser;
@@ -16,18 +17,15 @@ import com.musicfire.modular.machine.entity.Machine;
 import com.musicfire.modular.machine.entity.MachinePosition;
 import com.musicfire.modular.machine.service.IMachinePositionService;
 import com.musicfire.modular.machine.service.IMachineService;
-import com.musicfire.modular.merchant.entity.Merchant;
 import com.musicfire.modular.merchant.service.IMerchantService;
 import com.musicfire.modular.order.dao.OrderMapper;
 import com.musicfire.modular.order.dto.OrderDto;
-import com.musicfire.modular.order.dto.OrderReport;
-import com.musicfire.modular.order.dto.ReportParam;
+import com.musicfire.modular.order.dto.OrderExport;
 import com.musicfire.modular.order.entity.Order;
 import com.musicfire.modular.order.page.OrderPage;
 import com.musicfire.modular.order.service.IOrderService;
-import com.musicfire.modular.room.entity.Room;
 import com.musicfire.modular.room.service.IRoomService;
-import com.musicfire.modular.system.service.IAliPaySettingService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -36,7 +34,6 @@ import org.springframework.util.ObjectUtils;
 import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.*;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 /**
@@ -85,7 +82,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         }
         List<OrderDto> page = mapper.orderByPage(orderPage);
         page.forEach(order -> {
-            if (null != order.getPaymentMethod()&& orderPage.getPageSize()>0) {
+            if (null != order.getPaymentMethod() && orderPage.getPageSize() > 0) {
                 if (order.getPaymentMethod() == 1) {
                     EntityWrapper<AliPayUserInfo> aliPayUserInfoEntityWrapper = new EntityWrapper<>();
                     aliPayUserInfoEntityWrapper.eq("user_id", order.getAccountAccount());
@@ -153,18 +150,20 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         if (null == page.getMerchantId()) {
             throw new BusinessException("该用户不是商家不能查看信息");
         }
+        //30天成交量
+        List<Order> totalTo = mapper.totalTo(page.getMerchantId(), page.isAgents());
         //销售额
         page.setState(1);
         List<OrderDto> orders = mapper.orderByPage(page);
-
         Map<String, Object> map = new HashMap<>();
         BigDecimal sellingPrice = new BigDecimal(0);
         if (CollectionUtils.isEmpty(orders)) {
-            map.put("totalTo", 0);
+            map.put("totalTo", totalTo.size());
             map.put("singular", 0);
             map.put("sellingPrice", 0);
             map.put("profit", 0);
             map.put("data", "");
+            map.put("dataCount", 0);
             return map;
         }
         for (Order order : orders) {
@@ -174,8 +173,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         List<Integer> commodityIds = orders.stream().map(Order::getCommodityId).collect(Collectors.toList());
         //总金额
         Integer profit = mapper.profit(commodityIds);
-        //30天成交量
-        List<Order> totalTo = mapper.totalTo(page.getMerchantId(),page.isAgents());
+
         //成交详情
         List<Map<String, String>> data = mapper.data(page);
         data.removeAll(Collections.singleton(null));
@@ -184,9 +182,39 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         map.put("sellingPrice", sellingPrice);
         map.put("profit", sellingPrice.subtract(new BigDecimal(ObjectUtils.isEmpty(profit) ? 0 : profit)));
         map.put("data", data);
-
+        map.put("dataCount",mapper.dataCount(page));
+        map.put("currPage",page.getCurrentPage());
 
         return map;
     }
 
+    @Override
+    public List<OrderExport> exportOrder(OrderPage orderPage) {
+        orderPage.setPageSize(-1);
+        OrderPage order = list(orderPage);
+        List<?> list = order.getList();
+        List<OrderExport> orderExports = new ArrayList<>();
+        list.forEach(o -> {
+            OrderExport orderExport = new OrderExport();
+            BeanUtils.copyProperties(o, orderExport);
+            if(1 == orderExport.getState()){
+                orderExport.setStateStr("购买成功");
+            }else if(3 == orderExport.getState()){
+                orderExport.setStateStr("未付款");
+            }else if(4 == orderExport.getState()){
+                orderExport.setStateStr("订单异常");
+            }
+            if(null != orderExport.getPaymentMethod()){
+                if(1 == orderExport.getPaymentMethod()){
+                    orderExport.setPaymentMethodStr("支付宝支付");
+                }else{
+                    orderExport.setPaymentMethodStr("微信支付");
+                }
+            }
+            orderExport.setCreateTimeStr(DateTool.getFormat(orderExport.getCreateTime()));
+
+            orderExports.add(orderExport);
+        });
+        return orderExports;
+    }
 }

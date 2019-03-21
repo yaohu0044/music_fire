@@ -12,8 +12,10 @@ public class OrderExport {
 //    @ExcelVOAttribute(name = "用户昵称", column = "A")
     private String userName;
 //    @ExcelVOAttribute(name = "用户头像", column = "B")
+    @ExcelVOAttribute(name = "商家名称", column = "A")
+    private String merchantName;
     private String headImg;
-    @ExcelVOAttribute(name = "商品名称", column = "A")
+    @ExcelVOAttribute(name = "商品名称", column = "F")
     private String commodityName;
     @ExcelVOAttribute(name = "订单号", column = "B")
     private String number;
@@ -23,10 +25,9 @@ public class OrderExport {
     @ExcelVOAttribute(name = "支付方式", column = "D")
     private String paymentMethodStr;
     private Integer paymentMethod;
-    @ExcelVOAttribute(name = "金额", column = "E")
+    @ExcelVOAttribute(name = "卖价", column = "E")
     private BigDecimal price;
-    @ExcelVOAttribute(name = "商家名称", column = "F")
-    private String merchantName;
+
     @ExcelVOAttribute(name = "机器名称", column = "G")
     private String machineName;
 
@@ -37,8 +38,16 @@ public class OrderExport {
     private String roomName;
     @ExcelVOAttribute(name = "创建时间", column = "J")
     private String createTimeStr;
-    private Date createTime;
 
+    @ExcelVOAttribute(name = "进价", column = "K")
+    private BigDecimal purchasePrice;
+
+    @ExcelVOAttribute(name = "总收入", column = "L")
+    private BigDecimal total;
+    @ExcelVOAttribute(name = "盈利", column = "M")
+    private BigDecimal profit;
+    private Date createTime;
+    private Integer type;
 
 
 

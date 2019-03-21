@@ -23,10 +23,12 @@
         <result column="commodityName" property="commodityName"/>
         <result column="num" property="num"/>
         <result column="roomName" property="roomName"/>
+        <result column="type" property="type"/>
+        <result column="purchasePricefrom" property="purchasePricefrom"/>
     </resultMap>
 
     <select id="orderByPage" parameterType="com.musicfire.modular.order.page.OrderPage" resultMap="NewResultMap">
-        select r.name as roomName ,o.*,u.name as merchantName, mac.name as machineName,c.name as commodityName ,mp.num from `order` o
+        select r.name as roomName ,mer.type as type,o.*,u.name as merchantName, mac.name as machineName,c.name as commodityName ,mp.num ,c.purchase_price as purchasePrice from  `order` o
         left join merchant mer on mer.id = o.merchant_id
         left join machine mac on mac.id = o.machine_id
         left join sys_user u on u.id = mer.user_id
@@ -114,7 +116,7 @@
     <select id="totalTo" resultMap="BaseResultMap" parameterType="java.util.Map">
         SELECT * FROM `order` o
         left join merchant mer on mer.id = o.merchant_id
-        where DATE_SUB(CURDATE(), INTERVAL 30 DAY) &lt;= o.create_time and o.state = 1 and o.merchant_id =#{merchantId};
+        where DATE_SUB(CURDATE(), INTERVAL 1 DAY) &lt;= o.create_time and o.state = 1 and o.merchant_id =#{merchantId};
     </select>
     <select id="data" parameterType="java.util.Map" resultType="java.util.Map">
         select c.name,o.create_time,
@@ -130,7 +132,23 @@
         <if test="isAgents">
             or mer.agent_id = #{merchantId}
         </if>
+        limit #{startPosition},#{pageSize}
     </select>
+
+    <select id="dataCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+        select count(*)
+        from `order` o
+        left join commodity c on o.commodity_id = c.id
+        left join merchant mer on mer.id = o.merchant_id
+        where o.merchant_id =#{merchantId} and o.state = 1
+        <if test='endTime !=null and endTime !="" and startTime !="" and startTime!=null'>
+            and o.create_time &lt; #{endTime} and o.create_time>#{startTime}
+        </if>
+        <if test="isAgents">
+            or mer.agent_id = #{merchantId}
+        </if>
+    </select>
+
     <select id="orderReportCount" parameterType="com.musicfire.modular.order.page.OrderPage"
             resultType="com.musicfire.modular.order.dto.OrderReport">
         select count(id) as orderNum,sum(price) as orderPrice,DATE_FORMAT(create_time,'%Y-%m-%d') as orderDate

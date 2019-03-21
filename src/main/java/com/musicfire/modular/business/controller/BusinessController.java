@@ -133,7 +133,6 @@ public class BusinessController {
     public Result total(OrderPage page) {
         checkAgent(page);
         page.setMerchantId(RequestHolder.getCurrentUser().getMerchantId());
-
         Map<String, Object> map = orderService.total(page);
         return new Result().ok(map);
     }

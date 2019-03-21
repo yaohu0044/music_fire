@@ -117,4 +117,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
         return  mapper.queryUserByName(name);
     }
+
+    @Override
+    public List<User> queryAllAdmin() {
+        return mapper.queryAllAdmin();
+    }
 }

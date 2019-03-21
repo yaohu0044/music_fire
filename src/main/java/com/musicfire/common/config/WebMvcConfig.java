@@ -19,21 +19,21 @@ import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 
-//@Configuration
+@Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
 
-//    @Resource
-//    private LoginUserInterceptor loginInterceptor;
+    @Resource
+    private LoginUserInterceptor loginInterceptor;
 
     @Bean
     public LoginUserInterceptor loginUserInterceptor(){
         return new LoginUserInterceptor();
     }
 
-//    @Override
-//    public void addInterceptors(InterceptorRegistry registry) {
-//        //排除地址
-//        List<String> excludeList = new ArrayList<>();
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        //排除地址
+        List<String> excludeList = new ArrayList<>();
 //        excludeList.add("/alipay/*");
 //        excludeList.add("/wechat/*");
 //        excludeList.add("/wxpay/*");
@@ -42,8 +42,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
 //        excludeList.add("/mobile");
 //        excludeList.add("/mobile_register/*");
 //        excludeList.add("/mobile_register/*");
-//        registry.addInterceptor(loginInterceptor).addPathPatterns("/**").excludePathPatterns(excludeList);
-//    }
+        registry.addInterceptor(loginInterceptor).addPathPatterns("/**").excludePathPatterns(excludeList);
+    }
 
 
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {

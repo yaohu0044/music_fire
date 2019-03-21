@@ -61,6 +61,13 @@ public interface OrderMapper extends BaseMapper<Order> {
      */
     List<OrderReport> orderReportCount(OrderPage param);
 
+ /**
+     * 根据条件统计订单信息
+     * @param param
+     * @return
+     */
+    Integer dataCount(OrderPage param);
+
     /**
      * 当天支付订单统计
      * @param

@@ -66,13 +66,7 @@ public class RoomServiceImpl extends ServiceImpl<RoomMapper, Room> implements IR
             }else {
                 room.setState(machineState.getMachineState().getCode());
                 room.setStateStr(machineState.getMachineState().getMessage());
-                EntityWrapper<MachinePosition> entityWrapper = new EntityWrapper<>();
-                entityWrapper.eq("machine_id",room.getMachineId());
-                List<MachinePosition> machinePositions = positionService.selectList(entityWrapper);
-                List<MachinePosition> collect = machinePositions.stream().filter(machinePosition -> !machinePosition.getAvailable()).collect(Collectors.toList());
-                if(!CollectionUtils.isEmpty(collect)){
-                    room.setMachinePosition(true);
-                }
+
 
 //                String cabinetState = machineState.getCabinetState();
 //                if(StringUtils.isNotEmpty(cabinetState)){
@@ -81,6 +75,14 @@ public class RoomServiceImpl extends ServiceImpl<RoomMapper, Room> implements IR
 //                        room.setMachinePosition(true);
 //                    }
 //                }
+            }
+            EntityWrapper<MachinePosition> entityWrapper = new EntityWrapper<>();
+            entityWrapper.eq("machine_id",room.getMachineId());
+            entityWrapper.eq("flag",0);
+            List<MachinePosition> machinePositions = positionService.selectList(entityWrapper);
+            List<MachinePosition> collect = machinePositions.stream().filter(machinePosition -> !machinePosition.getAvailable()).collect(Collectors.toList());
+            if(!CollectionUtils.isEmpty(collect)){
+                room.setMachinePosition(true);
             }
         });
         page.setList(rooms);
