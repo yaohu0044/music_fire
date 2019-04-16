@@ -2,7 +2,7 @@
 spring:
   datasource:
     password: Xinxi@123
-#    password: root
+#    password:
     username: root
 #    password: yy3B5uYf5f34BjV89
 #    username: admin

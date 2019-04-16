@@ -14,6 +14,8 @@ import com.musicfire.modular.commodity.entity.Dto.CommodityDto;
 import com.musicfire.modular.commodity.entity.Dto.CommodityVo;
 import com.musicfire.modular.commodity.query.CommodityPage;
 import com.musicfire.modular.commodity.service.ICommodityService;
+import com.musicfire.modular.machine.entity.MachinePosition;
+import com.musicfire.modular.machine.service.IMachinePositionService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +25,8 @@ import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -43,6 +47,9 @@ public class CommodityServiceImpl extends ServiceImpl<CommodityMapper, Commodity
 
     @Resource
     private CommodityStockMapper commodityStockMapper;
+
+    @Resource
+    private IMachinePositionService machinePositionService;
 
     @Transactional
     @Override
@@ -72,9 +79,9 @@ public class CommodityServiceImpl extends ServiceImpl<CommodityMapper, Commodity
             CommodityStock commodityStock = new CommodityStock();
             BeanUtils.copyProperties(commodityVo, commodityStock);
             commodityStockMapper.updateById(commodityStock);
-            EntityWrapper<CommodityPic> entityWrapper = new EntityWrapper<>();
-            entityWrapper.eq("commodity_id",commodity.getId());
-            commodityPicMapper.delete(entityWrapper);
+//            EntityWrapper<CommodityPic> entityWrapper = new EntityWrapper<>();
+//            entityWrapper.eq("commodity_id",commodity.getId());
+//            commodityPicMapper.delete(entityWrapper);
             CommodityPic pic = new CommodityPic();
             pic.setPath(commodityVo.getPath());
             pic.setCommodityId(commodity.getId());
@@ -139,5 +146,20 @@ public class CommodityServiceImpl extends ServiceImpl<CommodityMapper, Commodity
     public List<CommodityDto> queryByIds(List<Integer> commodityId) {
 
         return  commodityMapper.queryByIds(commodityId);
+    }
+
+    @Override
+    public Map<String, Object> getCommodityUrlAndIntroduceContent(Long machinePositionId) {
+        MachinePosition machinePosition = machinePositionService.selectById(machinePositionId);
+        Integer commodityId = machinePosition.getCommodityId();
+        EntityWrapper<CommodityPic> entityWrapper = new EntityWrapper<>();
+        entityWrapper.eq("commodity_id",commodityId);
+        Commodity commodity = commodityMapper.selectById(commodityId);
+        List<CommodityPic> commodityPics = commodityPicMapper.selectList(entityWrapper);
+        List<String> collect = commodityPics.stream().map(CommodityPic::getPath).collect(Collectors.toList());
+        Map<String,Object> map = new HashMap<>();
+        map.put("paths",collect);
+        map.put("introduce",commodity.getIntroduce());
+        return map;
     }
 }

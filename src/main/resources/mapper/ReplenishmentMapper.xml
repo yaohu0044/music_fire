@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.musicfire.modular.replenishment.dao.ReplenishmentMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.musicfire.modular.replenishment.entity.Replenishment">
+        <id column="id" property="id" />
+        <result column="merchant_id" property="merchantId" />
+        <result column="commodity_id" property="commodityId" />
+        <result column="early_warning" property="earlyWarning" />
+        <result column="total_quantity" property="totalQuantity" />
+        <result column="curr_quantity" property="currQuantity" />
+    </resultMap>
+    <resultMap id="newResultMap" type="com.musicfire.modular.replenishment.entity.dto.ReplenishmentVo" extends="BaseResultMap">
+
+        <result column="commodityName" property="commodityName" />
+        <result column="purchasePrice" property="purchasePrice" />
+        <result column="price" property="price" />
+        <result column="path" property="path" />
+        <result column="path" property="path" />
+        <result column="commodityId" property="commodityId" />
+        <result column="merchantName" property="merchantName" />
+        <result column="phone" property="phone" />
+
+
+    </resultMap>
+
+    <select id="replenishmentCommodity" parameterType="com.musicfire.modular.replenishment.query.ReplenishmentQuery" resultMap="newResultMap">
+        select r.*,c.id as commodityId,cp.path as path,c.name as commodityName,c.price as price ,
+        c.purchase_price as purchasePrice from commodity c
+        left join commodity_pic cp on c.id = cp.commodity_id
+        left join replenishment r on r.commodity_id = c.id and r.merchant_id=#{replenishmentId}
+        <where>
+            <if test="commodityName != null and commodityName !=''">
+                c.name like CONCAT('%', #{commodityName},'%')
+            </if>
+        </where>
+        limit #{startPosition},#{pageSize}
+    </select>
+
+    <select id="replenishmentCommodityTotal" parameterType="com.musicfire.modular.replenishment.query.ReplenishmentQuery" resultType="java.lang.Integer">
+        select count(c.id) from commodity c
+        left join commodity_pic cp on c.id = cp.commodity_id
+        left join replenishment r on r.commodity_id = c.id and r.merchant_id=#{replenishmentId}
+        <where>
+            <if test="commodityName != null and commodityName !=''">
+                c.name like CONCAT('%', #{commodityName},'%')
+            </if>
+        </where>
+    </select>
+    <select id="replenishmentPage" parameterType="com.musicfire.modular.replenishment.query.ReplenishmentQuery" resultMap="newResultMap">
+       SELECT
+        r.*,
+        c.id AS commodityId,
+        cp.path AS path,
+        c.NAME AS commodityName,
+        c.price AS price,
+        c.purchase_price AS purchasePrice ,
+        u.phone as phone,
+        u.`name` as merchantName
+FROM
+	replenishment r
+	LEFT JOIN commodity c ON r.commodity_id = c.id
+	LEFT JOIN commodity_pic cp ON c.id = cp.commodity_id
+	left join merchant m on m.id = r.merchant_id
+	LEFT JOIN sys_user u on u.id = m.user_id
+    order by (early_warning-total_quantity) asc
+    limit #{startPosition},#{pageSize}
+    </select>
+
+    <select id="replenishmentTotal" parameterType="com.musicfire.modular.replenishment.query.ReplenishmentQuery" resultType="java.lang.Integer">
+       SELECT
+        count(r.id)
+    FROM
+        replenishment r
+        LEFT JOIN commodity c ON r.commodity_id = c.id
+        LEFT JOIN commodity_pic cp ON c.id = cp.commodity_id
+        left join merchant m on m.id = r.merchant_id
+        LEFT JOIN sys_user u on u.id = m.user_id
+    </select>
+
+    <select id="getEarlyWarn" parameterType="com.musicfire.modular.replenishment.query.ReplenishmentQuery" resultMap="newResultMap">
+     select r.*,c.name as commodityName
+        from replenishment r
+        left join commodity c on c.id = r.commodity_id
+        where r.merchant_id = #{replenishmentId} and r.early_warning-r.total_quantity>=0
+    </select>
+</mapper>

@@ -28,7 +28,8 @@
     </resultMap>
 
     <select id="orderByPage" parameterType="com.musicfire.modular.order.page.OrderPage" resultMap="NewResultMap">
-        select r.name as roomName ,mer.type as type,o.*,u.name as merchantName, mac.name as machineName,c.name as commodityName ,mp.num ,c.purchase_price as purchasePrice from  `order` o
+        select r.name as roomName ,mer.type as type,o.*,u.name as merchantName, mac.name as machineName,c.name as
+        commodityName ,mp.num ,c.purchase_price as purchasePrice from `order` o
         left join merchant mer on mer.id = o.merchant_id
         left join machine mac on mac.id = o.machine_id
         left join sys_user u on u.id = mer.user_id
@@ -52,10 +53,10 @@
                 and o.merchant_id = #{merchantId}
             </if>
             <if test="null != userId and isAgents">
-                and ( u.id = #{userId}  or mer.agent_id = #{agentsId})
+                and ( u.id = #{userId} or mer.agent_id = #{agentsId})
             </if>
             <if test="null != userId and !isAgents">
-                u.id = #{userId}
+                and u.id = #{userId}
             </if>
             <if test="null != state ">
                 and o.state = #{state}
@@ -89,10 +90,10 @@
                 and o.create_time &lt; #{endTime}
             </if>
             <if test="null != userId and isAgents">
-                and ( u.id = #{userId}  or mer.agent_id = #{agentsId})
+                and ( u.id = #{userId} or mer.agent_id = #{agentsId})
             </if>
             <if test="null != userId and !isAgents">
-                u.id = #{userId}
+                and u.id = #{userId}
             </if>
             <if test="null != merchantId ">
                 and o.merchant_id = #{merchantId}

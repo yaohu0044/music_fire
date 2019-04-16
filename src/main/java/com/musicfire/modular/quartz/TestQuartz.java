@@ -63,8 +63,8 @@ public class TestQuartz extends QuartzJobBean {
         OrderPage orderPage = new OrderPage();
         LocalDate now = LocalDate.now();
         orderPage.setState(1);
-        orderPage.setStartTime(now.getYear() + "-" + now.getMonthValue() + "-" + (now.getDayOfMonth() - 1) + " 09:00:00");
-        orderPage.setEndTime(now.getYear() + "-" + now.getMonthValue() + "-" + now.getDayOfMonth() + " 09:00:00");
+        orderPage.setStartTime(now.getYear() + "-" + now.getMonthValue() + "-" + (now.getDayOfMonth() - 1) + " 00:00:00");
+        orderPage.setEndTime(now.getYear() + "-" + now.getMonthValue() + "-" + now.getDayOfMonth() + " 00:00:00");
         List<OrderExport> orderExports = orderService.exportOrder(orderPage);
         if(orderExports.size()>0){
             //所有订单，发送给系统管理员。
@@ -97,7 +97,7 @@ public class TestQuartz extends QuartzJobBean {
                     try {
                         FileOutputStream out = new FileOutputStream(Conf.getValue("excelImportAddr") + "/" + fileName1);
                         ExcelUtil<OrderExport> util = new ExcelUtil<>(OrderExport.class);// 创建工具类.
-                        util.exportExcels(lists, "订单新", 65536, out);// 导出
+                        util.exportExcels(lists1, "订单新", 65536, out);// 导出
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
                     }

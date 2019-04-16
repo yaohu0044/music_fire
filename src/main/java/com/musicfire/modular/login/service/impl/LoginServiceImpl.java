@@ -79,7 +79,7 @@ public class LoginServiceImpl implements LoginService {
                     EntityWrapper<Merchant> entityWrapper = new EntityWrapper<>();
                     entityWrapper.eq("user_id",user.getId());
                     Merchant merchant = merchantService.selectOne(entityWrapper);
-                    login.setTitle(merchant.getTitle());
+                    login.setTitle(user.getName());
                     login.setMerchantId(merchant.getId());
                     //只有是代理商才返回商家类型
                     if(merchant.getType()==2){

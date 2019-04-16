@@ -19,6 +19,8 @@ import com.musicfire.modular.machine.service.IMachineService;
 import com.musicfire.modular.machine.service.impl.MachinePositionServiceImpl;
 import com.musicfire.modular.order.entity.Order;
 import com.musicfire.modular.order.service.IOrderService;
+import com.musicfire.modular.replenishment.entity.Replenishment;
+import com.musicfire.modular.replenishment.service.IReplenishmentService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -50,6 +52,9 @@ public class AliPayServiceImpl extends ServiceImpl<AliPayUserInfoMapper, AliPayU
 
     @Resource
     private IMachineService machineService;
+
+    @Resource
+    private IReplenishmentService replenishmentService;
 
 
     @Transactional
@@ -85,6 +90,16 @@ public class AliPayServiceImpl extends ServiceImpl<AliPayUserInfoMapper, AliPayU
         Machine machine = machineService.selectById(orders.get(0).getMachineId());
         machinePositionService.purchaseErrOpenPosition(machine.getCode(),null,out_trade_no);
 
+        //购买成功修改库存
+        EntityWrapper<Replenishment> entit = new EntityWrapper<>();
+        entit.eq("commodity_id",order.getCommodityId());
+        entit.eq("merchant_id",order.getMerchantId());
+        List<Replenishment> replenishments = replenishmentService.selectList(entit);
+        if(replenishments.size()>0){
+            Replenishment replenishment = replenishments.get(0);
+            replenishment.setTotalQuantity(replenishment.getTotalQuantity()-1);
+            replenishmentService.updateById(replenishment);
+        }
 
     }
 }

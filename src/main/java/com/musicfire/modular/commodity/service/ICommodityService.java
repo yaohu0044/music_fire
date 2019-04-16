@@ -5,6 +5,7 @@ import com.musicfire.modular.commodity.entity.Dto.CommodityVo;
 import com.musicfire.modular.commodity.query.CommodityPage;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -32,4 +33,11 @@ public interface ICommodityService {
      * @return 商品信息
      */
     List<CommodityDto> queryByIds(List<Integer> commodityId);
+
+    /**
+     * 根据仓位号获取商品图片和描述
+     * @param machinePositionId 仓位号
+     * @return
+     */
+    Map<String,Object> getCommodityUrlAndIntroduceContent(Long machinePositionId);
 }

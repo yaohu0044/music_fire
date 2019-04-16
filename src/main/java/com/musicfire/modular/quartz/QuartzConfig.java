@@ -17,7 +17,7 @@ public class QuartzConfig {
         newTrigger().
                 withIdentity("cronTrigger", "cronTrigger").
                 forJob("sendEmail").
-                withSchedule(CronScheduleBuilder.cronSchedule("0 39 20 * * ?")). //在任务调度器中，使用任务调度器的 CronScheduleBuilder 来生成一个具体的 CronTrigger 对象
+                withSchedule(CronScheduleBuilder.cronSchedule("0 0 9 * * ?")). //在任务调度器中，使用任务调度器的 CronScheduleBuilder 来生成一个具体的 CronTrigger 对象
                 build();
     }
 }

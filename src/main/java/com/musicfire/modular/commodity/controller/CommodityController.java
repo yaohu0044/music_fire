@@ -27,6 +27,7 @@ import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -116,5 +117,13 @@ public class CommodityController {
         util.exportExcel(commoditys, "商品信息", 65536, out);// 导出
         return new Result().ok(serverUrl+"/"+fileName);
     }
+     @GetMapping("/getCommodityUrlAndIntroduceContent/{machinePositionId}")
+    public Result getCommodityUrlAndIntroduceContent(@PathVariable Long machinePositionId) {
+         Map<String,Object> listMap = commodityService.getCommodityUrlAndIntroduceContent(machinePositionId);
+
+        return new Result().ok(listMap);
+    }
+
+
 }
 

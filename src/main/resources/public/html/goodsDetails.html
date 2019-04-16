@@ -16,7 +16,7 @@
         <div class="details-img">
             <img id="img-details" width="100%">
         </div>
-
+<!--        <div id = Introduce></div>-->
     </div>
     <div class="price-date">
         <div class="details-time-and-money" id="priceId"></div>
@@ -29,15 +29,27 @@
 <script type="text/javascript">
 
     $('#priceId').html("￥"+getQueryStringByName("price"));
-    $('#describe').html(decodeURI(getQueryStringByName("commodityName")))
-    $('#introduce').html(decodeURI(getQueryStringByName("introduce")))
-   // $(".details-img").css("background","url("+getQueryStringByName('shrinkageChart')+")");
-   //  $(".details-img").css({
-   //      "background":"url("+getQueryStringByName('shrinkageChart')+")",
-   //      "backgroundSize":"100% 100%"
-   //  })
-    $("#img-details").attr("src",getQueryStringByName('shrinkageChart'))
-     $('#nowDate').html(timeStamp2String(new Date().getTime()))
+    $('#describe').html(decodeURI(getQueryStringByName("commodityName")));
+    $('#introduce').html(decodeURI(getQueryStringByName("introduce")));
+   $(".details-img").css("background","url("+getQueryStringByName('shrinkageChart')+")");
+    $(".details-img").css({
+        "background":"url("+getQueryStringByName('shrinkageChart')+")",
+        "backgroundSize":"100% 100%"
+    })
+    $("#img-details").attr("src",getQueryStringByName('shrinkageChart'));
+    $('#nowDate').html(timeStamp2String(new Date().getTime()));
+    $(function () {
+        $.ajax({
+            url: '/api/commodity/getCommodityUrlAndIntroduceContent/'+getQueryStringByName("machinePositionId"),
+            type: "get",
+            data: {},
+            success: function (data) {
+              $("#introduce").append(data.result.introduce);
+            }
+        })
+    });
+
+
     function purchase(){
         $.ajax({
             url: '/api/order/saveOrder/'+getQueryStringByName("machinePositionId"),

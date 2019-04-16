@@ -10,7 +10,7 @@ public class StudentVO  {
     @ExcelVOAttribute(name = "姓名", column = "B", isExport = true)
     private String name;
 
-    @ExcelVOAttribute(name = "年龄", column = "C", prompt = "年龄保密哦!", isExport = false)
+    @ExcelVOAttribute(name = "年龄", column = "C")
     private int age;
 
     @ExcelVOAttribute(name = "班级", column = "D", combo = { "五期提高班", "六期提高班",
@@ -19,5 +19,8 @@ public class StudentVO  {
 
     @ExcelVOAttribute(name = "公司", column = "F")
     private String company;
+
+    @ExcelVOAttribute(name = "总年龄", column = "G")
+    private double ages;
 
 }

@@ -17,7 +17,7 @@ public class AutoGeneratorHelper {
         AutoGenerator mpg = new AutoGenerator();
         // 全局配置
         GlobalConfig gc = new GlobalConfig();
-        gc.setOutputDir("E:\\I`m\\music_fire\\src\\main\\java");
+        gc.setOutputDir("F:\\music_fire\\src\\main\\java");
 
         gc.setFileOverride(true);
         gc.setActiveRecord(true);// 开启 activeRecord 模式
@@ -33,8 +33,8 @@ public class AutoGeneratorHelper {
         dsc.setDbType(DbType.MYSQL);
         dsc.setTypeConvert(new MySqlTypeConvert());
         dsc.setDriverName("com.mysql.jdbc.Driver");
-        dsc.setUsername("admin");
-        dsc.setPassword("yy3B5uYf5f34BjV89");
+        dsc.setUsername("root");
+        dsc.setPassword("");
         dsc.setUrl("jdbc:mysql://localhost:3306/music_fire?useSSL=false&characterEncoding=utf8");
         mpg.setDataSource(dsc);
 
@@ -44,7 +44,7 @@ public class AutoGeneratorHelper {
         strategy.setTablePrefix(new String[] { ""});// 此处可以修改为您的表前缀
         strategy.setNaming(NamingStrategy.underline_to_camel);// 表名生成策略
         strategy.setInclude(new String[]{
-                "we_chat_mp_user"
+                "replenishment"
 
         }); // 需要生成的表
         // 字段名生成策略
@@ -55,7 +55,7 @@ public class AutoGeneratorHelper {
 
         // 包配置
         PackageConfig pc = new PackageConfig();
-        pc.setParent("com.musicfire.mobile");// 自定义包路径
+        pc.setParent("com.musicfire.modular.replenishment");// 自定义包路径
         pc.setController("controller");// 这里是控制器包名，默认 web
         pc.setEntity("entity");
         pc.setMapper("dao");

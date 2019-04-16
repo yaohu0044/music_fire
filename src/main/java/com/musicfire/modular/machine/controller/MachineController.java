@@ -118,9 +118,11 @@ public class MachineController {
         List<Map<String, Double>> list = new ArrayList<>();
         machine.forEach(machine1 -> {
             Map<String, Double> map = new HashMap<>();
-            map.put("lon", Double.valueOf(machine1.getLonAndLat().split(",")[0]));
-            map.put("lat", Double.valueOf(machine1.getLonAndLat().split(",")[1]));
-            list.add(map);
+            if(null != machine1.getLonAndLat()){
+                map.put("lon", Double.valueOf(machine1.getLonAndLat().split(",")[0]));
+                map.put("lat", Double.valueOf(machine1.getLonAndLat().split(",")[1]));
+                list.add(map);
+            }
         });
 
         return new Result().ok(list);
