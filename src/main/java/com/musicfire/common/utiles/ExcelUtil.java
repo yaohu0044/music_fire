@@ -75,7 +75,7 @@ public class ExcelUtil<T> {
 				}
 				for (int i = 1; i < rows; i++) {// 从第2行开始取数据,默认第一行是表头.
 					HSSFRow row = sheet.getRow(i);
-					int cellNum = row.getPhysicalNumberOfCells();
+					int cellNum = row.getLastCellNum();
 					T entity = null;
 					for (int j = 0; j < cellNum; j++) {
 						HSSFCell cell = row.getCell(j);

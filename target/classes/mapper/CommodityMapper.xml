@@ -21,7 +21,7 @@
         <result column="path" property="path" />
     </resultMap>
     <select id="queryByCommodity" resultMap="NewResultMap" parameterType="com.musicfire.modular.commodity.query.CommodityPage">
-        select c.*,pic.path as path  from commodity c
+        select distinct pic.commodity_id,c.*,pic.path as path  from commodity c
         left join commodity_pic as pic on pic.commodity_id = c.id
         where c.flag = false
         <if test="null != name and '' != name">
@@ -34,12 +34,14 @@
 
     </select>
     <select id="queryCount" resultType="java.lang.Integer" parameterType="com.musicfire.modular.commodity.query.CommodityPage">
-        select  count(c.id)  from commodity c
-        left join commodity_pic as pic on pic.commodity_id = c.id
-        where c.flag = false
-        <if test="null != name and '' != name">
-            and c.name LIKE CONCAT('%',#{name},'%')
-        </if>
+        select count(c.commodity_id) from(
+            select distinct pic.commodity_id from commodity c
+            left join commodity_pic as pic on pic.commodity_id = c.id
+            where c.flag = false
+            <if test="null != name and '' != name">
+                and c.name LIKE CONCAT('%',#{name},'%')
+            </if>
+            )c
     </select>
     <select id="queryHotCommodity"  resultMap="NewResultMap">
         select * from commodity where id in(

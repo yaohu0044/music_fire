@@ -37,6 +37,7 @@
         left join machine_position mp on mp.id = o.machine_position_num
         left join room r on r.machine_id = mac.id
         <where>
+        r.flag = 0
             <if test="null != merchantName and ''!= merchantName">
                 and u.name LIKE CONCAT('%',#{merchantName},'%')
             </if>
@@ -77,6 +78,7 @@
         left join machine_position mp on mp.id = o.machine_position_num
         left join room r on r.machine_id = mac.id
         <where>
+            r.flag = 0
             <if test="null != merchantName and ''!= merchantName">
                 and u.name LIKE CONCAT('%',#{merchantName},'%')
             </if>

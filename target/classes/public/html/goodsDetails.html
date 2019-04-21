@@ -2,48 +2,96 @@
 <html>
 <head lang="en">
     <meta charset="UTF-8">
-    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="viewport"
+          content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
     <title>商品详情</title>
-    <link rel="stylesheet" href="../../static/css/public.css"/>
-    <script type="text/javascript" src="../../static/js/jquery.min.js"></script>
-    <script type="text/javascript" src="../../static/js/dot.min.js"></script>
+    <link rel="stylesheet" href="../../css/public.css"/>
+    <script type="text/javascript" src="../../js/jquery.min.js"></script>
+    <script type="text/javascript" src="../../js/dot.min.js"></script>
+    <link rel="stylesheet" href="../../css/idangerous.swiper2.7.6.css">
+    <link rel="stylesheet" href="../../css/animate.min.css">
+    <link rel="stylesheet" href="../../css/style.css">
 </head>
 <body>
 <div class="title">商品详情</div>
 <div class="goods-list">
-
     <div class="details-info">
-        <div class="details-img"></div>
-
+        <div class="details-img">
+        <div class="swiper-container">
+            <div class="swiper-wrapper" id="path">
+            </div>
+            <div class="pagination"></div>
+        </div>
+        </div>
+        <div class="price-date">
+            <div class="details-time-and-money" id="priceId"></div>
+            <div class="details-time-and-money" id="nowDate"></div>
+        </div>
+        <div id="describe"></div>
+        <div id="introduce"></div>
+        <div class="goods-btn details-btn" onclick="purchase()">立即购买</div>
     </div>
-    <div class="price-date">
-        <div class="details-time-and-money" id="priceId"></div>
-        <div class="details-time-and-money" id="nowDate"></div>
-    </div>
-    <div id="describe"></div>
-    <div class="goods-btn details-btn" onclick="purchase()">立即购买</div>
+    <script src="../../js/jquery-1.10.1.min.js"></script>
+    <script src="../../js/idangerous.swiper2.7.6.min.js"></script>
+    <script src="../../js/swiper.animate1.0.2.min.js"></script>
 </div>
 <script type="text/javascript">
 
-    $('#priceId').html("￥"+getQueryStringByName("price"));
-    $('#describe').html(decodeURI(getQueryStringByName("commodityName")))
-   // $(".details-img").css("background","url("+getQueryStringByName('shrinkageChart')+")");
-    $(".details-img").css({
-        "background":"url("+getQueryStringByName('shrinkageChart')+")",
-        "backgroundSize":"100% 100%"
-    })
-     $('#nowDate').html(timeStamp2String(new Date().getTime()))
-    function purchase(){
+    $('#priceId').html("￥" + getQueryStringByName("price"));
+    $('#describe').html(decodeURI(getQueryStringByName("commodityName")));
+    $('#introduce').html(decodeURI(getQueryStringByName("introduce")));
+    $('#nowDate').html(timeStamp2String(new Date().getTime()));
+    $(function () {
         $.ajax({
-            url: '/api/order/saveOrder/'+getQueryStringByName("machinePositionId"),
+            url: '/commodity/getCommodityUrlAndIntroduceContent/' + getQueryStringByName("machinePositionId"),
             type: "get",
             data: {},
             success: function (data) {
-                location.href="./orderInfo.html?unifiedNum="
-                    +data.result.unifiedNum+"&price="+data.result.price
-                    +"&machineName="+data.result.machineName+"&positionNum="+data.result.positionNum
-                    +"&commodityName="+data.result.commodityName+"&createTime="+timeStamp2String(new Date())+"&des="+data.result.commodityDes
-                    +"&shrinkageChart="+getQueryStringByName('shrinkageChart')
+                if (data.result != null) {
+                    if (data.result.introduce != null) {
+                        $("#introduce").append(data.result.introduce);
+                    }
+                    if (data.result.paths != null) {
+                        var str = '';
+                        var paths = data.result.paths;
+                        $(paths).each(function () {
+                            // str += '<img src="http://111.231.205.128/b90bce10ee654c2aa6457e2b3f4d1fe9.jpg" class="swiper-slide slide1" swiper-animate-effect="bounceInDown" swiper-animate-duration="2s" swiper-animate-delay="0.5s">';
+                            str += '<img src="https://ss0.bdstatic.com/6Ox1bjeh1BF3odCf/it/u=3660968530,985748925&fm=191&app=48&size=h300&n=0&g=4n&f=JPEG?sec=1853310920&t=5e64af964be378c6c2a3b0acc65dfe24" class="swiper-slide slide1" swiper-animate-effect="bounceInDown" swiper-animate-duration="2s" swiper-animate-delay="0.5s" style="width: 329px;">';
+                            // str += '<img src="' + this + '" class="swiper-slide slide1" swiper-animate-effect="bounceInDown" swiper-animate-duration="2s" swiper-animate-delay="0.5s">';
+                        })
+                        $("#path").append(str)
+                        var mySwiper = new Swiper('.swiper-container', {
+                            pagination: '.pagination',
+                            paginationClickable: true,
+                            autoplay: 5000,
+                            loop: true,
+                            speed: 1,
+                            onInit: function (swiper) { //Swiper2.x的初始化是onFirstInit
+                                swiperAnimateCache(swiper); //隐藏动画元素
+                                swiperAnimate(swiper); //初始化完成开始动画
+                            },
+                            onSlideChangeEnd: function (swiper) {
+                                swiperAnimate(swiper); //每个slide切换结束时也运行当前slide动画
+                            }
+                        })
+                    }
+                }
+            }
+        })
+    });
+
+
+    function purchase() {
+        $.ajax({
+            url: '/api/order/saveOrder/' + getQueryStringByName("machinePositionId"),
+            type: "get",
+            data: {},
+            success: function (data) {
+                location.href = "./orderInfo.html?unifiedNum="
+                    + data.result.unifiedNum + "&price=" + data.result.price
+                    + "&machineName=" + data.result.machineName + "&positionNum=" + data.result.positionNum
+                    + "&commodityName=" + data.result.commodityName + "&createTime=" + timeStamp2String(new Date()) + "&des=" + data.result.commodityDes
+                    + "&shrinkageChart=" + getQueryStringByName('shrinkageChart')
                 ;
             }
         })
@@ -59,17 +107,29 @@
         }
         return result[1];
     }
-    function timeStamp2String(time){
+
+    function timeStamp2String(time) {
         var datetime = new Date();
         datetime.setTime(time);
         var year = datetime.getFullYear();
         var month = datetime.getMonth() + 1 < 10 ? "0" + (datetime.getMonth() + 1) : datetime.getMonth() + 1;
         var date = datetime.getDate() < 10 ? "0" + datetime.getDate() : datetime.getDate();
-        var hour = datetime.getHours()< 10 ? "0" + datetime.getHours() : datetime.getHours();
-        var minute = datetime.getMinutes()< 10 ? "0" + datetime.getMinutes() : datetime.getMinutes();
-        var second = datetime.getSeconds()< 10 ? "0" + datetime.getSeconds() : datetime.getSeconds();
-        return year + "-" + month + "-" + date+" "+hour+":"+minute+":"+second;
+        var hour = datetime.getHours() < 10 ? "0" + datetime.getHours() : datetime.getHours();
+        var minute = datetime.getMinutes() < 10 ? "0" + datetime.getMinutes() : datetime.getMinutes();
+        var second = datetime.getSeconds() < 10 ? "0" + datetime.getSeconds() : datetime.getSeconds();
+        return year + "-" + month + "-" + date + " " + hour + ":" + minute + ":" + second;
     }
+
+
+    //
+    // $('.arrow-left').on('click', function(e){
+    //     e.preventDefault()
+    //     mySwiper.swipePrev()
+    // })
+    // $('.arrow-right').on('click', function(e){
+    //     e.preventDefault()
+    //     mySwiper.swipeNext()
+    // })
 </script>
 </body>
 </html>

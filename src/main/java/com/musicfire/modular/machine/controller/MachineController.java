@@ -1,6 +1,7 @@
 package com.musicfire.modular.machine.controller;
 
 
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.musicfire.common.businessException.BusinessException;
 import com.musicfire.common.businessException.ErrorCode;
 import com.musicfire.common.handler.RequestHolder;
@@ -18,6 +19,7 @@ import com.musicfire.modular.merchant.service.IMerchantService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.util.CollectionUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -158,11 +160,17 @@ public class MachineController {
         ExcelUtil<ImportMachine> util = new ExcelUtil<>(ImportMachine.class);
         List<ImportMachine> lists = util.importExcel("机器基本导入", fis);
         List<Machine> machines = new ArrayList<>();
+        EntityWrapper<Machine> entityWrapper = new EntityWrapper<>();
         lists.forEach(importMiachine -> {
-            Machine machine = new Machine();
-            BeanUtils.copyProperties(importMiachine, machine);
-            machine.setQrCodeUrl(QrCodeUtils.encode(machine.getCode(),Conf.getValue("logoPic"),Conf.getValue("picture"),Conf.getValue("text")));
-            machines.add(machine);
+            entityWrapper.eq("code",importMiachine.getCode());
+            entityWrapper.eq("flag",false);
+            List<Machine> machineList = service.selectList(entityWrapper);
+            if(CollectionUtils.isEmpty(machineList)){
+                Machine machine = new Machine();
+                BeanUtils.copyProperties(importMiachine, machine);
+                machine.setQrCodeUrl(QrCodeUtils.encode(machine.getCode(),Conf.getValue("logoPic"),Conf.getValue("picture"),Conf.getValue("text")));
+                machines.add(machine);
+            }
         });
 
         service.insertBatch(machines);

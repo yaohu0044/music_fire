@@ -118,6 +118,7 @@ public class MachinePositionController {
         positions.stream().filter(position -> null != position.getMachineCode()).forEach(position -> {
             EntityWrapper<Machine> machineEntityWrapper = new EntityWrapper<>();
             machineEntityWrapper.eq("code",position.getMachineCode());
+            machineEntityWrapper.eq("flag",false);
             Machine machine = machineService.selectOne(machineEntityWrapper);
             if(null != machine){
                 MachinePosition machinePosition = new MachinePosition();

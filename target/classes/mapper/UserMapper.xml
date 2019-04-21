@@ -43,5 +43,8 @@
             u.name like CONCAT('%',#{name},'%')
         </if>
     </select>
+    <select id="queryAllAdmin"  resultMap="BaseResultMap">
+       select * from sys_user where id in (select user_id from sys_user_role where role_id =1 )
+    </select>
 
 </mapper>

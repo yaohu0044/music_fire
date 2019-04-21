@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html>
 <head lang="en">
     <meta charset="UTF-8">
@@ -6,83 +5,275 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Cache-control" content="no-cache">
     <meta http-equiv="Cache" content="no-cache">
-    <meta name="viewport" content="maximum-scale=1.0,
-    minimum-scale=1.0,
-    user-scalable=0,
-    width=device-width,
-    initial-scale=1.0"/>
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
     <title>乐火售货机</title>
-    <link rel="stylesheet" href="../../static/css/public.css"/>
+    <style type="text/css">
+        * {
+            margin: 0;
+            border: 0;
+            padding: 0;
+        }
+
+        body {
+            width: 100%;
+            /*overflow: hidden;*/
+            background: url(../../static/img/bgimage.png) no-repeat;
+            background-size: cover;
+        }
+
+        div.container {
+            margin: 150px auto;
+            width: 92%;
+        /* height: 410px;*/
+        background: url(../../static/img/kuang.png) no-repeat;
+        background-size: 100% 100%;
+        box-sizing: border-box;
+        padding: 8px 12px;
+    }
+
+    ul.list {
+        list-style: none;
+        width: 100%;
+        margin-top:10px;
+        margin-bottom:10px;
+        overflow: hidden;
+    }
+
+    ul.list3 li {
+        float: left;
+        width: 32%;
+        height: 100px;
+        background: url(../../static/img/list_type_1.png) no-repeat;
+        background-size: cover;
+        margin-right: 2%;
+        margin-top: 4px;
+        position: relative;
+    }
+
+    ul.list3 li:nth-child(3n) {
+        margin-right: 0;
+    }
+
+    ul.list2 li {
+        float: left;
+        width: 48%;
+        height: 100px;
+        background: url(../../static/img/list_type_2.png) no-repeat;
+        background-size: 100% 100%;
+        margin-right: 4%;
+        margin-top: 4px;
+        position: relative;
+    }
+
+    ul.list2 li:nth-child(2n) {
+        margin-right: 0;
+    }
+
+    ul.list3 li div.bg {
+        position: absolute;
+        top: 5%;
+        left: 5%;
+        height: 65%;
+        width: 91%;
+        z-index: 2;
+    }
+
+    ul.list2 li div.bg {
+        position: absolute;
+        top: 6%;
+        left: 3%;
+        background: url(../../static/img/bgimage.png) no-repeat;
+        background-size: 100% auto;
+        height: 90%;
+        width: 76%;
+        z-index: 2;
+    }
+
+    ul.list3 li marquee.good-name {
+        position: absolute;
+        bottom: 6%;
+        left: 25%;
+        width: 68%;
+        height: 24%;
+        color: #ce299a;
+
+    }
+
+    ul.list2 li marquee.good-name {
+        position: absolute;
+        top: 24%;
+        right: 4%;
+        width: 15%;
+        height: 70%;
+        color: #ce299a;
+        text-align: center;
+    }
+
+    ul.list3 li div.prise {
+        font-family: "Microsoft Yahei";
+        position: absolute;
+        top: 28%;
+        left: 0;
+        width: 100%;
+        height: 20px;
+        text-align: center;
+        font-size: 18px;
+        color: darkorchid;
+        z-index: 3;
+
+    }
+
+    ul.list2 li div.prise {
+        font-family: "Microsoft Yahei";
+        position: absolute;
+        top: 42%;
+        left: 0;
+        width: 82%;
+        height: 20px;
+        text-align: center;
+        font-size: 18px;
+        color: darkorchid;
+        z-index: 3;
+
+    }
+
+    .checkbox {
+        position: relative;
+        top: -3px;
+        left: 0px;
+        width: 14px;
+        height: 14px;
+        background: url(../../static/img/box_unsel.png) no-repeat;
+        background-size: 100% 100%;
+        z-index: 4;
+    }
+
+    .checkbox.true {
+        background: url(../../static/img/box_sel.png) no-repeat;
+        background-size: 100% 100%;
+    }
+
+    .payment-many {
+        position: fixed;
+        display: flex;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        height: 40px;
+        background: #e4a0c5;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+        font-size: 14px;
+        z-index:999;
+    }
+
+    .payment-many div {
+        height: 40px;
+        line-height: 40px;
+    }
+
+    .all-price {
+        flex: 1;
+        padding-left: 10px;
+        box-sizing: border-box;
+        font-weight: bold;
+        background: #e4a0c5;
+    }
+
+    .goods-btn {
+        text-align: center;
+        color: #fff;
+        border-radius: 4px;
+        width: 120px;
+        background: #e277b0;
+    }
+        .title{
+            width: 100%;
+            color: #BF3FA1;
+            line-height: 50px;
+            text-align: center;
+            position: absolute;
+            bottom: 0px;
+            font-size: 18px;
+            font-weight: bolder;
+        }
+</style>
 </head>
+
 <body>
-<div class="title" id="title"></div>
-<div id="goodsView" class="goods-view"></div>
-<script type="text/x-dot-template" id="goodListTemplate">
-    {{if(it.length>0){}}
-    <ul class="goods-list">
-        {{for(var i = 0;i<it.length;i++){}}
-        <li class="goods-info">
-            <div class="select-many">
-                {{if(it[i].available && (it[i].machineState==1 || it[i].machineState==2)){}}
-                <div data-id="{{=it[i].id}}" class="unsel" onclick="selectThisGoods(this)"></div>
-                {{}else{}}
-                <div data-id="{{=it[i].id}}" class="unsel" onclick = "alert('机器断电，或者无商品')"></div>
-                {{}}}
-            </div>
-            {{if(it[i].available && (it[i].machineState==1 || it[i].machineState==2)){}}
-            <div class="select-content" onclick=checkThisGoods('{{=it[i].id}}','{{=it[i].price}}','{{=it[i].commodityName}}','{{=it[i].shrinkageChart}}')>
-                {{}else{}}
-                <div class="select-content" onclick = "alert('机器断电，或者无商品')">
-                    {{}}}
-                    <!--<div class="passageway"></div>-->
-                    <div class="goods-content">
-                        <div class="goods-img" style="background: url(../{{=it[i].shrinkageChart}}) no-repeat;background-size: 100% 100%;"></div>
-                        <div class="goods-details">
-                            <div class="goods-name" style="margin-top:10px;">{{=it[i].commodityName}}</div>
-
-                            <div class="goods-num">￥{{=it[i].price}}</div>
-                            <div class="goods-mg"><img src="../../static/img/warehouseDoor.png"></img>仓门：{{=it[i].num}}门</div>
-
-
-                            <div class="is-use">
-                                {{if(it[i].available && (it[i].machineState==1 || it[i].machineState==2)){}}
-                                <div>商品可用</div>
-                                {{}else{}}
-                                <div>商品不可用</div>
-                                {{}}}
-                            </div>
-                        </div>
-                    </div>
-                    <!--<div class="goods-handle">-->
-
-                        <!--<div class="goods-check">{{=it[i].available?'点击查看':''}}</div>-->
-                    <!--</div>-->
-                </div>
-        </li>
-        {{}}}
+<div class="container">
+    <ul id="list3" class="list list3">
+        <!--<li>-->
+            <!--<div class="bg"></div>-->
+            <!--<marquee scrollamount="5" class="good-name">名流G点大颗粒(3只)</marquee>-->
+            <!--<div class="prise">￥26.5</div>-->
+            <!--<div class="checkbox" prise="26.5"></div>-->
+        <!--</li>-->
     </ul>
-    {{}else{}}
-    <div style="text-align: center;color: #666;font-size: 16px">暂无商品</div>
-    {{}}}
-</script>
-<div class="payment-many">
-    <div class="price">合计：<span id="manyNum">0</span></div>
-    <div class="goods-btn"  onclick="purchase()">去结算</div>
+    <ul id="list2" class="list list2">
+        <!--<li>-->
+            <!--<div class="bg"></div>-->
+            <!--<marquee direction="up" scrollamount="5" class="good-name">名流G点大颗粒（3只）</marquee>-->
+            <!--<div class="prise">￥26.5</div>-->
+            <!--<div class="checkbox" prise="26.5"></div>-->
+        <!--</li>-->
+    </ul>
 </div>
+<div class="payment-many">
+    <div class="all-price">合计：<span id="manyNum">0</span></div>
+    <div class="goods-btn" onclick="purchase()">去结算</div>
+</div>
+
 <script type="text/javascript" src="../../static/js/jquery.min.js"></script>
-<script type="text/javascript" src="../../static/js/dot.min.js"></script>
 <script type="text/javascript">
+    var allPrise = 0;
     //获取商品列表
     $.ajax({
         url: '/api/machinePosition/queryByMachineCode/'+getQueryStringByName("code"),
         type: "get",
         data: {},
         success: function (data) {
-            $("#title").html(data.result[0].machineName);
-            // debugger
-            tmpltxt=doT.template(document.getElementById("goodListTemplate").innerHTML);//生成模板方法
-            document.getElementById("goodsView").innerHTML=tmpltxt(data.result);//数据渲染
-
+            $(document).attr("title",data.result[0].machineName);
+            //$("#title").html(data.result[0].machineName);
+            var html3 = "",html2 = "";
+            for(var i=0;i<6;i++){
+                if(data.result[i].available && (data.result[i].machineState==1 || data.result[i].machineState==2)){
+                    html3 += '<li able="true" onclick=checkThisGoods("'+data.result[i].id+'","'+data.result[i].price+'","'+data.result[i].commodityName+'","'+data.result[i].shrinkageChart+'","")>';
+                }else{
+                    html3 += '<li onclick="alert(\'机器断电，或者无商品\')">';
+                }
+                html3 += '<div class="bg" style="background: url('+data.result[i].shrinkageChart+') no-repeat;background-size: 100% auto"></div>' +
+                    '<marquee scrollamount="2" class="good-name">￥'+data.result[i].price+data.result[i].commodityName+'</marquee>' +
+                    '<div class="checkbox"  data-id="'+data.result[i].id+'" prise="'+data.result[i].price+'"></div>' +
+                    ''+
+                    '</li>'
+            }
+            $("#list3").html(html3);
+            for(var i=6;i<10;i++){
+                if(data.result[i].available && (data.result[i].machineState==1 || data.result[i].machineState==2)){
+                    html2 += '<li able="true" onclick=checkThisGoods("'+data.result[i].id+'","'+data.result[i].price+'","'+data.result[i].commodityName+'","'+data.result[i].shrinkageChart+'","")>';
+                }else{
+                    html2 += '<li onclick="alert(\'机器断电，或者无商品\')">';
+                }
+                html2 += '<div class="bg" style="background: url('+data.result[i].shrinkageChart+') no-repeat;background-size: 100% auto"></div>' +
+                    '<marquee  direction="up" scrollamount="2" class="good-name">￥ '+data.result[i].price+data.result[i].commodityName+'</marquee>' +
+                    '<div class="checkbox" data-id="'+data.result[i].id+'" prise="'+data.result[i].price+'"></div>' +
+                    '</li>'
+            }
+            $("#list2").html(html2);
+            $("li[able='true'] .checkbox").click(function() {
+                var prise = Math.round(parseFloat($(this).attr("prise")) * 100);
+                allPrise *= 100;
+                if ($(this).hasClass("true")) {
+                    allPrise -= prise;
+                } else {
+                    allPrise += prise;
+                }
+                $(this).toggleClass("true");
+                allPrise /= 100;
+                $("#manyNum").text(allPrise);
+                return false
+            })
         }
     })
     localStorage.setItem("code",getQueryStringByName("code"));//缓存code到localStorage
@@ -91,7 +282,7 @@
      * */
     function purchase() {
         var goodsIdStr = "";
-        $(".sel").each(function(index,item){
+        $(".checkbox.true").each(function(index,item){
             if(index != 0) goodsIdStr += ",";
             goodsIdStr += $(item).attr("data-id");
             debugger
@@ -126,17 +317,9 @@
      * 打开商品详情
      * @param machinePositionId 仓位Id
      */
-    function checkThisGoods(machinePositionId,price,commodityName,shrinkageChart){
+    function checkThisGoods(machinePositionId,price,commodityName,shrinkageChart,introduce){
         // var name = encodeURI(encodeURI(commodityName))
-        location.href="./goodsDetails.html?machinePositionId="+machinePositionId+"&price="+price+"&commodityName="+commodityName+"&shrinkageChart="+shrinkageChart;
-    }
-    /**
-     * 选择/取消商品并计数
-     * @param element 选择去取消按钮
-     */
-    function selectThisGoods(element){
-        $(element).toggleClass("unsel").toggleClass("sel");
-        $("#manyNum").text($(".sel").length);
+        location.href="./goodsDetails.html?machinePositionId="+machinePositionId+"&price="+price+"&commodityName="+commodityName+"&shrinkageChart="+shrinkageChart+"&introduce="+introduce;
     }
     /*
      * 截取地址栏参数值并返回

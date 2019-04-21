@@ -51,13 +51,13 @@
         left join commodity_pic cp on cp.commodity_id = c.id
         where mp.flag = false
         <if test="null != machineId and '' != machineId">
-            and m.id = #{machineId}
+            and m.id = #{machineId} and m.flag = false
         </if>
         <if test="null != machineCode and '' != machineCode">
-            and m.code = #{machineCode}
+            and m.code = #{machineCode} and m.flag = false
         </if>
         <if test="null != machineName and '' != machineName">
-            and m.name = #{machineName}
+            and m.name = #{machineName} and m.flag = false
         </if>
         limit #{startPosition},#{pageSize}
     </select>
@@ -71,13 +71,13 @@
         left join commodity_pic cp on cp.commodity_id = c.id
         where mp.flag = false
         <if test="null != machineId and '' != machineId">
-            and m.id = #{machineId}
+            and m.id = #{machineId} and m.flag = false
         </if>
         <if test="null != machineCode and '' != machineCode">
-            and m.code = #{machineCode}
+            and m.code = #{machineCode} and m.flag = false
         </if>
         <if test="null != machineName and '' != machineName">
-            and m.name = #{machineName}
+            and m.name = #{machineName} and m.flag = false
         </if>
     </select>
     <select id="queryByIds" parameterType="com.musicfire.modular.machine.query.MachinePage" resultMap="NewResultMap">

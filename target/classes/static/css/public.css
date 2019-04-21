@@ -16,7 +16,7 @@
     color: #fff;
     line-height: 50px;
     text-align: center;
-    background: #fcd324;
+    background: #e4a0c5;
 }
 .goods-btn{
     height: 50px;
@@ -172,6 +172,7 @@
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
     font-size: 14px;
+
 }
 .payment-many div{
     height: 40px;
@@ -185,14 +186,14 @@
 }
 .goods-btn{
     width: 120px;
-    background:#fdd424;
+    background:#e4a0c5;
 }
 /*商品列表 end*/
 
 /*商品详情 start*/
 .details-info{
     width: 100%;
-    height: 352px;
+    height: auto;
     border: 1px solid #eeeeee;
     border-radius: 4px;
     padding: 20px 14px;
@@ -204,6 +205,16 @@
     margin-top: 12px;
 }
 .details-img{
+    width: 100%;
+    /*height: 300px;*/
+    background: url("../img/goods.jpg") no-repeat;
+    background-size: 100% auto;
+    background-position: center center;
+    margin-bottom: 30px;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+.details-img1{
     width: 100%;
     height: 300px;
     background: url("../img/goods.jpg") no-repeat;
@@ -230,7 +241,7 @@
 .details-btn{
     width: 98%;
     margin: 0 auto;
-    background: #fdd424;
+    background: #e4a0c;
     margin-top: 30px;
 }
 .details-btn:active{
@@ -291,20 +302,20 @@
     margin: 20px auto;
 }
 .order-cancel{
-    background: #fdd424;
+    background: #e4a0c5;
     width: 49%;
     float: left;
     opacity:.7;
 }
 .order-cancel:active{
-    background:#fdd424;
+    background:#e4a0c5;
 }
 .order-payment{
-    background: #fdd424;
+    background: #e4a0c5;
     width: 49%;
     float: right;
 }
 .order-payment:active{
-    background: #fdd424;
+    background: #e4a0c5;
 }
 /*订单详情 end*/
